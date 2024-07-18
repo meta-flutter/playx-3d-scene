@@ -19,12 +19,12 @@ class Playx3dSceneController {
   /// Updates the current 3d scene view with the new [scene], [model], and [shapes].
   /// Returns true if the scene was updated successfully.
   Future<Result<bool>> updatePlayx3dScene(
-      {Scene? scene, Model? model, List<Shape>? shapes}) {
+      {Scene? scene, List<Model>? models, List<Shape>? shapes}) {
     final data = _channel.invokeMethod<bool>(
       _updatePlayx3dScene,
       {
         _updatePlayx3dSceneSceneKey: scene?.toJson(),
-        _updatePlayx3dSceneModelKey: model?.toJson(),
+        _updatePlayx3dSceneModelKey: models?.map((e) => e.toJson()).toList(),
         _updatePlayx3dSceneShapesKey: shapes?.map((e) => e.toJson()).toList(),
       },
     );
@@ -43,10 +43,10 @@ class Playx3dSceneController {
 
   /// Updates the current scene with the new [model].
   /// Returns true if the models were updated successfully.
-  Future<Result<bool>> updateModel({Model? model}) {
+  Future<Result<bool>> updateModel({List<Model>? models}) {
     final data = _channel.invokeMethod<bool>(
       _updateModel,
-      {_updateModelKey: model?.toJson()},
+      {_updateModelKey: models?.map((e) => e.toJson()).toList()},
     );
     return _handleError(data);
   }

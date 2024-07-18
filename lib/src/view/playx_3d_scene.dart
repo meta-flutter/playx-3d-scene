@@ -46,7 +46,7 @@ class Playx3dScene extends StatefulWidget {
   /// Model to be rendered.
   /// provide details about the model to be rendered.
   /// like asset path, url, animation, etc.
-  final Model? model;
+  final List<Model>? models;
 
   /// Scene to be rendered.
   /// provide details about the scene to be rendered.
@@ -126,7 +126,7 @@ class Playx3dScene extends StatefulWidget {
 
   const Playx3dScene(
       {super.key,
-      this.model,
+      this.models,
       this.scene,
       this.shapes,
       this.onCreated,
@@ -167,7 +167,7 @@ class PlayxModelViewerState extends State<Playx3dScene> {
 
   @override
   Widget build(BuildContext context) {
-    if (defaultTargetPlatform == TargetPlatform.android) {
+    if (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.linux) {
       return AndroidView(
         viewType: _viewType,
         creationParams: _creationParams,
@@ -180,9 +180,10 @@ class PlayxModelViewerState extends State<Playx3dScene> {
   }
 
   void _setupCreationParams() {
-    final model = widget.model?.toJson();
+    //final model = widget.models?.toJson();
     final scene = widget.scene?.toJson();
-    _creationParams["model"] = model;
+    _creationParams["models"] =  
+        widget.models?.map((param) => param.toJson()).toList();;
     _creationParams["scene"] = scene;
     _creationParams["shapes"] =
         widget.shapes?.map((param) => param.toJson()).toList();
@@ -285,7 +286,7 @@ class PlayxModelViewerState extends State<Playx3dScene> {
 
   void _updateWidget(Playx3dScene? oldWidget) {
     _setupCreationParams();
-    if (oldWidget?.model != widget.model ||
+    if (!listEquals(oldWidget?.models, widget.models) ||
         oldWidget?.scene != widget.scene ||
         !listEquals(oldWidget?.shapes, widget.shapes)) {
       _updatePlayxScene();
@@ -295,7 +296,7 @@ class PlayxModelViewerState extends State<Playx3dScene> {
   Future<void> _updatePlayxScene() async {
     final controller = (await _controller.future);
     await controller.updatePlayx3dScene(
-      model: widget.model,
+      models: widget.models,
       scene: widget.scene,
       shapes: widget.shapes,
     );

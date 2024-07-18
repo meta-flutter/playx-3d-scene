@@ -4,16 +4,17 @@ import 'package:playx_3d_scene/src/models/shapes/shape.dart';
 /// An object that represents a cube shape to be rendered.
 class Cube extends Shape {
   /// Length of the cube.
-  double length;
+  PlayxSize size;
+
   late PlayxSize _size;
 
   Cube(
       {required super.id,
-      required this.length,
+      required this.size,
       required super.centerPosition,
       super.material})
       : super() {
-    _size = PlayxSize.all(length);
+    _size = size;
   }
 
   @override
@@ -27,16 +28,16 @@ class Cube extends Shape {
 
   @override
   String toString() {
-    return 'Cube(id: $id, length: $length, centerPosition: $centerPosition)';
+    return 'Cube(id: $id, size: $size, centerPosition: $centerPosition)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is Cube && other.length == length && super == other;
+    return other is Cube && other.size == size && super == other;
   }
 
   @override
-  int get hashCode => length.hashCode ^ super.hashCode;
+  int get hashCode => size.hashCode ^ super.hashCode;
 }
