@@ -110,7 +110,7 @@ class _MyAppState extends State<MyApp> {
   ////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
-    logToStdOutAndFlush('building Widget');
+    logToStdOut('building Widget');
 
     return MaterialApp(
       home: Scaffold(
