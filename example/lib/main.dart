@@ -1,34 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
 import 'dart:async';
 import 'dart:io';
-import 'dart:developer';
 import 'dart:math';
 
+////////////////////////////////////////////////////////////////////////
 void main() {
   FlutterError.onError = (FlutterErrorDetails details) {
-    // Your error handling logic goes here
     FlutterError.presentError(details);
 
     stdout.write('Global error caught exception: ${details.exception}');
     stdout.write('Global error caught stack: ${details.stack}');
-    //stdout.flush();
-    // You can also log the stack trace if needed: details.stack
   };
-
-  // const appt = MyApp();
-  // runApp(appt);
 
   runZonedGuarded<Future<void>>(() async {
     runApp(MyApp());
   }, (Object error, StackTrace stack) {
-    // Log or handle the error
-
     stdout.write('runZonedGuarded error caught error: ${error}');
     stdout.write('runZonedGuarded error caught stack: ${stack}');
   });
 }
 
+////////////////////////////////////////////////////////////////////////
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -36,137 +30,203 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class MyCustomPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Your drawing code here
-    final paint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 4.0;
-
-    canvas.drawLine(Offset(0, 0), Offset(size.width, size.height), paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    // Return true if you want to repaint when setState is called
-    return true;
-  }
-}
-
 class _MyAppState extends State<MyApp> {
+  ////////////////////////////////////////////////////////////////////////
   bool isModelLoading = false;
   bool isSceneLoading = false;
   bool isShapeLoading = false;
   bool showloading = true;
-  late Playx3dSceneController controller;
+  late Playx3dSceneController m_poController;
+  Color _DirectLightColor = Colors.purple;
+  double _directIntensity = 300000000;
+  final double _minIntensity = 10000000;
+  final double _maxIntensity = 300000000;
+  double _cameraRotation = 0;
+  bool _autoRotate = false;
+  bool _toggleShapes = true;
 
-  // orig
-  String litMat = "assets/materials/lit.filamat";
-  String texturedMat = "assets/materials/textured_pbr.filamat";
+  static const String litMat = "assets/materials/lit.filamat";
+  static const String texturedMat = "assets/materials/textured_pbr.filamat";
+  static const String foxAsset = "assets/models/Fox.glb";
+  static const String helmetAsset = "assets/models/DamagedHelmet.glb";
+  static const String sequoiaAsset = "assets/models/sequoia.glb";
+  static const String garageAsset = "assets/models/garagescene.glb";
 
-  // nonorig
-  //String litMat = "assets/materials/lit.filamat";
-  //String texturedMat = "assets/materials/lit.filamat";
-
+  ////////////////////////////////////////////////////////////////////////
   @override
   void initState() {
-    //log('Allen initstate 1 ');
-    logToStdOutAndFlush('InitState');
-
     super.initState();
-
-    // const oneSec = Duration(seconds: 1);
-    // const fiveSec = Duration(seconds: 5);
-    // Timer.periodic(
-    //   oneSec,
-    //   (Timer t) {
-    //     logToStdOutAndFlush('Duration Hit');
-
-    //     // will trigger a full rebuild, but doesnt draw
-    //     // setState(() {});
-    //   },
-    // );
-
-    // Timer.periodic(
-    //   fiveSec,
-    //   (Timer t) {
-    //     showloading = false;
-
-    //     // triggers rebuild
-    //     // setState(() {});
-    //   },
-    // );
   }
 
+  ////////////////////////////////////////////////////////////////////////
   void logToStdOutAndFlush(String strOut) {
     DateTime now = DateTime.now();
-    stdout.write('ALLEN DART : $strOut: $now\n');
-    //stdout.flush();
+    stdout.write('DART : $strOut: $now\n');
   }
 
+  ////////////////////////////////////////////////////////////////////////
+  void _updateIntensityFromText(String text, bool isDirectLight) {
+    try {
+      int intensity = int.parse(text);
+      setState(() {
+        if (isDirectLight) {
+          m_poController.changeDirectLightValuesByIndex(0, _DirectLightColor, intensity);
+        } else {
+          //m_poController.changeIndirectLightValuesByIndex(1, _IndirectLightColor, intensity);
+        }
+      });
+    } catch (e) {
+      // Handle invalid intensity value
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  TextStyle getTextStyle() {
+    return TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+      shadows: [
+        Shadow(
+          offset: Offset(-1.5, -1.5),
+          color: Colors.white,
+        ),
+        Shadow(
+          offset: Offset(1.5, -1.5),
+          color: Colors.white,
+        ),
+        Shadow(
+          offset: Offset(1.5, 1.5),
+          color: Colors.white,
+        ),
+        Shadow(
+          offset: Offset(-1.5, 1.5),
+          color: Colors.white,
+        ),
+      ],
+    );
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     logToStdOutAndFlush('building Widget');
 
     return MaterialApp(
       home: Scaffold(
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     // Action to perform when the button is pressed
-        //     //stdout.write('button pressed');
-        //     setState(() {});
-
-        //     //reassemble();
-
-        //     //_updatePlayxScene();
-        //     //_updateWidget(null);
-        //   },
-        //   //tooltip: 'Increment', // Tooltip text when long pressed
-        //   child: Icon(Icons.add), // Icon to display
-        // ),
-
         backgroundColor: Colors.black.withOpacity(0.0),
-
-        // body: Stack(
-        //   children: [
-        //     CustomPaint(
-        //       painter: MyCustomPainter(),
-        //       child: Container(), // Container to set the size of the canvas
-        //     ),
-        //     poGetPlayx3dScene(),
-        //   ],
-        // ),
-
-        // body: Stack(
-        //   children: [
-        //     showloading
-        //         ? const Center(
-        //             child: CircularProgressIndicator(
-        //               color: Colors.pink,
-        //             ),
-        //           )
-        //         : Container(),
-        //     poGetPlayx3dScene(),
-        //   ],
-        // ),
-
         body: Stack(
           children: [
             poGetPlayx3dScene(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Direct Light',
+                      style: getTextStyle(),
+                    ),
+                    Container(
+                      width: 100,
+                      child: ColorPicker(
+                        colorPickerWidth: 100,
+                        pickerColor: _DirectLightColor,
+                        onColorChanged: (Color color) {
+                          setState(() {
+                            _DirectLightColor = color;
+                            m_poController.changeDirectLightValuesByIndex(0, _DirectLightColor, _directIntensity.toInt());
+                          });
+                        },
+                        showLabel: false,
+                        pickerAreaHeightPercent: 1.0,
+                        enableAlpha: false,
+                        displayThumbColor: false,
+                        portraitOnly: true,
+                        paletteType: PaletteType.hueWheel,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      width: 150,
+                      child: Column(
+                        children: [
+                          Text('Intensity', style: getTextStyle()),
+                          Slider(
+                            value: _directIntensity,
+                            min: _minIntensity,
+                            max: _maxIntensity,
+                            onChanged: (double value) {
+                              setState(() {
+                                _directIntensity = value;
+                                m_poController.changeDirectLightValuesByIndex(0, _DirectLightColor, _directIntensity.toInt());
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Positioned(
+              bottom: 50,
+              left: 0,
+              right: 0,
+              child: Column(
+                children: [
+                  Text(
+                    'Camera Rotation',
+                    style: getTextStyle(),
+                  ),
+                  Slider(
+                    value: _cameraRotation,
+                    min: 0,
+                    max: 360000,
+                    onChanged: (double value) {
+                      setState(() {
+                        _cameraRotation = value;
+                          m_poController.setCameraRotation(_cameraRotation / 1000);
+                      });
+                    },
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(width: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _autoRotate = !_autoRotate;
+                            m_poController.toggleCameraAutoRotate(_autoRotate);
+                          });
+                        },
+                        child: Text(_autoRotate ? 'Toggle Rotate: On' : 'Toggle Rotate: Off'),
+                      ),
+                      SizedBox(width: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _toggleShapes = !_toggleShapes;
+                            m_poController.toggleShapesInScene(_toggleShapes);
+                          });
+                        },
+                        child: Text(_toggleShapes ? 'Toggle Shapes: On' : 'Toggle Shapes: Off'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-
-        //body: poGetPlayx3dScene(),
       ),
     );
   }
 
-  static const String foxAsset = "assets/models/Fox.glb";
-  static const String helmetAsset = "assets/models/DamagedHelmet.glb";
-  static const String sequoiaAsset = "assets/models/sequoia.glb";
-  static const String garageAsset = "assets/models/garagescene.glb";
-
+  ////////////////////////////////////////////////////////////////////////
   GlbModel poGetModel(String szAsset, double _x, double _y, double _z, double _scale) {
     
     return GlbModel.asset(
@@ -178,13 +238,14 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  ////////////////////////////////////////////////////////////////////////
   Scene poGetScene() {
     return Scene(
-      //skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
-      //indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
-      // skybox: ColoredSkybox(color: Colors.white),
-      // indirectLight: DefaultIndirectLight(
-      //     intensity: 30000, // indirect light intensity.
+      skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
+      indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
+      //skybox: ColoredSkybox(color: Colors.red),
+      // indirectLight: DefaultIndirectLight(        
+      //     intensity: 1000000, // indirect light intensity.
       //     radianceBands: 1, // Number of spherical harmonics bands.
       //     radianceSh: [
       //       1,
@@ -198,23 +259,33 @@ class _MyAppState extends State<MyApp> {
       //       1
       //     ] // Array containing the spherical harmonics coefficients.
       //     ),
+
+      // Note point lights seem to only value intensity at a high
+      // range 30000000, for a 3 meter diameter of a circle, not caring about
+      // falloffradius
+      //
+      // Note for Spot lights you must specify a direction != 0,0,0
       light: Light(
-          type: LightType.directional,
-          colorTemperature: 6500,
-          intensity: 15000,
+          type: LightType.point,
+          colorTemperature: 36500,
+          color: _DirectLightColor,
+          intensity: _directIntensity,
           castShadows: false,
           castLight: true,
+          spotLightConeInner: 1,
+          spotLightConeOuter: 10,
+          falloffRadius: 300.1, // what base is this in? meters?
           position: PlayxPosition(x: 0, y: 3, z: 0),
-          direction: PlayxDirection(x: 0, y: -1, z: 0)),
+          // should be a unit vector
+          direction: PlayxDirection(x: 0, y: 1, z: 0)),
       //ground: poGetGround(),      
       camera: Camera.freeFlight(
         exposure: Exposure.formAperture(
-          aperture: 16.0,
+          aperture: 24.0,
           shutterSpeed: 1 / 60,
           sensitivity: 150,
         ),
         targetPosition: PlayxPosition(x: 0.0, y: 0.0, z: 0.0),
-        //orbitHomePosition: PlayxPosition(x: 0.0, y: 1.0, z: 1.0),
         upVector: PlayxPosition(x: 0.0, y: 1.0, z: 0.0),
       ),
     );
@@ -393,9 +464,10 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
   List<Shape> poCreateLineGrid() {
     List<Shape> itemsToReturn = [];
-    int idIter = 20;
+    int idIter = 40;
     for (double i = -10; i <= 10; i+=2) {
       for (int j = 0; j < 1; j++) {
         for (double k = -10; k <= 10; k += 2) {
@@ -416,11 +488,11 @@ class _MyAppState extends State<MyApp> {
 
   ////////////////////////////////////////////////////////////////////////////////
   List<Shape> poGetScenesShapes() {
-    //return poCreateLineGrid();
+    return poCreateLineGrid();
 
-    List<Shape> itemsToReturn = [];
-    itemsToReturn.add(poCreateCube(0,0,0,0,0,0,0, null));
-    return itemsToReturn;
+    // List<Shape> itemsToReturn = [];
+    // itemsToReturn.add(poCreateCube(0,0,0,0,0,0,0, null));
+    // return itemsToReturn;
 
     // Random random = Random();
 
@@ -447,9 +519,9 @@ class _MyAppState extends State<MyApp> {
   ////////////////////////////////////////////////////////////////////////////////
   List<Model> poGetModelList() {
     List<Model> itemsToReturn = [];
+    //itemsToReturn.add(poGetModel(foxAsset, 0,0,-14.77, .1));
     itemsToReturn.add(poGetModel(sequoiaAsset, 0,0,-14.77, 1));
     itemsToReturn.add(poGetModel(garageAsset, 0,0,-16, 1));
-    //itemsToReturn.add(poGetModel(foxAsset, -5,0,0, .01));
     //itemsToReturn.add(poGetModel(helmetAsset, 5,0,0, .1));
     return itemsToReturn;
   }
@@ -464,98 +536,38 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
   Playx3dScene poGetPlayx3dScene() {
     return Playx3dScene(
       models: poGetModelList(),
       scene: poGetScene(),
       shapes: poGetScenesShapes(),
-      // shapes: [
-      //           Cube(
-      //             id: 1,
-      //             length: .5,
-      //             centerPosition: PlayxPosition(x: -3, y: 0, z: 0),
-      //             material: PlayxMaterial.asset(
-      //               "assets/materials/textured_pbr.filamat",
-      //               parameters: [
-      //                 MaterialParameter.texture(
-      //                   value: PlayxTexture.asset(
-      //                     "assets/materials/texture/floor_basecolor.png",
-      //                     type: TextureType.color,
-      //                     sampler: PlayxTextureSampler(anisotropy: 8),
-      //                   ),
-      //                   name: "baseColor",
-      //                 ),
-      //                 MaterialParameter.texture(
-      //                   value: PlayxTexture.asset(
-      //                     "assets/materials/texture/floor_normal.png",
-      //                     type: TextureType.normal,
-      //                     sampler: PlayxTextureSampler(anisotropy: 8),
-      //                   ),
-      //                   name: "normal",
-      //                 ),
-      //                 MaterialParameter.texture(
-      //                   value: PlayxTexture.asset(
-      //                     "assets/materials/texture/floor_ao_roughness_metallic.png",
-      //                     type: TextureType.data,
-      //                     sampler: PlayxTextureSampler(anisotropy: 8),
-      //                   ),
-      //                   name: "aoRoughnessMetallic",
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //           Sphere(
-      //             id: 2,
-      //             centerPosition: PlayxPosition(x: 3, y: 0, z: 0),
-      //             radius: .5,
-      //             material: PlayxMaterial.asset(
-      //               "assets/materials/textured_pbr.filamat",
-      //               parameters: [
-      //                 MaterialParameter.texture(
-      //                   value: PlayxTexture.asset(
-      //                     "assets/materials/texture/floor_basecolor.png",
-      //                     type: TextureType.color,
-      //                     sampler: PlayxTextureSampler(anisotropy: 8),
-      //                   ),
-      //                   name: "baseColor",
-      //                 ),
-      //                 MaterialParameter.texture(
-      //                   value: PlayxTexture.asset(
-      //                     "assets/materials/texture/floor_normal.png",
-      //                     type: TextureType.normal,
-      //                     sampler: PlayxTextureSampler(anisotropy: 8),
-      //                   ),
-      //                   name: "normal",
-      //                 ),
-      //                 MaterialParameter.texture(
-      //                   value: PlayxTexture.asset(
-      //                     "assets/materials/texture/floor_ao_roughness_metallic.png",
-      //                     type: TextureType.data,
-      //                     sampler: PlayxTextureSampler(anisotropy: 8),
-      //                   ),
-      //                   name: "aoRoughnessMetallic",
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      // ],
       onCreated: (Playx3dSceneController controller) async {
+
+        m_poController = controller;
+
         logToStdOutAndFlush('poGetPlayx3dScene onCreated');
-        //controller.updateScene();
+
         return;
-        Future.delayed(const Duration(seconds: 5), () async {
-          Result<int?> result = await controller.changeAnimationByIndex(1);
+        //controller.updateScene();
 
-          logToStdOutAndFlush(
-              'poGetPlayx3dScene result: $isModelLoading : $isSceneLoading : $isSceneLoading');
+      // Future.delayed(const Duration(seconds: 5), () async {
+      //     Result<int?> result = await controller.changeLightValuesByIndex(1, Colors.blue, 300000000);
+      //     Result<int?> result2 = await controller.changeAnimationByIndex(1);
 
-          if (result.isSuccess()) {
-            final data = result.data;
-            logToStdOutAndFlush("success :$data");
-          } else {
-            logToStdOutAndFlush('else message :$result.message');
-          }
-        });
+      //     logToStdOutAndFlush(
+      //         'poGetPlayx3dScene result: $isModelLoading : $isSceneLoading : $isSceneLoading');
+
+      //     if (result.isSuccess()) {
+      //       final data = result.data;
+      //       logToStdOutAndFlush("success :$data");
+      //     } else {
+      //       logToStdOutAndFlush('else message :$result.message');
+      //     }
+      //   });
+
+      //   return;
+        
       },
       onModelStateChanged: (state) {
         logToStdOutAndFlush('poGetPlayx3dScene onModelStateChanged: $state');

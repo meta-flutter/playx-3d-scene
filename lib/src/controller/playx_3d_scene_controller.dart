@@ -61,6 +61,48 @@ class Playx3dSceneController {
     return _handleError(data);
   }
 
+  Future<Result<int>> changeDirectLightValuesByIndex(int? index, Color? color, int? intensity) {
+    final data = _channel.invokeMethod<int>(
+      _changeDirectLightColorByIndex,
+      {
+        _changeDirectLightColorByIndexKey: index,
+        _changeDirectLightColorByIndexColor: color?.toHex(),
+        _changeDirectLightColorByIndexIntensity: intensity
+      },
+    );
+    return _handleError(data);
+  }
+
+  Future<Result<int>> toggleShapesInScene(bool value) {
+    final data = _channel.invokeMethod<int>(
+      _toggleShapesInScene,
+      {
+        _toggleShapesInSceneValue: value,
+      },
+    );
+    return _handleError(data);
+  }
+
+  Future<Result<int>> toggleCameraAutoRotate(bool value) {
+    final data = _channel.invokeMethod<int>(
+      _toggleCameraAutoRotate,
+      {
+        _toggleCameraAutoRotateValue: value,
+      },
+    );
+    return _handleError(data);
+  }
+
+  Future<Result<int>> setCameraRotation(double fValue) {
+    final data = _channel.invokeMethod<int>(
+      _changeCameraRotation,
+      {
+        _changeCameraRotationValue: fValue,
+      },
+    );
+    return _handleError(data);
+  }
+
   //animation
   /// Updates the current animation by index.
   /// Returns  the updated animation index.
@@ -693,6 +735,20 @@ const String _updatePlayx3dScene = "UPDATE_PLAYX_3D_SCENE";
 const String _updatePlayx3dSceneSceneKey = "UPDATE_PLAYX_3D_SCENE_SCENE_KEY";
 const String _updatePlayx3dSceneModelKey = "UPDATE_PLAYX_3D_SCENE_MODEL_KEY";
 const String _updatePlayx3dSceneShapesKey = "UPDATE_PLAYX_3D_SCENE_SHAPES_KEY";
+
+const String _changeDirectLightColorByIndex = "CHANGE_DIRECT_LIGHT_COLOR_BY_INDEX";
+const String _changeDirectLightColorByIndexKey = "CHANGE_DIRECT_LIGHT_COLOR_BY_INDEX_KEY";
+const String _changeDirectLightColorByIndexColor = "CHANGE_DIRECT_LIGHT_COLOR_BY_INDEX_COLOR";
+const String _changeDirectLightColorByIndexIntensity = "CHANGE_DIRECT_LIGHT_COLOR_BY_INDEX_INTENSITY";
+
+const String _toggleShapesInScene = "TOGGLE_SHAPES_IN_SCENE";
+const String _toggleShapesInSceneValue = "TOGGLE_SHAPES_IN_SCENE_VALUE";
+
+const String _toggleCameraAutoRotate = "TOGGLE_CAMERA_AUTO_ROTATE";
+const String _toggleCameraAutoRotateValue = "TOGGLE_CAMERA_AUTO_ROTATE_VALUE";
+
+const String _changeCameraRotation = "ROTATE_CAMERA";
+const String _changeCameraRotationValue = "ROTATE_CAMERA_VALUE";
 
 const String _changeAnimationByIndex = "CHANGE_ANIMATION_BY_INDEX";
 const String _changeAnimationByIndexKey = "CHANGE_ANIMATION_BY_INDEX_KEY";
