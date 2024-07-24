@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  void logToStdOutAndFlush(String strOut) {
+  void logToStdOut(String strOut) {
     DateTime now = DateTime.now();
     stdout.write('DART : $strOut: $now\n');
   }
@@ -528,11 +528,7 @@ class _MyAppState extends State<MyApp> {
 
   ////////////////////////////////////////////////////////////////////////////////
   void vOnEachFrameRender(num? frameTimeNano) {
-    //logToStdOutAndFlush('vOnEachFrameRender');
-    //stdout.flush();
-
     if (frameTimeNano != null) {
-      // log('Frame time: $frameTimeNano');
     }
   }
 
@@ -544,49 +540,27 @@ class _MyAppState extends State<MyApp> {
       shapes: poGetScenesShapes(),
       onCreated: (Playx3dSceneController controller) async {
 
+        // we'll save the controller so we can send messages
+        // from the UI / 'gameplay' in the future.
         m_poController = controller;
 
-        logToStdOutAndFlush('poGetPlayx3dScene onCreated');
-
+        logToStdOut('poGetPlayx3dScene onCreated');
         return;
-        //controller.updateScene();
-
-      // Future.delayed(const Duration(seconds: 5), () async {
-      //     Result<int?> result = await controller.changeLightValuesByIndex(1, Colors.blue, 300000000);
-      //     Result<int?> result2 = await controller.changeAnimationByIndex(1);
-
-      //     logToStdOutAndFlush(
-      //         'poGetPlayx3dScene result: $isModelLoading : $isSceneLoading : $isSceneLoading');
-
-      //     if (result.isSuccess()) {
-      //       final data = result.data;
-      //       logToStdOutAndFlush("success :$data");
-      //     } else {
-      //       logToStdOutAndFlush('else message :$result.message');
-      //     }
-      //   });
-
-      //   return;
-        
       },
       onModelStateChanged: (state) {
-        logToStdOutAndFlush('poGetPlayx3dScene onModelStateChanged: $state');
+        logToStdOut('poGetPlayx3dScene onModelStateChanged: $state');
         setState(() {
           isModelLoading = state == ModelState.loading;
         });
       },
       onSceneStateChanged: (state) {
-        logToStdOutAndFlush('poGetPlayx3dScene onSceneStateChanged: $state');
-
-        //print('Playx3dSceneController: onSceneStateChanged: $state');
+        logToStdOut('poGetPlayx3dScene onSceneStateChanged: $state');
         setState(() {
           isSceneLoading = state == SceneState.loading;
         });
       },
       onShapeStateChanged: (state) {
-        logToStdOutAndFlush('poGetPlayx3dScene onShapeStateChanged: $state');
-
-        //print('Playx3dSceneController: onShapeStateChanged: $state');
+        logToStdOut('poGetPlayx3dScene onShapeStateChanged: $state');
         setState(() {
           isShapeLoading = state == ShapeState.loading;
         });
