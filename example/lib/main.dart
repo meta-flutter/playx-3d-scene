@@ -10,8 +10,10 @@ void main() {
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.presentError(details);
 
-    stdout.write('Global error caught exception: ${details.exception}');
-    stdout.write('Global error caught stack: ${details.stack}');
+
+    // If debugging and curious uncomment.
+    // stdout.write('Global error caught exception: ${details.exception}');
+    // stdout.write('Global error caught stack: ${details.stack}');
   };
 
   runZonedGuarded<Future<void>>(() async {
