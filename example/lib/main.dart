@@ -112,8 +112,6 @@ class _MyAppState extends State<MyApp> {
   ////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
-    logToStdOut('building Widget');
-
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.black.withOpacity(0.0),
@@ -186,11 +184,11 @@ class _MyAppState extends State<MyApp> {
                   Slider(
                     value: _cameraRotation,
                     min: 0,
-                    max: 360000,
+                    max: 600,
                     onChanged: (double value) {
                       setState(() {
                         _cameraRotation = value;
-                          m_poController.setCameraRotation(_cameraRotation / 1000);
+                          m_poController.setCameraRotation(_cameraRotation / 100);
                       });
                     },
                   ),
