@@ -32,3 +32,4 @@ example/.desktop-homescreen/data/flutter_assets
 example/.desktop-homescreen/data/icudtl.dat
 example/.desktop-homescreen/default_config.json
 example/.desktop-homescreen/lib/libflutter_engine.so
+example/.desktop-homescreen/config.toml
