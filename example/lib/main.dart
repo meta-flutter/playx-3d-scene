@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
   final double _minIntensity = 10000000;
   final double _maxIntensity = 300000000;
   double _cameraRotation = 0;
-  bool _autoRotate = false;
+  bool _autoRotate = true;
   bool _toggleShapes = true;
 
   static const String litMat = "assets/materials/lit.filamat";
