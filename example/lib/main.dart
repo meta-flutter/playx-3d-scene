@@ -10,7 +10,6 @@ void main() {
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.presentError(details);
 
-
     // If debugging and curious uncomment.
     // stdout.write('Global error caught exception: ${details.exception}');
     // stdout.write('Global error caught stack: ${details.stack}');
@@ -72,7 +71,8 @@ class _MyAppState extends State<MyApp> {
       int intensity = int.parse(text);
       setState(() {
         if (isDirectLight) {
-          m_poController.changeDirectLightValuesByIndex(0, _DirectLightColor, intensity);
+          m_poController.changeDirectLightValuesByIndex(
+              0, _DirectLightColor, intensity);
         } else {
           //m_poController.changeIndirectLightValuesByIndex(1, _IndirectLightColor, intensity);
         }
@@ -136,7 +136,8 @@ class _MyAppState extends State<MyApp> {
                         onColorChanged: (Color color) {
                           setState(() {
                             _DirectLightColor = color;
-                            m_poController.changeDirectLightValuesByIndex(0, _DirectLightColor, _directIntensity.toInt());
+                            m_poController.changeDirectLightValuesByIndex(
+                                0, _DirectLightColor, _directIntensity.toInt());
                           });
                         },
                         showLabel: false,
@@ -160,7 +161,10 @@ class _MyAppState extends State<MyApp> {
                             onChanged: (double value) {
                               setState(() {
                                 _directIntensity = value;
-                                m_poController.changeDirectLightValuesByIndex(0, _DirectLightColor, _directIntensity.toInt());
+                                m_poController.changeDirectLightValuesByIndex(
+                                    0,
+                                    _DirectLightColor,
+                                    _directIntensity.toInt());
                               });
                             },
                           ),
@@ -188,7 +192,7 @@ class _MyAppState extends State<MyApp> {
                     onChanged: (double value) {
                       setState(() {
                         _cameraRotation = value;
-                          m_poController.setCameraRotation(_cameraRotation / 100);
+                        m_poController.setCameraRotation(_cameraRotation / 100);
                       });
                     },
                   ),
@@ -203,7 +207,9 @@ class _MyAppState extends State<MyApp> {
                             m_poController.toggleCameraAutoRotate(_autoRotate);
                           });
                         },
-                        child: Text(_autoRotate ? 'Toggle Rotate: On' : 'Toggle Rotate: Off'),
+                        child: Text(_autoRotate
+                            ? 'Toggle Rotate: On'
+                            : 'Toggle Rotate: Off'),
                       ),
                       SizedBox(width: 20),
                       ElevatedButton(
@@ -213,7 +219,9 @@ class _MyAppState extends State<MyApp> {
                             m_poController.toggleShapesInScene(_toggleShapes);
                           });
                         },
-                        child: Text(_toggleShapes ? 'Toggle Shapes: On' : 'Toggle Shapes: Off'),
+                        child: Text(_toggleShapes
+                            ? 'Toggle Shapes: On'
+                            : 'Toggle Shapes: Off'),
                       ),
                     ],
                   ),
@@ -227,8 +235,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  GlbModel poGetModel(String szAsset, double _x, double _y, double _z, double _scale) {
-    
+  GlbModel poGetModel(
+      String szAsset, double _x, double _y, double _z, double _scale) {
     return GlbModel.asset(
       szAsset,
       //animation: PlayxAnimation.byIndex(0, autoPlay: false),
@@ -244,7 +252,7 @@ class _MyAppState extends State<MyApp> {
       skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
       indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
       //skybox: ColoredSkybox(color: Colors.red),
-      // indirectLight: DefaultIndirectLight(        
+      // indirectLight: DefaultIndirectLight(
       //     intensity: 1000000, // indirect light intensity.
       //     radianceBands: 1, // Number of spherical harmonics bands.
       //     radianceSh: [
@@ -278,7 +286,7 @@ class _MyAppState extends State<MyApp> {
           position: PlayxPosition(x: 0, y: 3, z: 0),
           // should be a unit vector
           direction: PlayxDirection(x: 0, y: 1, z: 0)),
-      //ground: poGetGround(),      
+      //ground: poGetGround(),
       camera: Camera.freeFlight(
         exposure: Exposure.formAperture(
           aperture: 24.0,
@@ -292,43 +300,42 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  Ground poGetGround()
-  {
+  Ground poGetGround() {
     return Ground(
-        width: 30.0,
-        height: 30.0,
-        isBelowModel: true,
-        normal: PlayxDirection.y(1.0),
-        material: PlayxMaterial.asset(
-          texturedMat,
-          parameters: [
-            MaterialParameter.texture(
-              value: PlayxTexture.asset(
-                "assets/materials/texture/floor_basecolor.png",
-                type: TextureType.color,
-                sampler: PlayxTextureSampler(anisotropy: 8),
-              ),
-              name: "baseColor",
+      width: 30.0,
+      height: 30.0,
+      isBelowModel: true,
+      normal: PlayxDirection.y(1.0),
+      material: PlayxMaterial.asset(
+        texturedMat,
+        parameters: [
+          MaterialParameter.texture(
+            value: PlayxTexture.asset(
+              "assets/materials/texture/floor_basecolor.png",
+              type: TextureType.color,
+              sampler: PlayxTextureSampler(anisotropy: 8),
             ),
-            MaterialParameter.texture(
-              value: PlayxTexture.asset(
-                "assets/materials/texture/floor_normal.png",
-                type: TextureType.normal,
-                sampler: PlayxTextureSampler(anisotropy: 8),
-              ),
-              name: "normal",
+            name: "baseColor",
+          ),
+          MaterialParameter.texture(
+            value: PlayxTexture.asset(
+              "assets/materials/texture/floor_normal.png",
+              type: TextureType.normal,
+              sampler: PlayxTextureSampler(anisotropy: 8),
             ),
-            MaterialParameter.texture(
-              value: PlayxTexture.asset(
-                "assets/materials/texture/floor_ao_roughness_metallic.png",
-                type: TextureType.data,
-                sampler: PlayxTextureSampler(anisotropy: 8),
-              ),
-              name: "aoRoughnessMetallic",
+            name: "normal",
+          ),
+          MaterialParameter.texture(
+            value: PlayxTexture.asset(
+              "assets/materials/texture/floor_ao_roughness_metallic.png",
+              type: TextureType.data,
+              sampler: PlayxTextureSampler(anisotropy: 8),
             ),
-          ],
-        ),
-      );
+            name: "aoRoughnessMetallic",
+          ),
+        ],
+      ),
+    );
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -339,7 +346,9 @@ class _MyAppState extends State<MyApp> {
       //but if we want to customize it we can like that.
       parameters: [
         //update base color property with color
-        MaterialParameter.color(color: colorOveride != null ? colorOveride: Colors.white, name: "baseColor"),
+        MaterialParameter.color(
+            color: colorOveride != null ? colorOveride : Colors.white,
+            name: "baseColor"),
         //update roughness property with it's value
         MaterialParameter.float(value: .8, name: "roughness"),
         //update metallicproperty with it's value
@@ -351,12 +360,12 @@ class _MyAppState extends State<MyApp> {
   ////////////////////////////////////////////////////////////////////////
   Color getTrueRandomColor() {
     Random random = Random();
-    
+
     // Generate random values for red, green, and blue channels
     int red = random.nextInt(256);
     int green = random.nextInt(256);
     int blue = random.nextInt(256);
-    
+
     // Create and return a Color object
     return Color.fromARGB(255, red, green, blue);
   }
@@ -383,7 +392,7 @@ class _MyAppState extends State<MyApp> {
       Colors.deepOrange,
       Colors.brown,
       Colors.grey,
-      Colors.blueGrey,      
+      Colors.blueGrey,
     ];
 
     // Create a random instance
@@ -395,7 +404,6 @@ class _MyAppState extends State<MyApp> {
 
   ////////////////////////////////////////////////////////////////////////////////
   PlayxMaterial poGetBaseMaterialWithRandomValues() {
-    
     Random random = Random();
 
     return PlayxMaterial.asset(
@@ -404,7 +412,8 @@ class _MyAppState extends State<MyApp> {
       //but if we want to customize it we can like that.
       parameters: [
         //update base color property with color
-        MaterialParameter.color(color: getRandomPresetColor(), name: "baseColor"),
+        MaterialParameter.color(
+            color: getRandomPresetColor(), name: "baseColor"),
         //update roughness property with it's value
         MaterialParameter.float(value: random.nextDouble(), name: "roughness"),
         //update metallicproperty with it's value
@@ -443,14 +452,23 @@ class _MyAppState extends State<MyApp> {
   // }
 
   ////////////////////////////////////////////////////////////////////////////////
-  Shape poCreateCube(double _x, double _y, double _z, int idToSet,
-  double _extentsX, double _extentsY, double _extentsZ, Color? colorOveride) {
+  Shape poCreateCube(
+      double _x,
+      double _y,
+      double _z,
+      int idToSet,
+      double _extentsX,
+      double _extentsY,
+      double _extentsZ,
+      Color? colorOveride) {
     return Cube(
       id: idToSet,
       size: PlayxSize(x: _extentsX, y: _extentsY, z: _extentsZ),
       centerPosition: PlayxPosition(x: _x, y: _y, z: _z),
       //material: poGetBaseMaterial(),
-      material: colorOveride != null ? poGetBaseMaterial(colorOveride) : poGetBaseMaterialWithRandomValues(),
+      material: colorOveride != null
+          ? poGetBaseMaterial(colorOveride)
+          : poGetBaseMaterialWithRandomValues(),
     );
   }
 
@@ -468,17 +486,11 @@ class _MyAppState extends State<MyApp> {
   List<Shape> poCreateLineGrid() {
     List<Shape> itemsToReturn = [];
     int idIter = 40;
-    for (double i = -10; i <= 10; i+=2) {
+    for (double i = -10; i <= 10; i += 2) {
       for (int j = 0; j < 1; j++) {
         for (double k = -10; k <= 10; k += 2) {
-          itemsToReturn.add(poCreateCube( i 
-          , 0
-          , k 
-          , idIter++,
-          .1,
-          .1,
-          .1
-          , Colors.red));
+          itemsToReturn
+              .add(poCreateCube(i, 0, k, idIter++, .1, .1, .1, Colors.red));
         }
       }
     }
@@ -488,11 +500,11 @@ class _MyAppState extends State<MyApp> {
 
   ////////////////////////////////////////////////////////////////////////////////
   List<Shape> poGetScenesShapes() {
-    return poCreateLineGrid();
+    //return poCreateLineGrid();
 
-    // List<Shape> itemsToReturn = [];
-    // itemsToReturn.add(poCreateCube(0,0,0,0,0,0,0, null));
-    // return itemsToReturn;
+    List<Shape> itemsToReturn = [];
+    itemsToReturn.add(poCreateCube(3, 1, 3, 0, 0, 0, 0, null));
+    return itemsToReturn;
 
     // Random random = Random();
 
@@ -520,16 +532,15 @@ class _MyAppState extends State<MyApp> {
   List<Model> poGetModelList() {
     List<Model> itemsToReturn = [];
     //itemsToReturn.add(poGetModel(foxAsset, 0,0,-14.77, .1));
-    itemsToReturn.add(poGetModel(sequoiaAsset, 0,0,-14.77, 1));
-    itemsToReturn.add(poGetModel(garageAsset, 0,0,-16, 1));
+    itemsToReturn.add(poGetModel(sequoiaAsset, 0, 0, -14.77, 1));
+    itemsToReturn.add(poGetModel(garageAsset, 0, 0, -16, 1));
     //itemsToReturn.add(poGetModel(helmetAsset, 5,0,0, .1));
     return itemsToReturn;
   }
 
   ////////////////////////////////////////////////////////////////////////////////
   void vOnEachFrameRender(num? frameTimeNano) {
-    if (frameTimeNano != null) {
-    }
+    if (frameTimeNano != null) {}
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -539,7 +550,6 @@ class _MyAppState extends State<MyApp> {
       scene: poGetScene(),
       shapes: poGetScenesShapes(),
       onCreated: (Playx3dSceneController controller) async {
-
         // we'll save the controller so we can send messages
         // from the UI / 'gameplay' in the future.
         m_poController = controller;
