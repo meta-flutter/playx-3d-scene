@@ -24,14 +24,39 @@ class Shape {
   /// material to be used for the shape.
   PlayxMaterial? material;
 
-  Shape({required this.id, this.centerPosition, this.normal, this.material});
+  /// When creating geometry if its inside and out, or only
+  /// outward facing
+  bool doubleSided;
+
+  /// Variables for filament renderer upon shape creation
+  bool cullingEnabled;
+
+  /// Variables for filament renderer upon shape creation
+  bool receiveShadows;
+
+  /// Variables for filament renderer upon shape creation
+  bool castShadows;
+
+  Shape(
+      {required this.id,
+      this.centerPosition,
+      this.normal,
+      this.material,
+      this.doubleSided = false,
+      this.cullingEnabled = true,
+      this.castShadows = false,
+      this.receiveShadows = false});
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'centerPosition': centerPosition?.toJson(),
         'normal': normal?.toJson(),
         'material': material?.toJson(),
-        'type': 0
+        'type': 0,
+        'doubleSided': doubleSided,
+        'cullingEnabled': cullingEnabled,
+        'receiveShadows': receiveShadows,
+        'castShadows': castShadows
       };
 
   @override

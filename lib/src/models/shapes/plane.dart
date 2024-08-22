@@ -15,7 +15,8 @@ class Plane extends Shape {
       required this.size,
       required super.centerPosition,
       super.normal,
-      super.material});
+      super.material,
+      super.doubleSided});
 
   @override
   Map<String, dynamic> toJson() => {
@@ -24,7 +25,11 @@ class Plane extends Shape {
         'normal': normal?.toJson(),
         'size': size.toJson(),
         'material': material?.toJson(),
-        'shapeType': 1
+        'shapeType': 1,
+        'doubleSided': doubleSided,
+        'cullingEnabled': cullingEnabled,
+        'receiveShadows': receiveShadows,
+        'castShadows': castShadows
       };
 
   @override

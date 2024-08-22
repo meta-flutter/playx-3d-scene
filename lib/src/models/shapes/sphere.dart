@@ -1,3 +1,4 @@
+import 'package:playx_3d_scene/src/models/scene/geometry/size.dart';
 import 'package:playx_3d_scene/src/models/shapes/shape.dart';
 
 /// An object that represents a cube shape to be rendered.
@@ -11,6 +12,9 @@ class Sphere extends Shape {
   ///The number of slices for the sphere.
   int? slices;
 
+  // this ends up becoming the scaled size
+  PlayxSize size;
+
   Sphere(
       {required super.id,
       required super.centerPosition,
@@ -18,18 +22,28 @@ class Sphere extends Shape {
       this.stacks,
       this.slices,
       super.normal,
-      super.material});
+      super.material,
+      required this.size,
+      super.doubleSided,
+      super.castShadows,
+      super.receiveShadows,
+      super.cullingEnabled});
 
   @override
   Map<String, dynamic> toJson() => {
         'id': id,
         'centerPosition': centerPosition?.toJson(),
         'normal': normal?.toJson(),
+        'size': size.toJson(),
         'radius': radius,
         'stacks': stacks,
         'slices': slices,
         'material': material?.toJson(),
-        'shapeType': 3
+        'shapeType': 3,
+        'doubleSided': doubleSided,
+        'cullingEnabled': cullingEnabled,
+        'receiveShadows': receiveShadows,
+        'castShadows': castShadows
       };
 
   @override

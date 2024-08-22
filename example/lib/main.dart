@@ -286,7 +286,6 @@ class _MyAppState extends State<MyApp> {
           position: PlayxPosition(x: 0, y: 3, z: 0),
           // should be a unit vector
           direction: PlayxDirection(x: 0, y: 1, z: 0)),
-      //ground: poGetGround(),
       camera: Camera.freeFlight(
         exposure: Exposure.formAperture(
           aperture: 24.0,
@@ -295,45 +294,6 @@ class _MyAppState extends State<MyApp> {
         ),
         targetPosition: PlayxPosition(x: 0.0, y: 0.0, z: 0.0),
         upVector: PlayxPosition(x: 0.0, y: 1.0, z: 0.0),
-      ),
-    );
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  Ground poGetGround() {
-    return Ground(
-      width: 30.0,
-      height: 30.0,
-      isBelowModel: true,
-      normal: PlayxDirection.y(1.0),
-      material: PlayxMaterial.asset(
-        texturedMat,
-        parameters: [
-          MaterialParameter.texture(
-            value: PlayxTexture.asset(
-              "assets/materials/texture/floor_basecolor.png",
-              type: TextureType.color,
-              sampler: PlayxTextureSampler(anisotropy: 8),
-            ),
-            name: "baseColor",
-          ),
-          MaterialParameter.texture(
-            value: PlayxTexture.asset(
-              "assets/materials/texture/floor_normal.png",
-              type: TextureType.normal,
-              sampler: PlayxTextureSampler(anisotropy: 8),
-            ),
-            name: "normal",
-          ),
-          MaterialParameter.texture(
-            value: PlayxTexture.asset(
-              "assets/materials/texture/floor_ao_roughness_metallic.png",
-              type: TextureType.data,
-              sampler: PlayxTextureSampler(anisotropy: 8),
-            ),
-            name: "aoRoughnessMetallic",
-          ),
-        ],
       ),
     );
   }
@@ -473,13 +433,36 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  Shape poCreateShere(double _x, double _y, double _z, int idToSet) {
+  Shape poCreateSphere(
+      double _x,
+      double _y,
+      double _z,
+      int idToSet,
+      int stacks,
+      int slices,
+      double _extentsX,
+      double _extentsY,
+      double _extentsZ,
+      Color? colorOveride) {
     return Sphere(
-      id: idToSet,
-      radius: 1,
-      centerPosition: PlayxPosition(x: _x, y: _y, z: _z),
-      material: poGetBaseMaterial(null),
-    );
+        id: idToSet,
+        radius: 1,
+        centerPosition: PlayxPosition(x: _x, y: _y, z: _z),
+        material: poGetBaseMaterial(null),
+        stacks: stacks,
+        slices: slices,
+        size: PlayxSize(x: _extentsX, y: _extentsY, z: _extentsZ));
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  Shape poCreatePlane(double _x, double _y, double _z, double _extentsX,
+      double _extentsY, double _extentsZ, int idToSet) {
+    return Plane(
+        id: idToSet,
+        doubleSided: true,
+        size: PlayxSize(x: _extentsX, y: _extentsY, z: _extentsZ),
+        centerPosition: PlayxPosition(x: _x, y: _y, z: _z),
+        material: poGetBaseMaterial(null));
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -503,7 +486,19 @@ class _MyAppState extends State<MyApp> {
     //return poCreateLineGrid();
 
     List<Shape> itemsToReturn = [];
-    itemsToReturn.add(poCreateCube(3, 1, 3, 0, 0, 0, 0, null));
+    int idToSet = 10;
+    // itemsToReturn.add(poCreateCube(3, 1, 3, idToSet++, 1, 1, 1, null));
+    // itemsToReturn.add(poCreateCube(0, 1, 3, idToSet++, .1, 4, .1, null));
+    // itemsToReturn.add(poCreateCube(-3, 1, 3, idToSet++, .5, .5, .5, null));
+    // itemsToReturn
+    //     .add(poCreateSphere(3, 1, -3, idToSet++, 36, 18, 1, 1, 1, null));
+    // itemsToReturn
+    //     .add(poCreateSphere(0, 1, -3, idToSet++, 36, 18, 1, 1, 1, null));
+    // itemsToReturn
+    //     .add(poCreateSphere(0, 1.5, 0, idToSet++, 36, 18, 1, 1, 1, null));
+
+    itemsToReturn.add(poCreatePlane(0, 0.5, 0, 3, 1, 3, idToSet++));
+
     return itemsToReturn;
 
     // Random random = Random();
@@ -532,7 +527,7 @@ class _MyAppState extends State<MyApp> {
   List<Model> poGetModelList() {
     List<Model> itemsToReturn = [];
     //itemsToReturn.add(poGetModel(foxAsset, 0,0,-14.77, .1));
-    itemsToReturn.add(poGetModel(sequoiaAsset, 0, 0, -14.77, 1));
+    //itemsToReturn.add(poGetModel(sequoiaAsset, 0, 0, -14.77, 1));
     itemsToReturn.add(poGetModel(garageAsset, 0, 0, -16, 1));
     //itemsToReturn.add(poGetModel(helmetAsset, 5,0,0, .1));
     return itemsToReturn;
