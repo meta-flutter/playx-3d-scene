@@ -3,9 +3,6 @@ import 'package:playx_3d_scene/src/models/shapes/shape.dart';
 
 /// An object that represents a cube shape to be rendered.
 class Sphere extends Shape {
-  /// The radius of the constructed sphere.
-  double radius;
-
   ///The number of stacks for the sphere.
   int? stacks;
 
@@ -18,11 +15,12 @@ class Sphere extends Shape {
   Sphere(
       {required super.id,
       required super.centerPosition,
-      required this.radius,
       this.stacks,
       this.slices,
       super.normal,
       super.material,
+      super.scale,
+      super.rotation,
       required this.size,
       super.doubleSided,
       super.castShadows,
@@ -34,12 +32,13 @@ class Sphere extends Shape {
         'id': id,
         'centerPosition': centerPosition?.toJson(),
         'normal': normal?.toJson(),
+        'scale': scale?.toJson(),
         'size': size.toJson(),
-        'radius': radius,
         'stacks': stacks,
         'slices': slices,
         'material': material?.toJson(),
         'shapeType': 3,
+        'rotation': rotation?.toJson(),
         'doubleSided': doubleSided,
         'cullingEnabled': cullingEnabled,
         'receiveShadows': receiveShadows,
@@ -48,7 +47,7 @@ class Sphere extends Shape {
 
   @override
   String toString() {
-    return 'Sphere(id: $id, radius: $radius, centerPosition: $centerPosition)';
+    return 'Sphere(id: $id, centerPosition: $centerPosition)';
   }
 
   @override
@@ -56,13 +55,11 @@ class Sphere extends Shape {
     if (identical(this, other)) return true;
 
     return other is Sphere &&
-        other.radius == radius &&
         other.stacks == stacks &&
         other.slices == slices &&
         super == other;
   }
 
   @override
-  int get hashCode =>
-      radius.hashCode ^ stacks.hashCode ^ slices.hashCode ^ super.hashCode;
+  int get hashCode => stacks.hashCode ^ slices.hashCode ^ super.hashCode;
 }

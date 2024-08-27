@@ -1,6 +1,8 @@
 import 'package:playx_3d_scene/src/models/scene/geometry/direction.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/position.dart';
 import 'package:playx_3d_scene/src/models/scene/material/material.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/size.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/rotation.dart';
 import 'package:playx_3d_scene/src/models/shapes/cube.dart';
 import 'package:playx_3d_scene/src/models/shapes/plane.dart';
 import 'package:playx_3d_scene/src/models/shapes/sphere.dart';
@@ -18,11 +20,17 @@ class Shape {
   /// center position of the shape in the world space.
   PlayxPosition? centerPosition;
 
+  /// Scale of the shape
+  PlayxSize? scale;
+
   /// direction of the shape rotation in the world space
   PlayxDirection? normal;
 
   /// material to be used for the shape.
   PlayxMaterial? material;
+
+  /// Quaternion rotation for the shape
+  PlayxRotation? rotation;
 
   /// When creating geometry if its inside and out, or only
   /// outward facing
@@ -42,6 +50,8 @@ class Shape {
       this.centerPosition,
       this.normal,
       this.material,
+      this.scale,
+      this.rotation,
       this.doubleSided = false,
       this.cullingEnabled = true,
       this.castShadows = false,
@@ -52,6 +62,8 @@ class Shape {
         'centerPosition': centerPosition?.toJson(),
         'normal': normal?.toJson(),
         'material': material?.toJson(),
+        'scale': scale?.toJson(),
+        'rotation': rotation?.toJson(),
         'type': 0,
         'doubleSided': doubleSided,
         'cullingEnabled': cullingEnabled,
