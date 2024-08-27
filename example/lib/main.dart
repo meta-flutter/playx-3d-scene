@@ -249,7 +249,8 @@ class _MyAppState extends State<MyApp> {
   ////////////////////////////////////////////////////////////////////////
   Scene poGetScene() {
     return Scene(
-      skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
+      skybox: ColoredSkybox(color: Colors.black),
+      //skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
       indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
       //skybox: ColoredSkybox(color: Colors.red),
       // indirectLight: DefaultIndirectLight(
@@ -412,19 +413,13 @@ class _MyAppState extends State<MyApp> {
   // }
 
   ////////////////////////////////////////////////////////////////////////////////
-  Shape poCreateCube(
-      double _x,
-      double _y,
-      double _z,
-      int idToSet,
-      double _extentsX,
-      double _extentsY,
-      double _extentsZ,
-      Color? colorOveride) {
+  Shape poCreateCube(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
+      int idToSet, Color? colorOveride) {
     return Cube(
       id: idToSet,
-      size: PlayxSize(x: _extentsX, y: _extentsY, z: _extentsZ),
-      centerPosition: PlayxPosition(x: _x, y: _y, z: _z),
+      size: sizeExtents,
+      centerPosition: pos,
+      scale: scale,
       //material: poGetBaseMaterial(),
       material: colorOveride != null
           ? poGetBaseMaterial(colorOveride)
@@ -434,34 +429,33 @@ class _MyAppState extends State<MyApp> {
 
   ////////////////////////////////////////////////////////////////////////////////
   Shape poCreateSphere(
-      double _x,
-      double _y,
-      double _z,
+      PlayxPosition pos,
+      PlayxSize scale,
+      PlayxSize sizeExtents,
       int idToSet,
       int stacks,
       int slices,
-      double _extentsX,
-      double _extentsY,
-      double _extentsZ,
       Color? colorOveride) {
     return Sphere(
         id: idToSet,
-        radius: 1,
-        centerPosition: PlayxPosition(x: _x, y: _y, z: _z),
+        centerPosition: pos,
         material: poGetBaseMaterial(null),
         stacks: stacks,
         slices: slices,
-        size: PlayxSize(x: _extentsX, y: _extentsY, z: _extentsZ));
+        cullingEnabled: false,
+        scale: scale,
+        size: sizeExtents);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  Shape poCreatePlane(double _x, double _y, double _z, double _extentsX,
-      double _extentsY, double _extentsZ, int idToSet) {
+  Shape poCreatePlane(
+      PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents, int idToSet) {
     return Plane(
         id: idToSet,
         doubleSided: true,
-        size: PlayxSize(x: _extentsX, y: _extentsY, z: _extentsZ),
-        centerPosition: PlayxPosition(x: _x, y: _y, z: _z),
+        size: sizeExtents,
+        scale: scale,
+        centerPosition: pos,
         material: poGetBaseMaterial(null));
   }
 
@@ -472,8 +466,12 @@ class _MyAppState extends State<MyApp> {
     for (double i = -10; i <= 10; i += 2) {
       for (int j = 0; j < 1; j++) {
         for (double k = -10; k <= 10; k += 2) {
-          itemsToReturn
-              .add(poCreateCube(i, 0, k, idIter++, .1, .1, .1, Colors.red));
+          itemsToReturn.add(poCreateCube(
+              PlayxPosition(x: i, y: 0, z: k),
+              PlayxSize(x: 1, y: 1, z: 1),
+              PlayxSize(x: 1, y: 1, z: 1),
+              idIter++,
+              Colors.red));
         }
       }
     }
@@ -487,40 +485,41 @@ class _MyAppState extends State<MyApp> {
 
     List<Shape> itemsToReturn = [];
     int idToSet = 10;
+
     // itemsToReturn.add(poCreateCube(3, 1, 3, idToSet++, 1, 1, 1, null));
     // itemsToReturn.add(poCreateCube(0, 1, 3, idToSet++, .1, 4, .1, null));
     // itemsToReturn.add(poCreateCube(-3, 1, 3, idToSet++, .5, .5, .5, null));
-    // itemsToReturn
-    //     .add(poCreateSphere(3, 1, -3, idToSet++, 36, 18, 1, 1, 1, null));
-    // itemsToReturn
-    //     .add(poCreateSphere(0, 1, -3, idToSet++, 36, 18, 1, 1, 1, null));
-    // itemsToReturn
-    //     .add(poCreateSphere(0, 1.5, 0, idToSet++, 36, 18, 1, 1, 1, null));
 
-    itemsToReturn.add(poCreatePlane(0, 0.5, 0, 3, 1, 3, idToSet++));
+    itemsToReturn.add(poCreateSphere(
+        PlayxPosition(x: 3, y: 1, z: -3),
+        PlayxSize(x: 1, y: 1, z: 1),
+        PlayxSize(x: 1, y: 1, z: 1),
+        idToSet++,
+        11,
+        5,
+        null));
+
+    itemsToReturn.add(poCreateSphere(
+        PlayxPosition(x: 0, y: 1, z: -3),
+        PlayxSize(x: 1, y: 1, z: 1),
+        PlayxSize(x: 1, y: 1, z: 1),
+        idToSet++,
+        20,
+        20,
+        null));
+
+    itemsToReturn.add(poCreateSphere(
+        PlayxPosition(x: -3, y: 1, z: -3),
+        PlayxSize(x: 1, y: 1, z: 1),
+        PlayxSize(x: 2, y: 1, z: 2),
+        idToSet++,
+        20,
+        20,
+        null));
+
+    // itemsToReturn.add(poCreatePlane(0, 0.5, 0, 3, 1, 3, idToSet++));
 
     return itemsToReturn;
-
-    // Random random = Random();
-
-    // List<Shape> itemsToReturn = [];
-    // const int numMulti = 5;
-    // int idIter = 10;
-    // for (int i = 0; i < numMulti; i++) {
-    //   for (int j = 0; j < numMulti; j++) {
-    //     for (int k = 0; k < numMulti; k++) {
-    //       itemsToReturn.add(poCreateCube( (i * numMulti) - ((numMulti * numMulti ) / 2)
-    //       , k * 5
-    //       , (j * numMulti) - ((numMulti * numMulti ) / 2)
-    //       , idIter++,
-    //       1,
-    //       1,
-    //       1));
-    //     }
-    //   }
-    // }
-
-    //return itemsToReturn;
   }
 
   ////////////////////////////////////////////////////////////////////////////////
