@@ -18,6 +18,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.3
+  flutter_colorpicker: 
+    path: flutter_colorpicker-1.1.0
 
 flutter:
   uses-material-design: true
