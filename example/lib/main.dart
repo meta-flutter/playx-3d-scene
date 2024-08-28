@@ -48,8 +48,8 @@ class _MyAppState extends State<MyApp> {
 
   static const String litMat = "assets/materials/lit.filamat";
   static const String texturedMat = "assets/materials/textured_pbr.filamat";
-  static const String foxAsset = "assets/models/Fox.glb";
-  static const String helmetAsset = "assets/models/DamagedHelmet.glb";
+  //static const String foxAsset = "assets/models/Fox.glb";
+  //static const String helmetAsset = "assets/models/DamagedHelmet.glb";
   static const String sequoiaAsset = "assets/models/sequoia.glb";
   static const String garageAsset = "assets/models/garagescene.glb";
 
