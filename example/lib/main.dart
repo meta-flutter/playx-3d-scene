@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
   bool _toggleShapes = true;
 
   static const String litMat = "assets/materials/lit.filamat";
-  static const String texturedMat = "assets/materials/textured_pbr.filamat";
+  //static const String texturedMat = "assets/materials/textured_pbr.filamat";
   //static const String foxAsset = "assets/models/Fox.glb";
   //static const String helmetAsset = "assets/models/DamagedHelmet.glb";
   static const String sequoiaAsset = "assets/models/sequoia.glb";
@@ -64,23 +64,6 @@ class _MyAppState extends State<MyApp> {
   void logToStdOut(String strOut) {
     DateTime now = DateTime.now();
     stdout.write('DART : $strOut: $now\n');
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  void _updateIntensityFromText(String text, bool isDirectLight) {
-    try {
-      int intensity = int.parse(text);
-      setState(() {
-        if (isDirectLight) {
-          m_poController.changeDirectLightValuesByIndex(
-              0, _DirectLightColor, intensity);
-        } else {
-          //m_poController.changeIndirectLightValuesByIndex(1, _IndirectLightColor, intensity);
-        }
-      });
-    } catch (e) {
-      // Handle invalid intensity value
-    }
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -141,7 +124,7 @@ class _MyAppState extends State<MyApp> {
                                 0, _DirectLightColor, _directIntensity.toInt());
                           });
                         },
-                        showLabel: false,
+                        //showLabel: false,
                         pickerAreaHeightPercent: 1.0,
                         enableAlpha: false,
                         displayThumbColor: false,
@@ -549,7 +532,7 @@ class _MyAppState extends State<MyApp> {
   List<Model> poGetModelList() {
     List<Model> itemsToReturn = [];
     //itemsToReturn.add(poGetModel(foxAsset, 0,0,-14.77, .1));
-    //itemsToReturn.add(poGetModel(sequoiaAsset, 0, 0, -14.77, 1));
+    itemsToReturn.add(poGetModel(sequoiaAsset, 0, 0, -14.77, 1));
     itemsToReturn.add(poGetModel(garageAsset, 0, 0, -16, 1));
     //itemsToReturn.add(poGetModel(helmetAsset, 5,0,0, .1));
     return itemsToReturn;

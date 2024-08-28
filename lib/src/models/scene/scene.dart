@@ -1,5 +1,4 @@
 import 'package:playx_3d_scene/src/models/scene/camera/camera.dart';
-import 'package:playx_3d_scene/src/models/scene/ground.dart';
 import 'package:playx_3d_scene/src/models/scene/indirect_light/indirect_light.dart';
 import 'package:playx_3d_scene/src/models/scene/light/light.dart';
 import 'package:playx_3d_scene/src/models/scene/skybox/skybox.dart';
