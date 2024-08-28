@@ -9,7 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_colorpicker:
-    path: lib/packages/flutter_colorpicker-1.1.0
+    path: flutter_colorpicker-1.1.0
 
   playx_3d_scene:
     path: ../
@@ -19,7 +19,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.3
   flutter_colorpicker: 
-    path: lib/packages/flutter_colorpicker-1.1.0
+    path: flutter_colorpicker-1.1.0
 
 flutter:
   uses-material-design: true
