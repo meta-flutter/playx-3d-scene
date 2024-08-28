@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
-import 'package:playx_3d_scene/src/models/scene/geometry/rotation.dart';
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
@@ -17,10 +16,10 @@ void main() {
   };
 
   runZonedGuarded<Future<void>>(() async {
-    runApp(MyApp());
+    runApp(const MyApp());
   }, (Object error, StackTrace stack) {
-    stdout.write('runZonedGuarded error caught error: ${error}');
-    stdout.write('runZonedGuarded error caught stack: ${stack}');
+    stdout.write('runZonedGuarded error caught error: $error');
+    stdout.write('runZonedGuarded error caught stack: $stack');
   });
 }
 
@@ -38,8 +37,8 @@ class _MyAppState extends State<MyApp> {
   bool isSceneLoading = false;
   bool isShapeLoading = false;
   bool showloading = true;
-  late Playx3dSceneController m_poController;
-  Color _DirectLightColor = Colors.purple;
+  late Playx3dSceneController poController;
+  Color _directLightColor = Colors.purple;
   double _directIntensity = 300000000;
   final double _minIntensity = 10000000;
   final double _maxIntensity = 300000000;
@@ -68,7 +67,7 @@ class _MyAppState extends State<MyApp> {
 
   ////////////////////////////////////////////////////////////////////////
   TextStyle getTextStyle() {
-    return TextStyle(
+    return const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.bold,
       color: Colors.black,
@@ -112,16 +111,16 @@ class _MyAppState extends State<MyApp> {
                       'Direct Light',
                       style: getTextStyle(),
                     ),
-                    Container(
+                    SizedBox(
                       width: 100,
                       child: ColorPicker(
                         colorPickerWidth: 100,
-                        pickerColor: _DirectLightColor,
+                        pickerColor: _directLightColor,
                         onColorChanged: (Color color) {
                           setState(() {
-                            _DirectLightColor = color;
-                            m_poController.changeDirectLightValuesByIndex(
-                                0, _DirectLightColor, _directIntensity.toInt());
+                            _directLightColor = color;
+                            poController.changeDirectLightValuesByIndex(
+                                0, _directLightColor, _directIntensity.toInt());
                           });
                         },
                         //showLabel: false,
@@ -132,8 +131,8 @@ class _MyAppState extends State<MyApp> {
                         paletteType: PaletteType.hueWheel,
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Container(
+                    const SizedBox(height: 10),
+                    SizedBox(
                       width: 150,
                       child: Column(
                         children: [
@@ -145,9 +144,9 @@ class _MyAppState extends State<MyApp> {
                             onChanged: (double value) {
                               setState(() {
                                 _directIntensity = value;
-                                m_poController.changeDirectLightValuesByIndex(
+                                poController.changeDirectLightValuesByIndex(
                                     0,
-                                    _DirectLightColor,
+                                    _directLightColor,
                                     _directIntensity.toInt());
                               });
                             },
@@ -176,31 +175,31 @@ class _MyAppState extends State<MyApp> {
                     onChanged: (double value) {
                       setState(() {
                         _cameraRotation = value;
-                        m_poController.setCameraRotation(_cameraRotation / 100);
+                        poController.setCameraRotation(_cameraRotation / 100);
                       });
                     },
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
                             _autoRotate = !_autoRotate;
-                            m_poController.toggleCameraAutoRotate(_autoRotate);
+                            poController.toggleCameraAutoRotate(_autoRotate);
                           });
                         },
                         child: Text(_autoRotate
                             ? 'Toggle Rotate: On'
                             : 'Toggle Rotate: Off'),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
                             _toggleShapes = !_toggleShapes;
-                            m_poController.toggleShapesInScene(_toggleShapes);
+                            poController.toggleShapesInScene(_toggleShapes);
                           });
                         },
                         child: Text(_toggleShapes
@@ -219,14 +218,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  GlbModel poGetModel(
-      String szAsset, double _x, double _y, double _z, double _scale) {
+  GlbModel poGetModel(String szAsset, PlayxPosition position, double scale) {
     return GlbModel.asset(
       szAsset,
       //animation: PlayxAnimation.byIndex(0, autoPlay: false),
       //fallback: GlbModel.asset(helmetAsset),
-      centerPosition: PlayxPosition(x: _x, y: _y, z: _z),
-      scale: _scale,
+      centerPosition: position,
+      scale: scale,
     );
   }
 
@@ -261,7 +259,7 @@ class _MyAppState extends State<MyApp> {
       light: Light(
           type: LightType.point,
           colorTemperature: 36500,
-          color: _DirectLightColor,
+          color: _directLightColor,
           intensity: _directIntensity,
           castShadows: false,
           castLight: true,
@@ -292,8 +290,7 @@ class _MyAppState extends State<MyApp> {
       parameters: [
         //update base color property with color
         MaterialParameter.color(
-            color: colorOveride != null ? colorOveride : Colors.white,
-            name: "baseColor"),
+            color: colorOveride ?? Colors.white, name: "baseColor"),
         //update roughness property with it's value
         MaterialParameter.float(value: .8, name: "roughness"),
         //update metallicproperty with it's value
@@ -531,10 +528,10 @@ class _MyAppState extends State<MyApp> {
   ////////////////////////////////////////////////////////////////////////////////
   List<Model> poGetModelList() {
     List<Model> itemsToReturn = [];
-    //itemsToReturn.add(poGetModel(foxAsset, 0,0,-14.77, .1));
-    itemsToReturn.add(poGetModel(sequoiaAsset, 0, 0, -14.77, 1));
-    itemsToReturn.add(poGetModel(garageAsset, 0, 0, -16, 1));
-    //itemsToReturn.add(poGetModel(helmetAsset, 5,0,0, .1));
+    itemsToReturn
+        .add(poGetModel(sequoiaAsset, PlayxPosition(x: 0, y: 0, z: -14.77), 1));
+    itemsToReturn
+        .add(poGetModel(garageAsset, PlayxPosition(x: 0, y: 0, z: -16), 1));
     return itemsToReturn;
   }
 
@@ -552,7 +549,7 @@ class _MyAppState extends State<MyApp> {
       onCreated: (Playx3dSceneController controller) async {
         // we'll save the controller so we can send messages
         // from the UI / 'gameplay' in the future.
-        m_poController = controller;
+        poController = controller;
 
         logToStdOut('poGetPlayx3dScene onCreated');
         return;
