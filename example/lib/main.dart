@@ -512,8 +512,8 @@ class _MyAppState extends State<MyApp> {
 
     itemsToReturn.add(poCreateSphere(
         PlayxPosition(x: -3, y: 1, z: -3),
+        PlayxSize(x: 1, y: .5, z: 1),
         PlayxSize(x: 1, y: 1, z: 1),
-        PlayxSize(x: 2, y: 1, z: 2),
         idToSet++,
         20,
         20,
