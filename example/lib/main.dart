@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/rotation.dart';
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
@@ -456,7 +457,8 @@ class _MyAppState extends State<MyApp> {
         size: sizeExtents,
         scale: scale,
         centerPosition: pos,
-        material: poGetBaseMaterial(null));
+        rotation: PlayxRotation(x: .7071, y: .7071, z: 0, w: 0),
+        material: poGetBaseMaterialWithRandomValues());
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -486,9 +488,26 @@ class _MyAppState extends State<MyApp> {
     List<Shape> itemsToReturn = [];
     int idToSet = 10;
 
-    // itemsToReturn.add(poCreateCube(3, 1, 3, idToSet++, 1, 1, 1, null));
-    // itemsToReturn.add(poCreateCube(0, 1, 3, idToSet++, .1, 4, .1, null));
-    // itemsToReturn.add(poCreateCube(-3, 1, 3, idToSet++, .5, .5, .5, null));
+    itemsToReturn.add(poCreateCube(
+        PlayxPosition(x: 3, y: 1, z: 3),
+        PlayxSize(x: 1, y: 1, z: 1),
+        PlayxSize(x: 1, y: 1, z: 1),
+        idToSet++,
+        null));
+
+    itemsToReturn.add(poCreateCube(
+        PlayxPosition(x: 0, y: 1, z: 3),
+        PlayxSize(x: .1, y: 1, z: .1),
+        PlayxSize(x: 1, y: 1, z: 1),
+        idToSet++,
+        null));
+
+    itemsToReturn.add(poCreateCube(
+        PlayxPosition(x: -3, y: 1, z: 3),
+        PlayxSize(x: .5, y: .5, z: .5),
+        PlayxSize(x: 1, y: 1, z: 1),
+        idToSet++,
+        null));
 
     itemsToReturn.add(poCreateSphere(
         PlayxPosition(x: 3, y: 1, z: -3),
@@ -517,7 +536,11 @@ class _MyAppState extends State<MyApp> {
         20,
         null));
 
-    // itemsToReturn.add(poCreatePlane(0, 0.5, 0, 3, 1, 3, idToSet++));
+    itemsToReturn.add(poCreatePlane(PlayxPosition(x: -5, y: 1, z: 0),
+        PlayxSize(x: 1, y: 1, z: 1), PlayxSize(x: 2, y: 1, z: 2), idToSet++));
+
+    itemsToReturn.add(poCreatePlane(PlayxPosition(x: 5, y: 1, z: 0),
+        PlayxSize(x: 4, y: 1, z: 4), PlayxSize(x: 4, y: 1, z: 4), idToSet++));
 
     return itemsToReturn;
   }
