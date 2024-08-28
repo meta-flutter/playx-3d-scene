@@ -31,6 +31,9 @@ flutter:
       android:
         package: io.sourcya.playx_3d_scene
         pluginClass: Playx3dScenePlugin
+      linux:
+        package: io.sourcya.playx_3d_scene
+        pluginClass: Playx3dScenePlugin
 
 
 
