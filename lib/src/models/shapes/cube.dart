@@ -12,7 +12,13 @@ class Cube extends Shape {
       {required super.id,
       required this.size,
       required super.centerPosition,
-      super.material})
+      super.scale,
+      super.rotation,
+      super.material,
+      super.doubleSided,
+      super.castShadows,
+      super.receiveShadows,
+      super.cullingEnabled})
       : super() {
     _size = size;
   }
@@ -23,7 +29,13 @@ class Cube extends Shape {
         'centerPosition': centerPosition?.toJson(),
         'size': _size.toJson(),
         'material': material?.toJson(),
-        'shapeType': 2
+        'scale': scale?.toJson(),
+        'shapeType': 2,
+        'rotation': rotation?.toJson(),
+        'doubleSided': doubleSided,
+        'cullingEnabled': cullingEnabled,
+        'receiveShadows': receiveShadows,
+        'castShadows': castShadows
       };
 
   @override

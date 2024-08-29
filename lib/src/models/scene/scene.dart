@@ -1,5 +1,4 @@
 import 'package:playx_3d_scene/src/models/scene/camera/camera.dart';
-import 'package:playx_3d_scene/src/models/scene/ground.dart';
 import 'package:playx_3d_scene/src/models/scene/indirect_light/indirect_light.dart';
 import 'package:playx_3d_scene/src/models/scene/light/light.dart';
 import 'package:playx_3d_scene/src/models/scene/skybox/skybox.dart';
@@ -10,22 +9,19 @@ class Scene {
   IndirectLight? indirectLight;
   Light? light;
   Camera? camera;
-  Ground? ground;
 
-  Scene(
-      {this.skybox, this.indirectLight, this.light, this.camera, this.ground});
+  Scene({this.skybox, this.indirectLight, this.light, this.camera});
 
   Map<String, dynamic> toJson() => {
         'skybox': skybox?.toJson(),
         'light': light?.toJson(),
         'indirectLight': indirectLight?.toJson(),
         'camera': camera?.toJson(),
-        'ground': ground?.toJson(),
       };
 
   @override
   String toString() {
-    return 'Scene(skybox: $skybox, indirectLight: $indirectLight, light: $light, camera: $camera, ground: $ground)';
+    return 'Scene(skybox: $skybox, indirectLight: $indirectLight, light: $light, camera: $camera)';
   }
 
   @override
@@ -36,8 +32,7 @@ class Scene {
         other.skybox == skybox &&
         other.indirectLight == indirectLight &&
         other.light == light &&
-        other.camera == camera &&
-        other.ground == ground;
+        other.camera == camera;
   }
 
   @override
@@ -45,8 +40,7 @@ class Scene {
     return skybox.hashCode ^
         indirectLight.hashCode ^
         light.hashCode ^
-        camera.hashCode ^
-        ground.hashCode;
+        camera.hashCode;
   }
 
   Scene copyWith({
@@ -54,14 +48,12 @@ class Scene {
     IndirectLight? indirectLight,
     Light? light,
     Camera? camera,
-    Ground? ground,
   }) {
     return Scene(
       skybox: skybox ?? this.skybox,
       indirectLight: indirectLight ?? this.indirectLight,
       light: light ?? this.light,
       camera: camera ?? this.camera,
-      ground: ground ?? this.ground,
     );
   }
 }

@@ -16,10 +16,10 @@ void main() {
   };
 
   runZonedGuarded<Future<void>>(() async {
-    runApp(MyApp());
+    runApp(const MyApp());
   }, (Object error, StackTrace stack) {
-    stdout.write('runZonedGuarded error caught error: ${error}');
-    stdout.write('runZonedGuarded error caught stack: ${stack}');
+    stdout.write('runZonedGuarded error caught error: $error');
+    stdout.write('runZonedGuarded error caught stack: $stack');
   });
 }
 
@@ -37,8 +37,8 @@ class _MyAppState extends State<MyApp> {
   bool isSceneLoading = false;
   bool isShapeLoading = false;
   bool showloading = true;
-  late Playx3dSceneController m_poController;
-  Color _DirectLightColor = Colors.purple;
+  late Playx3dSceneController poController;
+  Color _directLightColor = Colors.purple;
   double _directIntensity = 300000000;
   final double _minIntensity = 10000000;
   final double _maxIntensity = 300000000;
@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
   bool _toggleShapes = true;
 
   static const String litMat = "assets/materials/lit.filamat";
-  static const String texturedMat = "assets/materials/textured_pbr.filamat";
+  //static const String texturedMat = "assets/materials/textured_pbr.filamat";
   //static const String foxAsset = "assets/models/Fox.glb";
   //static const String helmetAsset = "assets/models/DamagedHelmet.glb";
   static const String sequoiaAsset = "assets/models/sequoia.glb";
@@ -66,25 +66,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  void _updateIntensityFromText(String text, bool isDirectLight) {
-    try {
-      int intensity = int.parse(text);
-      setState(() {
-        if (isDirectLight) {
-          m_poController.changeDirectLightValuesByIndex(
-              0, _DirectLightColor, intensity);
-        } else {
-          //m_poController.changeIndirectLightValuesByIndex(1, _IndirectLightColor, intensity);
-        }
-      });
-    } catch (e) {
-      // Handle invalid intensity value
-    }
-  }
-
-  ////////////////////////////////////////////////////////////////////////
   TextStyle getTextStyle() {
-    return TextStyle(
+    return const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.bold,
       color: Colors.black,
@@ -128,19 +111,19 @@ class _MyAppState extends State<MyApp> {
                       'Direct Light',
                       style: getTextStyle(),
                     ),
-                    Container(
+                    SizedBox(
                       width: 100,
                       child: ColorPicker(
                         colorPickerWidth: 100,
-                        pickerColor: _DirectLightColor,
+                        pickerColor: _directLightColor,
                         onColorChanged: (Color color) {
                           setState(() {
-                            _DirectLightColor = color;
-                            m_poController.changeDirectLightValuesByIndex(
-                                0, _DirectLightColor, _directIntensity.toInt());
+                            _directLightColor = color;
+                            poController.changeDirectLightValuesByIndex(
+                                0, _directLightColor, _directIntensity.toInt());
                           });
                         },
-                        showLabel: false,
+                        //showLabel: false,
                         pickerAreaHeightPercent: 1.0,
                         enableAlpha: false,
                         displayThumbColor: false,
@@ -148,8 +131,8 @@ class _MyAppState extends State<MyApp> {
                         paletteType: PaletteType.hueWheel,
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Container(
+                    const SizedBox(height: 10),
+                    SizedBox(
                       width: 150,
                       child: Column(
                         children: [
@@ -161,9 +144,9 @@ class _MyAppState extends State<MyApp> {
                             onChanged: (double value) {
                               setState(() {
                                 _directIntensity = value;
-                                m_poController.changeDirectLightValuesByIndex(
+                                poController.changeDirectLightValuesByIndex(
                                     0,
-                                    _DirectLightColor,
+                                    _directLightColor,
                                     _directIntensity.toInt());
                               });
                             },
@@ -192,31 +175,31 @@ class _MyAppState extends State<MyApp> {
                     onChanged: (double value) {
                       setState(() {
                         _cameraRotation = value;
-                        m_poController.setCameraRotation(_cameraRotation / 100);
+                        poController.setCameraRotation(_cameraRotation / 100);
                       });
                     },
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
                             _autoRotate = !_autoRotate;
-                            m_poController.toggleCameraAutoRotate(_autoRotate);
+                            poController.toggleCameraAutoRotate(_autoRotate);
                           });
                         },
                         child: Text(_autoRotate
                             ? 'Toggle Rotate: On'
                             : 'Toggle Rotate: Off'),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
                             _toggleShapes = !_toggleShapes;
-                            m_poController.toggleShapesInScene(_toggleShapes);
+                            poController.toggleShapesInScene(_toggleShapes);
                           });
                         },
                         child: Text(_toggleShapes
@@ -235,21 +218,21 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  GlbModel poGetModel(
-      String szAsset, double _x, double _y, double _z, double _scale) {
+  GlbModel poGetModel(String szAsset, PlayxPosition position, double scale) {
     return GlbModel.asset(
       szAsset,
       //animation: PlayxAnimation.byIndex(0, autoPlay: false),
       //fallback: GlbModel.asset(helmetAsset),
-      centerPosition: PlayxPosition(x: _x, y: _y, z: _z),
-      scale: _scale,
+      centerPosition: position,
+      scale: scale,
     );
   }
 
   ////////////////////////////////////////////////////////////////////////
   Scene poGetScene() {
     return Scene(
-      skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
+      skybox: ColoredSkybox(color: Colors.black),
+      //skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
       indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
       //skybox: ColoredSkybox(color: Colors.red),
       // indirectLight: DefaultIndirectLight(
@@ -276,7 +259,7 @@ class _MyAppState extends State<MyApp> {
       light: Light(
           type: LightType.point,
           colorTemperature: 36500,
-          color: _DirectLightColor,
+          color: _directLightColor,
           intensity: _directIntensity,
           castShadows: false,
           castLight: true,
@@ -286,7 +269,6 @@ class _MyAppState extends State<MyApp> {
           position: PlayxPosition(x: 0, y: 3, z: 0),
           // should be a unit vector
           direction: PlayxDirection(x: 0, y: 1, z: 0)),
-      //ground: poGetGround(),
       camera: Camera.freeFlight(
         exposure: Exposure.formAperture(
           aperture: 24.0,
@@ -300,45 +282,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  Ground poGetGround() {
-    return Ground(
-      width: 30.0,
-      height: 30.0,
-      isBelowModel: true,
-      normal: PlayxDirection.y(1.0),
-      material: PlayxMaterial.asset(
-        texturedMat,
-        parameters: [
-          MaterialParameter.texture(
-            value: PlayxTexture.asset(
-              "assets/materials/texture/floor_basecolor.png",
-              type: TextureType.color,
-              sampler: PlayxTextureSampler(anisotropy: 8),
-            ),
-            name: "baseColor",
-          ),
-          MaterialParameter.texture(
-            value: PlayxTexture.asset(
-              "assets/materials/texture/floor_normal.png",
-              type: TextureType.normal,
-              sampler: PlayxTextureSampler(anisotropy: 8),
-            ),
-            name: "normal",
-          ),
-          MaterialParameter.texture(
-            value: PlayxTexture.asset(
-              "assets/materials/texture/floor_ao_roughness_metallic.png",
-              type: TextureType.data,
-              sampler: PlayxTextureSampler(anisotropy: 8),
-            ),
-            name: "aoRoughnessMetallic",
-          ),
-        ],
-      ),
-    );
-  }
-
-  ////////////////////////////////////////////////////////////////////////
   PlayxMaterial poGetBaseMaterial(Color? colorOveride) {
     return PlayxMaterial.asset(
       litMat,
@@ -347,8 +290,7 @@ class _MyAppState extends State<MyApp> {
       parameters: [
         //update base color property with color
         MaterialParameter.color(
-            color: colorOveride != null ? colorOveride : Colors.white,
-            name: "baseColor"),
+            color: colorOveride ?? Colors.white, name: "baseColor"),
         //update roughness property with it's value
         MaterialParameter.float(value: .8, name: "roughness"),
         //update metallicproperty with it's value
@@ -452,19 +394,13 @@ class _MyAppState extends State<MyApp> {
   // }
 
   ////////////////////////////////////////////////////////////////////////////////
-  Shape poCreateCube(
-      double _x,
-      double _y,
-      double _z,
-      int idToSet,
-      double _extentsX,
-      double _extentsY,
-      double _extentsZ,
-      Color? colorOveride) {
+  Shape poCreateCube(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
+      int idToSet, Color? colorOveride) {
     return Cube(
       id: idToSet,
-      size: PlayxSize(x: _extentsX, y: _extentsY, z: _extentsZ),
-      centerPosition: PlayxPosition(x: _x, y: _y, z: _z),
+      size: sizeExtents,
+      centerPosition: pos,
+      scale: scale,
       //material: poGetBaseMaterial(),
       material: colorOveride != null
           ? poGetBaseMaterial(colorOveride)
@@ -473,13 +409,36 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  Shape poCreateShere(double _x, double _y, double _z, int idToSet) {
+  Shape poCreateSphere(
+      PlayxPosition pos,
+      PlayxSize scale,
+      PlayxSize sizeExtents,
+      int idToSet,
+      int stacks,
+      int slices,
+      Color? colorOveride) {
     return Sphere(
-      id: idToSet,
-      radius: 1,
-      centerPosition: PlayxPosition(x: _x, y: _y, z: _z),
-      material: poGetBaseMaterial(null),
-    );
+        id: idToSet,
+        centerPosition: pos,
+        material: poGetBaseMaterial(null),
+        stacks: stacks,
+        slices: slices,
+        cullingEnabled: false,
+        scale: scale,
+        size: sizeExtents);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  Shape poCreatePlane(
+      PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents, int idToSet) {
+    return Plane(
+        id: idToSet,
+        doubleSided: true,
+        size: sizeExtents,
+        scale: scale,
+        centerPosition: pos,
+        rotation: PlayxRotation(x: .7071, y: .7071, z: 0, w: 0),
+        material: poGetBaseMaterialWithRandomValues());
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -489,8 +448,12 @@ class _MyAppState extends State<MyApp> {
     for (double i = -10; i <= 10; i += 2) {
       for (int j = 0; j < 1; j++) {
         for (double k = -10; k <= 10; k += 2) {
-          itemsToReturn
-              .add(poCreateCube(i, 0, k, idIter++, .1, .1, .1, Colors.red));
+          itemsToReturn.add(poCreateCube(
+              PlayxPosition(x: i, y: 0, z: k),
+              PlayxSize(x: 1, y: 1, z: 1),
+              PlayxSize(x: 1, y: 1, z: 1),
+              idIter++,
+              Colors.red));
         }
       }
     }
@@ -503,38 +466,72 @@ class _MyAppState extends State<MyApp> {
     //return poCreateLineGrid();
 
     List<Shape> itemsToReturn = [];
-    itemsToReturn.add(poCreateCube(3, 1, 3, 0, 0, 0, 0, null));
+    int idToSet = 10;
+
+    itemsToReturn.add(poCreateCube(
+        PlayxPosition(x: 3, y: 1, z: 3),
+        PlayxSize(x: 1, y: 1, z: 1),
+        PlayxSize(x: 1, y: 1, z: 1),
+        idToSet++,
+        null));
+
+    itemsToReturn.add(poCreateCube(
+        PlayxPosition(x: 0, y: 1, z: 3),
+        PlayxSize(x: .1, y: 1, z: .1),
+        PlayxSize(x: 1, y: 1, z: 1),
+        idToSet++,
+        null));
+
+    itemsToReturn.add(poCreateCube(
+        PlayxPosition(x: -3, y: 1, z: 3),
+        PlayxSize(x: .5, y: .5, z: .5),
+        PlayxSize(x: 1, y: 1, z: 1),
+        idToSet++,
+        null));
+
+    itemsToReturn.add(poCreateSphere(
+        PlayxPosition(x: 3, y: 1, z: -3),
+        PlayxSize(x: 1, y: 1, z: 1),
+        PlayxSize(x: 1, y: 1, z: 1),
+        idToSet++,
+        11,
+        5,
+        null));
+
+    itemsToReturn.add(poCreateSphere(
+        PlayxPosition(x: 0, y: 1, z: -3),
+        PlayxSize(x: 1, y: 1, z: 1),
+        PlayxSize(x: 1, y: 1, z: 1),
+        idToSet++,
+        20,
+        20,
+        null));
+
+    itemsToReturn.add(poCreateSphere(
+        PlayxPosition(x: -3, y: 1, z: -3),
+        PlayxSize(x: 1, y: .5, z: 1),
+        PlayxSize(x: 1, y: 1, z: 1),
+        idToSet++,
+        20,
+        20,
+        null));
+
+    itemsToReturn.add(poCreatePlane(PlayxPosition(x: -5, y: 1, z: 0),
+        PlayxSize(x: 1, y: 1, z: 1), PlayxSize(x: 2, y: 1, z: 2), idToSet++));
+
+    itemsToReturn.add(poCreatePlane(PlayxPosition(x: 5, y: 1, z: 0),
+        PlayxSize(x: 4, y: 1, z: 4), PlayxSize(x: 4, y: 1, z: 4), idToSet++));
+
     return itemsToReturn;
-
-    // Random random = Random();
-
-    // List<Shape> itemsToReturn = [];
-    // const int numMulti = 5;
-    // int idIter = 10;
-    // for (int i = 0; i < numMulti; i++) {
-    //   for (int j = 0; j < numMulti; j++) {
-    //     for (int k = 0; k < numMulti; k++) {
-    //       itemsToReturn.add(poCreateCube( (i * numMulti) - ((numMulti * numMulti ) / 2)
-    //       , k * 5
-    //       , (j * numMulti) - ((numMulti * numMulti ) / 2)
-    //       , idIter++,
-    //       1,
-    //       1,
-    //       1));
-    //     }
-    //   }
-    // }
-
-    //return itemsToReturn;
   }
 
   ////////////////////////////////////////////////////////////////////////////////
   List<Model> poGetModelList() {
     List<Model> itemsToReturn = [];
-    //itemsToReturn.add(poGetModel(foxAsset, 0,0,-14.77, .1));
-    itemsToReturn.add(poGetModel(sequoiaAsset, 0, 0, -14.77, 1));
-    itemsToReturn.add(poGetModel(garageAsset, 0, 0, -16, 1));
-    //itemsToReturn.add(poGetModel(helmetAsset, 5,0,0, .1));
+    itemsToReturn
+        .add(poGetModel(sequoiaAsset, PlayxPosition(x: 0, y: 0, z: -14.77), 1));
+    itemsToReturn
+        .add(poGetModel(garageAsset, PlayxPosition(x: 0, y: 0, z: -16), 1));
     return itemsToReturn;
   }
 
@@ -552,7 +549,7 @@ class _MyAppState extends State<MyApp> {
       onCreated: (Playx3dSceneController controller) async {
         // we'll save the controller so we can send messages
         // from the UI / 'gameplay' in the future.
-        m_poController = controller;
+        poController = controller;
 
         logToStdOut('poGetPlayx3dScene onCreated');
         return;
