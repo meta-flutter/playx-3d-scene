@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
   bool _toggleShapes = true;
 
   static const String litMat = "assets/materials/lit.filamat";
-  //static const String texturedMat = "assets/materials/textured_pbr.filamat";
+  static const String texturedMat = "assets/materials/textured_pbr.filamat";
   //static const String foxAsset = "assets/models/Fox.glb";
   //static const String helmetAsset = "assets/models/DamagedHelmet.glb";
   static const String sequoiaAsset = "assets/models/sequoia.glb";
@@ -363,35 +363,37 @@ class _MyAppState extends State<MyApp> {
       ],
     );
   }
-
-  //   return PlayxMaterial.asset(texturedMat,
-  //       parameters: [
-  //         MaterialParameter.texture(
-  //           value: PlayxTexture.asset(
-  //             "assets/materials/texture/floor_basecolor.png",
-  //             type: TextureType.color,
-  //             sampler: PlayxTextureSampler(anisotropy: 8),
-  //           ),
-  //           name: "baseColor",
-  //         ),
-  //         MaterialParameter.texture(
-  //           value: PlayxTexture.asset(
-  //             "assets/materials/texture/floor_normal.png",
-  //             type: TextureType.normal,
-  //             sampler: PlayxTextureSampler(anisotropy: 8),
-  //           ),
-  //           name: "normal",
-  //         ),
-  //         MaterialParameter.texture(
-  //           value: PlayxTexture.asset(
-  //             "assets/materials/texture/floor_ao_roughness_metallic.png",
-  //             type: TextureType.data,
-  //             sampler: PlayxTextureSampler(anisotropy: 8),
-  //           ),
-  //           name: "aoRoughnessMetallic",
-  //         ),
-  //       ]);
-  // }
+  ////////////////////////////////////////////////////////////////////////////////
+  PlayxMaterial poGetTexturedMaterial() {
+    return PlayxMaterial.asset(texturedMat,
+      parameters: [
+        MaterialParameter.texture(
+          value: PlayxTexture.asset(
+            "assets/materials/texture/floor_basecolor.png",
+            type: TextureType.color,
+            sampler: PlayxTextureSampler(anisotropy: 8),
+          ),
+          name: "baseColor",
+        ),
+        MaterialParameter.texture(
+          value: PlayxTexture.asset(
+            "assets/materials/texture/floor_normal.png",
+            type: TextureType.normal,
+            sampler: PlayxTextureSampler(anisotropy: 8),
+          ),
+          name: "normal",
+        ),
+        MaterialParameter.texture(
+          value: PlayxTexture.asset(
+            "assets/materials/texture/floor_ao_roughness_metallic.png",
+            type: TextureType.data,
+            sampler: PlayxTextureSampler(anisotropy: 8),
+          ),
+          name: "aoRoughnessMetallic",
+        ),
+      ]
+    );
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   Shape poCreateCube(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
@@ -401,10 +403,10 @@ class _MyAppState extends State<MyApp> {
       size: sizeExtents,
       centerPosition: pos,
       scale: scale,
-      //material: poGetBaseMaterial(),
-      material: colorOveride != null
-          ? poGetBaseMaterial(colorOveride)
-          : poGetBaseMaterialWithRandomValues(),
+      material: poGetTexturedMaterial(),
+      //material: colorOveride != null
+      //    ? poGetBaseMaterial(colorOveride)
+      //    : poGetBaseMaterialWithRandomValues(),
     );
   }
 
@@ -420,7 +422,8 @@ class _MyAppState extends State<MyApp> {
     return Sphere(
         id: idToSet,
         centerPosition: pos,
-        material: poGetBaseMaterial(null),
+        material: poGetTexturedMaterial(),
+        //material: poGetBaseMaterial(null),
         stacks: stacks,
         slices: slices,
         cullingEnabled: false,
@@ -437,23 +440,28 @@ class _MyAppState extends State<MyApp> {
         size: sizeExtents,
         scale: scale,
         centerPosition: pos,
+        // facing UP
         rotation: PlayxRotation(x: .7071, y: .7071, z: 0, w: 0),
-        material: poGetBaseMaterialWithRandomValues());
+        // identity
+        // rotation: PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+        material: poGetTexturedMaterial());
+        //material: poGetBaseMaterialWithRandomValues());
   }
 
   ////////////////////////////////////////////////////////////////////////////////
   List<Shape> poCreateLineGrid() {
     List<Shape> itemsToReturn = [];
     int idIter = 40;
-    for (double i = -10; i <= 10; i += 2) {
+    double countExtents = 6;
+    for (double i = -countExtents; i <= countExtents; i += 2) {
       for (int j = 0; j < 1; j++) {
-        for (double k = -10; k <= 10; k += 2) {
+        for (double k = -countExtents; k <= countExtents; k += 2) {
           itemsToReturn.add(poCreateCube(
               PlayxPosition(x: i, y: 0, z: k),
               PlayxSize(x: 1, y: 1, z: 1),
               PlayxSize(x: 1, y: 1, z: 1),
               idIter++,
-              Colors.red));
+              null));
         }
       }
     }
@@ -470,8 +478,8 @@ class _MyAppState extends State<MyApp> {
 
     itemsToReturn.add(poCreateCube(
         PlayxPosition(x: 3, y: 1, z: 3),
-        PlayxSize(x: 1, y: 1, z: 1),
-        PlayxSize(x: 1, y: 1, z: 1),
+        PlayxSize(x: 2, y: 2, z: 2),
+        PlayxSize(x: 2, y: 2, z: 2),
         idToSet++,
         null));
 
@@ -489,7 +497,7 @@ class _MyAppState extends State<MyApp> {
         idToSet++,
         null));
 
-    itemsToReturn.add(poCreateSphere(
+   itemsToReturn.add(poCreateSphere(
         PlayxPosition(x: 3, y: 1, z: -3),
         PlayxSize(x: 1, y: 1, z: 1),
         PlayxSize(x: 1, y: 1, z: 1),
