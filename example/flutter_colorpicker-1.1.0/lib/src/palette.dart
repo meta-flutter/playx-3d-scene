@@ -952,8 +952,9 @@ class _ColorPickerLabelState extends State<ColorPickerLabel> {
 
   List<Widget> colorValueLabels() {
     double fontSize = 14;
-    if (widget.textStyle != null && widget.textStyle?.fontSize != null)
+    if (widget.textStyle != null && widget.textStyle?.fontSize != null) {
       fontSize = widget.textStyle?.fontSize ?? 14;
+    }
 
     return [
       for (String item in _colorTypes[_colorType] ?? [])
@@ -1485,8 +1486,9 @@ class ColorPickerHueRing extends StatelessWidget {
         (atan2(horizontal - center.dx, vertical - center.dy) / pi + 1) /
             2 *
             360;
-    if (dist > 0.7 && dist < 1.3)
+    if (dist > 0.7 && dist < 1.3) {
       onColorChanged(hsvColor.withHue(((rad + 90) % 360).clamp(0, 360)));
+    }
   }
 
   @override
