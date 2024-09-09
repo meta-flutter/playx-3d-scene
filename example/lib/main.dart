@@ -563,6 +563,12 @@ class _MyAppState extends State<MyApp> {
         // from the UI / 'gameplay' in the future.
         poController = controller;
 
+        // Frames from Native to here, currently run in ordre of 
+        // - updateFrame - Called regardless if a frame is going to be drawn or not
+        // - preRenderFrame - Called before native <features>, but we know we're going to draw a frame
+        // - renderFrame - Called after native <features>, right before drawing a frame
+        // - postRenderFrame - Called after we've drawn natively, right after drawing a frame.
+
         MethodChannel _methodChannel = MethodChannel(viewerChannelName);
          _methodChannel.setMethodCallHandler((call) async {
            if (call.method == "renderFrame") {
