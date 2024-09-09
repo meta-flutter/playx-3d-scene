@@ -14,17 +14,29 @@ class Plane extends Shape {
       {required super.id,
       required this.size,
       required super.centerPosition,
+      super.scale,
       super.normal,
-      super.material});
+      super.rotation,
+      super.material,
+      super.doubleSided,
+      super.castShadows,
+      super.receiveShadows,
+      super.cullingEnabled});
 
   @override
   Map<String, dynamic> toJson() => {
         'id': id,
         'centerPosition': centerPosition?.toJson(),
+        'scale': scale?.toJson(),
         'normal': normal?.toJson(),
         'size': size.toJson(),
+        'rotation': rotation?.toJson(),
         'material': material?.toJson(),
-        'shapeType': 1
+        'shapeType': 1,
+        'doubleSided': doubleSided,
+        'cullingEnabled': cullingEnabled,
+        'receiveShadows': receiveShadows,
+        'castShadows': castShadows
       };
 
   @override

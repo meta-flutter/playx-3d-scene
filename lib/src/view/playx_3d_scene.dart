@@ -167,7 +167,8 @@ class PlayxModelViewerState extends State<Playx3dScene> {
 
   @override
   Widget build(BuildContext context) {
-    if (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.linux) {
+    if (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.linux) {
       return AndroidView(
         viewType: _viewType,
         creationParams: _creationParams,
@@ -182,8 +183,8 @@ class PlayxModelViewerState extends State<Playx3dScene> {
   void _setupCreationParams() {
     //final model = widget.models?.toJson();
     final scene = widget.scene?.toJson();
-    _creationParams["models"] =  
-        widget.models?.map((param) => param.toJson()).toList();;
+    _creationParams["models"] =
+        widget.models?.map((param) => param.toJson()).toList();
     _creationParams["scene"] = scene;
     _creationParams["shapes"] =
         widget.shapes?.map((param) => param.toJson()).toList();
