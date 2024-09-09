@@ -569,10 +569,10 @@ class _MyAppState extends State<MyApp> {
         // - renderFrame - Called after native <features>, right before drawing a frame
         // - postRenderFrame - Called after we've drawn natively, right after drawing a frame.
 
-        MethodChannel _methodChannel = MethodChannel(viewerChannelName);
-         _methodChannel.setMethodCallHandler((call) async {
+        const MethodChannel methodChannel = MethodChannel(viewerChannelName);
+         methodChannel.setMethodCallHandler((call) async {
            if (call.method == "renderFrame") {
-              Map<String, dynamic> arguments = call.arguments;
+              // Map<String, dynamic> arguments = call.arguments;
               
               // double timeSinceLastRenderedSec = arguments['timeSinceLastRenderedSec'];
               // double fps = arguments['fps'];
