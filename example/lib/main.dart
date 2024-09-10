@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
 import 'dart:async';
@@ -52,6 +53,7 @@ class _MyAppState extends State<MyApp> {
   //static const String helmetAsset = "assets/models/DamagedHelmet.glb";
   static const String sequoiaAsset = "assets/models/sequoia.glb";
   static const String garageAsset = "assets/models/garagescene.glb";
+  static const String viewerChannelName = "plugin.filament_view.frame_view";
 
   ////////////////////////////////////////////////////////////////////////
   @override
@@ -61,6 +63,8 @@ class _MyAppState extends State<MyApp> {
 
   ////////////////////////////////////////////////////////////////////////
   void logToStdOut(String strOut) {
+
+
     DateTime now = DateTime.now();
     stdout.write('DART : $strOut: $now\n');
   }
@@ -558,6 +562,23 @@ class _MyAppState extends State<MyApp> {
         // we'll save the controller so we can send messages
         // from the UI / 'gameplay' in the future.
         poController = controller;
+
+        // Frames from Native to here, currently run in order of 
+        // - updateFrame - Called regardless if a frame is going to be drawn or not
+        // - preRenderFrame - Called before native <features>, but we know we're going to draw a frame
+        // - renderFrame - Called after native <features>, right before drawing a frame
+        // - postRenderFrame - Called after we've drawn natively, right after drawing a frame.
+
+        const MethodChannel methodChannel = MethodChannel(viewerChannelName);
+         methodChannel.setMethodCallHandler((call) async {
+           if (call.method == "renderFrame") {
+              // Map<String, dynamic> arguments = call.arguments;
+              
+              // double timeSinceLastRenderedSec = arguments['timeSinceLastRenderedSec'];
+              // double fps = arguments['fps'];
+              // vOnEachFrameRender();
+           }
+         });
 
         logToStdOut('poGetPlayx3dScene onCreated');
         return;
