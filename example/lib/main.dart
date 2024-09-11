@@ -218,14 +218,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  GlbModel poGetModel(String szAsset, PlayxPosition position, double scale) {
+  GlbModel poGetModel(String szAsset, PlayxPosition position, PlayxSize scale,
+  PlayxRotation rotation) {
     return GlbModel.asset(
       szAsset,
       //animation: PlayxAnimation.byIndex(0, autoPlay: false),
       //fallback: GlbModel.asset(helmetAsset),
       centerPosition: position,
-      scale: PlayxSize(x:scale, y: scale, z:scale),
-      rotation: PlayxRotation(x: 1, y: 0, z: 0, w: 0),
+      scale: scale,
+      rotation: rotation,
     );
   }
 
@@ -538,9 +539,18 @@ class _MyAppState extends State<MyApp> {
   List<Model> poGetModelList() {
     List<Model> itemsToReturn = [];
     itemsToReturn
-        .add(poGetModel(sequoiaAsset, PlayxPosition(x: 0, y: 0, z: -14.77), 1));
+        .add(poGetModel(sequoiaAsset
+          , PlayxPosition(x: 0, y: 0, z: -14.77)
+          , PlayxSize(x:.5, y:1, z:1)
+          // when i exported the model out, I did in the wrong direction
+          // this will rotate it correctly.
+          , PlayxRotation(x: 1, y: 0, z: 0, w: 0)));
+
     itemsToReturn
-        .add(poGetModel(garageAsset, PlayxPosition(x: 0, y: 0, z: -16), 1));
+        .add(poGetModel(garageAsset
+        , PlayxPosition(x: 0, y: 0, z: -16)
+        , PlayxSize(x:1, y:1, z:1)
+        , PlayxRotation(x: 1, y: 0, z: 0, w: 0)));
     return itemsToReturn;
   }
 
