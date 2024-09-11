@@ -32,6 +32,7 @@ class GltfModel extends Model {
     super.fallback,
     super.scale,
     super.centerPosition,
+    super.rotation,
     super.animation,
   }) : super(assetPath: path) {
     assert(path.isNotEmpty);
@@ -51,6 +52,7 @@ class GltfModel extends Model {
     super.fallback,
     super.scale,
     super.centerPosition,
+    super.rotation,
     super.animation,
   }) : super(url: url);
 
@@ -61,7 +63,8 @@ class GltfModel extends Model {
         'pathPrefix': prefix,
         'pathPostfix': postfix,
         'fallback': fallback?.toJson(),
-        'scale': scale,
+        'scale': scale?.toJson(),
+        'rotation': rotation?.toJson(),
         'centerPosition': centerPosition?.toJson(),
         'animation': animation?.toJson(),
         'isGlb': false,

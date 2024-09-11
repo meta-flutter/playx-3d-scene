@@ -224,7 +224,8 @@ class _MyAppState extends State<MyApp> {
       //animation: PlayxAnimation.byIndex(0, autoPlay: false),
       //fallback: GlbModel.asset(helmetAsset),
       centerPosition: position,
-      scale: scale,
+      scale: PlayxSize(x:scale, y: scale, z:scale),
+      rotation: PlayxRotation(x: 1, y: 0, z: 0, w: 0),
     );
   }
 
