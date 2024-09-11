@@ -2,6 +2,8 @@ import 'package:playx_3d_scene/src/models/model/animation.dart';
 import 'package:playx_3d_scene/src/models/model/glb_model.dart';
 import 'package:playx_3d_scene/src/models/model/gltf_model.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/position.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/size.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/rotation.dart';
 
 /// represents base object of the 3d model to be rendered.
 ///
@@ -24,7 +26,8 @@ abstract class Model {
   /// Scale Factor of the model.
   /// Should be greater than 0.
   /// Defaults to 1.
-  double? scale;
+  PlayxSize? scale;
+  //double? scale;
 
   ///Coordinate of center point position of the rendered model.
   ///
@@ -34,11 +37,15 @@ abstract class Model {
   ///Controls what animation should be played by the rendered model.
   PlayxAnimation? animation;
 
+    /// Quaternion rotation for the shape
+  PlayxRotation? rotation;
+
   Model(
       {this.assetPath,
       this.url,
       this.fallback,
-      this.scale = 1.0,
+      this.scale,
+      this.rotation,
       this.centerPosition,
       this.animation});
 
