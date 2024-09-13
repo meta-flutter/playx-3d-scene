@@ -4,7 +4,10 @@ import 'package:playx_3d_scene/src/models/model/gltf_model.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/position.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/size.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/rotation.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/collidable.dart';
 
+import '../scene/geometry/collidable.dart';
+  
 /// represents base object of the 3d model to be rendered.
 ///
 /// see also :
@@ -29,6 +32,10 @@ abstract class Model {
   PlayxSize? scale;
   //double? scale;
 
+  /// Do we have a collidable for this object (expecting to collide)
+  /// For now this will create a box using the extents value
+  Collidable? collidable;
+
   ///Coordinate of center point position of the rendered model.
   ///
   /// Defaults to ( x:0,y: 0,z: -4)
@@ -46,6 +53,7 @@ abstract class Model {
       this.fallback,
       this.scale,
       this.rotation,
+      this.collidable,
       this.centerPosition,
       this.animation});
 

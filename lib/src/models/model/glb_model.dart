@@ -24,6 +24,7 @@ class GlbModel extends Model {
         'url': url,
         'fallback': fallback?.toJson(),
         'scale': scale?.toJson(),
+        'collidable': collidable?.toJson(),
         'rotation': rotation?.toJson(),
         'centerPosition': centerPosition?.toJson(),
         'animation': animation?.toJson(),

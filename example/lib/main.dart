@@ -239,23 +239,23 @@ class _MyAppState extends State<MyApp> {
     return Scene(
       skybox: ColoredSkybox(color: Colors.black),
       //skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
-      indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
+      //indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
       //skybox: ColoredSkybox(color: Colors.red),
-      // indirectLight: DefaultIndirectLight(
-      //     intensity: 1000000, // indirect light intensity.
-      //     radianceBands: 1, // Number of spherical harmonics bands.
-      //     radianceSh: [
-      //       1,
-      //       1,
-      //       1
-      //     ], // Array containing the spherical harmonics coefficients.
-      //     irradianceBands: 1, // Number of spherical harmonics bands.
-      //     irradianceSh: [
-      //       1,
-      //       1,
-      //       1
-      //     ] // Array containing the spherical harmonics coefficients.
-      //     ),
+      indirectLight: DefaultIndirectLight(
+          intensity: 1000000, // indirect light intensity.
+          radianceBands: 1, // Number of spherical harmonics bands.
+          radianceSh: [
+            1,
+            1,
+            1
+          ], // Array containing the spherical harmonics coefficients.
+          irradianceBands: 1, // Number of spherical harmonics bands.
+          irradianceSh: [
+            1,
+            1,
+            1
+          ] // Array containing the spherical harmonics coefficients.
+          ),
 
       // Note point lights seem to only value intensity at a high
       // range 30000000, for a 3 meter diameter of a circle, not caring about
@@ -267,7 +267,7 @@ class _MyAppState extends State<MyApp> {
           colorTemperature: 36500,
           color: _directLightColor,
           intensity: _directIntensity,
-          castShadows: false,
+          castShadows: true,
           castLight: true,
           spotLightConeInner: 1,
           spotLightConeOuter: 10,
@@ -409,7 +409,10 @@ class _MyAppState extends State<MyApp> {
       size: sizeExtents,
       centerPosition: pos,
       scale: scale,
+      castShadows: true,
+      receiveShadows: true,
       material: poGetTexturedMaterial(),
+      collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true)
       //material: colorOveride != null
       //    ? poGetBaseMaterial(colorOveride)
       //    : poGetBaseMaterialWithRandomValues(),
@@ -431,8 +434,11 @@ class _MyAppState extends State<MyApp> {
         material: poGetTexturedMaterial(),
         //material: poGetBaseMaterial(null),
         stacks: stacks,
+      collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
         slices: slices,
         cullingEnabled: false,
+        castShadows: true,
+        receiveShadows: true,
         scale: scale,
         size: sizeExtents);
   }
@@ -445,7 +451,11 @@ class _MyAppState extends State<MyApp> {
         doubleSided: true,
         size: sizeExtents,
         scale: scale,
+        castShadows: true,
+        receiveShadows: true,
         centerPosition: pos,
+        collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
+
         // facing UP
         rotation: PlayxRotation(x: .7071, y: .7071, z: 0, w: 0),
         // identity

@@ -63,6 +63,7 @@ class GltfModel extends Model {
         'pathPrefix': prefix,
         'pathPostfix': postfix,
         'fallback': fallback?.toJson(),
+        'collidable': collidable?.toJson(),
         'scale': scale?.toJson(),
         'rotation': rotation?.toJson(),
         'centerPosition': centerPosition?.toJson(),

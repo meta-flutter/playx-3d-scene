@@ -16,6 +16,7 @@ export 'src/models/scene/geometry/direction.dart';
 export 'src/models/scene/geometry/position.dart';
 export 'src/models/scene/geometry/size.dart';
 export 'src/models/scene/geometry/rotation.dart';
+export 'src/models/scene/geometry/collidable.dart';
 export 'src/models/scene/indirect_light/default_indirect_light.dart';
 export 'src/models/scene/indirect_light/hdr_indirect_light.dart';
 export 'src/models/scene/indirect_light/indirect_light.dart';

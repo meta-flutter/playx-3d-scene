@@ -6,6 +6,7 @@ import 'package:playx_3d_scene/src/models/scene/geometry/rotation.dart';
 import 'package:playx_3d_scene/src/models/shapes/cube.dart';
 import 'package:playx_3d_scene/src/models/shapes/plane.dart';
 import 'package:playx_3d_scene/src/models/shapes/sphere.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/collidable.dart';
 
 /// An object that represents shapes to be rendered on the scene.
 ///
@@ -32,6 +33,9 @@ class Shape {
   /// Quaternion rotation for the shape
   PlayxRotation? rotation;
 
+  /// Do we have a collidable for this object (expecting to collide)
+  Collidable? collidable;
+
   /// When creating geometry if its inside and out, or only
   /// outward facing
   bool doubleSided;
@@ -52,6 +56,7 @@ class Shape {
       this.material,
       this.scale,
       this.rotation,
+      this.collidable,
       this.doubleSided = false,
       this.cullingEnabled = true,
       this.castShadows = false,
@@ -64,6 +69,7 @@ class Shape {
         'material': material?.toJson(),
         'scale': scale?.toJson(),
         'rotation': rotation?.toJson(),
+        'collidable': collidable?.toJson(),
         'type': 0,
         'doubleSided': doubleSided,
         'cullingEnabled': cullingEnabled,
