@@ -84,6 +84,16 @@ class Playx3dSceneController {
     return _handleError(data);
   }
 
+  Future<Result<int>> toggleCollidableVisualsInScene(bool value) {
+    final data = _channel.invokeMethod<int>(
+      _toggleCollidableVisualsInScene,
+      {
+        _toggleCollidableVisualsInSceneValue: value,
+      },
+    );
+    return _handleError(data);
+  }
+
   Future<Result<int>> toggleCameraAutoRotate(bool value) {
     final data = _channel.invokeMethod<int>(
       _toggleCameraAutoRotate,
@@ -748,6 +758,9 @@ const String _changeDirectLightColorByIndexIntensity =
 
 const String _toggleShapesInScene = "TOGGLE_SHAPES_IN_SCENE";
 const String _toggleShapesInSceneValue = "TOGGLE_SHAPES_IN_SCENE_VALUE";
+
+const String _toggleCollidableVisualsInScene = "TOGGLE_COLLIDABLE_VISUALS_IN_SCENE";
+const String _toggleCollidableVisualsInSceneValue ="TOGGLE_COLLIDABLE_VISUALS_IN_SCENE_VALUE";
 
 const String _toggleCameraAutoRotate = "TOGGLE_CAMERA_AUTO_ROTATE";
 const String _toggleCameraAutoRotateValue = "TOGGLE_CAMERA_AUTO_ROTATE_VALUE";

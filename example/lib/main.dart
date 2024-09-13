@@ -46,6 +46,7 @@ class _MyAppState extends State<MyApp> {
   double _cameraRotation = 0;
   bool _autoRotate = true;
   bool _toggleShapes = true;
+  bool _toggleCollidableVisuals = true;
 
   static const String litMat = "assets/materials/lit.filamat";
   static const String texturedMat = "assets/materials/textured_pbr.filamat";
@@ -209,6 +210,18 @@ class _MyAppState extends State<MyApp> {
                         child: Text(_toggleShapes
                             ? 'Toggle Shapes: On'
                             : 'Toggle Shapes: Off'),
+                      ),
+                      const SizedBox(width: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            poController.toggleCollidableVisualsInScene(_toggleCollidableVisuals);
+                            _toggleCollidableVisuals = !_toggleCollidableVisuals;
+                          });
+                        },
+                        child: Text(_toggleCollidableVisuals
+                            ? 'Toggle Collidables: On'
+                            : 'Toggle Collidables: Off'),
                       ),
                     ],
                   ),
