@@ -7,7 +7,7 @@ import 'model.dart';
 class GlbModel extends Model {
   /// creates glb model based on glb file asset path.
   GlbModel.asset(String path,
-      {super.fallback, super.scale, super.centerPosition, super.animation, super.rotation})
+      {super.fallback, super.scale, super.collidable, super.centerPosition, super.animation, super.rotation})
       : super(assetPath: path) {
     assert(path.isNotEmpty);
     assert(path.contains('.glb'), "path should be a glb file path");

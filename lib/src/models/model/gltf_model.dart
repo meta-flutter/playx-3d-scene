@@ -32,6 +32,7 @@ class GltfModel extends Model {
     super.fallback,
     super.scale,
     super.centerPosition,
+    super.collidable,
     super.rotation,
     super.animation,
   }) : super(assetPath: path) {

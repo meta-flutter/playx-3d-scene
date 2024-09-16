@@ -236,11 +236,12 @@ class _MyAppState extends State<MyApp> {
 
   ////////////////////////////////////////////////////////////////////////
   GlbModel poGetModel(String szAsset, PlayxPosition position, PlayxSize scale,
-  PlayxRotation rotation) {
+  PlayxRotation rotation, Collidable? collidable) {
     return GlbModel.asset(
       szAsset,
       //animation: PlayxAnimation.byIndex(0, autoPlay: false),
       //fallback: GlbModel.asset(helmetAsset),
+      collidable: collidable,
       centerPosition: position,
       scale: scale,
       rotation: rotation,
@@ -470,7 +471,7 @@ class _MyAppState extends State<MyApp> {
         collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
 
         // facing UP
-        rotation: PlayxRotation(x: .7071, y: .7071, z: 0, w: 0),
+        rotation: PlayxRotation(x: 0, y: .7071, z: .7071, w: 0),
         // identity
         // rotation: PlayxRotation(x: 0, y: 0, z: 0, w: 1),
         material: poGetTexturedMaterial());
@@ -569,15 +570,14 @@ class _MyAppState extends State<MyApp> {
         .add(poGetModel(sequoiaAsset
           , PlayxPosition(x: 0, y: 0, z: -14.77)
           , PlayxSize(x:.5, y:1, z:1)
-          // when i exported the model out, I did in the wrong direction
-          // this will rotate it correctly.
-          , PlayxRotation(x: 1, y: 0, z: 0, w: 0)));
+          , PlayxRotation(x: 0, y: 0, z: 0, w: 1)
+          , Collidable(isStatic: false, shouldMatchAttachedObject: true)));
 
     itemsToReturn
         .add(poGetModel(garageAsset
         , PlayxPosition(x: 0, y: 0, z: -16)
         , PlayxSize(x:1, y:1, z:1)
-        , PlayxRotation(x: 1, y: 0, z: 0, w: 0)));
+        , PlayxRotation(x: 0, y: 0, z: 0, w: 1), null));
     return itemsToReturn;
   }
 
