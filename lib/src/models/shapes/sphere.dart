@@ -17,6 +17,8 @@ class Sphere extends Shape {
       required super.centerPosition,
       this.stacks,
       this.slices,
+      super.global_guid,
+      super.name,
       super.normal,
       super.material,
       super.scale,
@@ -31,6 +33,8 @@ class Sphere extends Shape {
   @override
   Map<String, dynamic> toJson() => {
         'id': id,
+        'name': name,
+        'global_guid' : global_guid,
         'centerPosition': centerPosition?.toJson(),
         'normal': normal?.toJson(),
         'scale': scale?.toJson(),

@@ -14,6 +14,8 @@ class Plane extends Shape {
       {required super.id,
       required this.size,
       required super.centerPosition,
+      super.global_guid,
+      super.name,
       super.scale,
       super.normal,
       super.rotation,
@@ -27,6 +29,8 @@ class Plane extends Shape {
   @override
   Map<String, dynamic> toJson() => {
         'id': id,
+        'name': name,
+        'global_guid' : global_guid,
         'centerPosition': centerPosition?.toJson(),
         'scale': scale?.toJson(),
         'normal': normal?.toJson(),

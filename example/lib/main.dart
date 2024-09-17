@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
+import 'package:uuid/uuid.dart';
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
@@ -245,6 +246,8 @@ class _MyAppState extends State<MyApp> {
       centerPosition: position,
       scale: scale,
       rotation: rotation,
+      name: szAsset,
+      global_guid: Uuid().v4()
     );
   }
 
@@ -426,7 +429,8 @@ class _MyAppState extends State<MyApp> {
       castShadows: true,
       receiveShadows: true,
       material: poGetTexturedMaterial(),
-      collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true)
+      collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
+      global_guid: Uuid().v4()
       //material: colorOveride != null
       //    ? poGetBaseMaterial(colorOveride)
       //    : poGetBaseMaterialWithRandomValues(),

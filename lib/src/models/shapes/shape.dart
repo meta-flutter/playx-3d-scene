@@ -36,6 +36,12 @@ class Shape {
   /// Do we have a collidable for this object (expecting to collide)
   Collidable? collidable;
 
+  /// used for communication back and forth from dart/native
+  String? name;
+
+  /// used for communication back and forth from dart/native
+  String? global_guid;
+
   /// When creating geometry if its inside and out, or only
   /// outward facing
   bool doubleSided;
@@ -56,7 +62,9 @@ class Shape {
       this.material,
       this.scale,
       this.rotation,
-      this.collidable,
+      this.collidable, 
+      this.global_guid,
+      this.name,
       this.doubleSided = false,
       this.cullingEnabled = true,
       this.castShadows = false,
@@ -64,6 +72,8 @@ class Shape {
 
   Map<String, dynamic> toJson() => {
         'id': id,
+        'name': name,
+        'global_guid' : global_guid,
         'centerPosition': centerPosition?.toJson(),
         'normal': normal?.toJson(),
         'material': material?.toJson(),

@@ -12,6 +12,8 @@ class Cube extends Shape {
       {required super.id,
       required this.size,
       required super.centerPosition,
+      super.global_guid,
+      super.name,
       super.scale,
       super.rotation,
       super.material,
@@ -27,6 +29,8 @@ class Cube extends Shape {
   @override
   Map<String, dynamic> toJson() => {
         'id': id,
+        'name': name,
+        'global_guid' : global_guid,
         'centerPosition': centerPosition?.toJson(),
         'size': _size.toJson(),
         'material': material?.toJson(),

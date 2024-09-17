@@ -21,6 +21,12 @@ abstract class Model {
   /// Model url to load the model from url.
   String? url;
 
+  /// used for communication back and forth from dart/native
+  String? name;
+
+  /// used for communication back and forth from dart/native
+  String? global_guid;
+
   /// Model to be shown when error happened.
   ///
   /// can be whether [GlbModel] or [GltfModel]
@@ -30,7 +36,6 @@ abstract class Model {
   /// Should be greater than 0.
   /// Defaults to 1.
   PlayxSize? scale;
-  //double? scale;
 
   /// Do we have a collidable for this object (expecting to collide)
   /// For now this will create a box using the extents value
@@ -55,7 +60,9 @@ abstract class Model {
       this.rotation,
       this.collidable,
       this.centerPosition,
-      this.animation});
+      this.animation,
+      this.global_guid,
+      this.name,});
 
   Map<String, dynamic> toJson() {
     if (this is GlbModel) {
