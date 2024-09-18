@@ -56,6 +56,7 @@ class _MyAppState extends State<MyApp> {
   static const String sequoiaAsset = "assets/models/sequoia.glb";
   static const String garageAsset = "assets/models/garagescene.glb";
   static const String viewerChannelName = "plugin.filament_view.frame_view";
+  static const String collisionChannelName = "plugin.filament_view.collision_info";
 
   ////////////////////////////////////////////////////////////////////////
   @override
@@ -617,6 +618,17 @@ class _MyAppState extends State<MyApp> {
               // vOnEachFrameRender();
            }
          });
+
+        // kCollisionEvent = "collision_event";
+        // kCollisionEventType = "collision_event_type";
+        // enum CollisionEventType { eFromNonNative, eNativeOnTouchBegin
+        // , eNativeOnTouchHeld, eNativeOnTouchEnd };
+        const MethodChannel methodChannel = MethodChannel(collisionChannelName);
+        methodChannel.setMethodCallHandler((call) async {
+          if (call.method == "collision_event") {
+            // Map<String, dynamic> arguments = call.arguments;
+          }
+        });
 
         logToStdOut('poGetPlayx3dScene onCreated');
         return;
