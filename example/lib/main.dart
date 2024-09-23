@@ -254,6 +254,7 @@ class _MyAppState extends State<MyApp> {
       scale: scale,
       rotation: rotation,
       name: szAsset,
+      // ignore: prefer_const_constructors
       global_guid: Uuid().v4()
     );
   }
@@ -437,6 +438,7 @@ class _MyAppState extends State<MyApp> {
       receiveShadows: true,
       material: poGetTexturedMaterial(),
       collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
+      // ignore: prefer_const_constructors
       global_guid: Uuid().v4()
       //material: colorOveride != null
       //    ? poGetBaseMaterial(colorOveride)
