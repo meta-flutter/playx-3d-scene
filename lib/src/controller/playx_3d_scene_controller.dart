@@ -117,7 +117,7 @@ class Playx3dSceneController {
    Future<Result<int>> requestCollisionCheckFromRay(String queryID,
     double originX, double originY, double originZ,
      double directionX, double directionY, double directionZ,
-     float length) {
+     double length) {
       final data = _channel.invokeMethod<int>(
         _collisionRayRequest,
         {

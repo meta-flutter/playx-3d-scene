@@ -7,6 +7,12 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+// Rebuilding materials to match filament versions.
+//tcna@TC-4000713:~/dev/workspace-automation/app/playx-3d-scene/example/assets/materials$
+// /home/tcna/dev/workspace-automation/app/filament/cmake-build-release/staging/release/bin/matc -a vulkan -o lit.filamat raw/lit.mat
+//tcna@TC-4000713:~/dev/workspace-automation/app/playx-3d-scene/example/assets/materials$
+///home/tcna/dev/workspace-automation/app/filament/cmake-build-release/staging/release/bin/matc -a vulkan -o textured_pbr.filamat raw/textured_pbr.mat
+
 ////////////////////////////////////////////////////////////////////////
 void main() {
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -623,8 +629,8 @@ class _MyAppState extends State<MyApp> {
         // kCollisionEventType = "collision_event_type";
         // enum CollisionEventType { eFromNonNative, eNativeOnTouchBegin
         // , eNativeOnTouchHeld, eNativeOnTouchEnd };
-        const MethodChannel methodChannel = MethodChannel(collisionChannelName);
-        methodChannel.setMethodCallHandler((call) async {
+        const MethodChannel methodChannelCollision = MethodChannel(collisionChannelName);
+        methodChannelCollision.setMethodCallHandler((call) async {
           if (call.method == "collision_event") {
             // Map<String, dynamic> arguments = call.arguments;
           }
