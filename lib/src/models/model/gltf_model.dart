@@ -32,8 +32,11 @@ class GltfModel extends Model {
     super.fallback,
     super.scale,
     super.centerPosition,
+    super.collidable,
     super.rotation,
     super.animation,
+    super.name,
+    super.global_guid,
   }) : super(assetPath: path) {
     assert(path.isNotEmpty);
     assert(
@@ -54,6 +57,8 @@ class GltfModel extends Model {
     super.centerPosition,
     super.rotation,
     super.animation,
+    super.name,
+    super.global_guid,
   }) : super(url: url);
 
   @override
@@ -63,11 +68,14 @@ class GltfModel extends Model {
         'pathPrefix': prefix,
         'pathPostfix': postfix,
         'fallback': fallback?.toJson(),
+        'collidable': collidable?.toJson(),
         'scale': scale?.toJson(),
         'rotation': rotation?.toJson(),
         'centerPosition': centerPosition?.toJson(),
         'animation': animation?.toJson(),
         'isGlb': false,
+        'name': name,
+        'global_guid' : global_guid,
       };
 
   @override

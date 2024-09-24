@@ -84,6 +84,16 @@ class Playx3dSceneController {
     return _handleError(data);
   }
 
+  Future<Result<int>> toggleCollidableVisualsInScene(bool value) {
+    final data = _channel.invokeMethod<int>(
+      _toggleCollidableVisualsInScene,
+      {
+        _toggleCollidableVisualsInSceneValue: value,
+      },
+    );
+    return _handleError(data);
+  }
+
   Future<Result<int>> toggleCameraAutoRotate(bool value) {
     final data = _channel.invokeMethod<int>(
       _toggleCameraAutoRotate,
@@ -103,6 +113,26 @@ class Playx3dSceneController {
     );
     return _handleError(data);
   }
+
+   Future<Result<int>> requestCollisionCheckFromRay(String queryID,
+    double originX, double originY, double originZ,
+     double directionX, double directionY, double directionZ,
+     double length) {
+      final data = _channel.invokeMethod<int>(
+        _collisionRayRequest,
+        {
+          _collisionRayRequestGUID: queryID,
+          _collisionRayRequestOriginX: originX,
+          _collisionRayRequestOriginY: originY,
+          _collisionRayRequestOriginZ: originZ,
+          _collisionRayRequestDirectionX: directionX,
+          _collisionRayRequestDirectionY: directionY,
+          _collisionRayRequestDirectionZ: directionZ,
+          _collisionRayRequestLength: length,
+        },
+      );
+      return _handleError(data);
+    }
 
   //animation
   /// Updates the current animation by index.
@@ -749,11 +779,24 @@ const String _changeDirectLightColorByIndexIntensity =
 const String _toggleShapesInScene = "TOGGLE_SHAPES_IN_SCENE";
 const String _toggleShapesInSceneValue = "TOGGLE_SHAPES_IN_SCENE_VALUE";
 
+const String _toggleCollidableVisualsInScene = "TOGGLE_COLLIDABLE_VISUALS_IN_SCENE";
+const String _toggleCollidableVisualsInSceneValue ="TOGGLE_COLLIDABLE_VISUALS_IN_SCENE_VALUE";
+
 const String _toggleCameraAutoRotate = "TOGGLE_CAMERA_AUTO_ROTATE";
 const String _toggleCameraAutoRotateValue = "TOGGLE_CAMERA_AUTO_ROTATE_VALUE";
 
 const String _changeCameraRotation = "ROTATE_CAMERA";
 const String _changeCameraRotationValue = "ROTATE_CAMERA_VALUE";
+
+const String _collisionRayRequest = "COLLISION_RAY_REQUEST";
+const String _collisionRayRequestOriginX = "COLLISION_RAY_REQUEST_ORIGIN_X";
+const String _collisionRayRequestOriginZ = "COLLISION_RAY_REQUEST_ORIGIN_Z";
+const String _collisionRayRequestOriginY = "COLLISION_RAY_REQUEST_ORIGIN_Y";
+const String _collisionRayRequestDirectionX = "COLLISION_RAY_REQUEST_DIRECTION_X";
+const String _collisionRayRequestDirectionY = "COLLISION_RAY_REQUEST_DIRECTION_Y";
+const String _collisionRayRequestDirectionZ = "COLLISION_RAY_REQUEST_DIRECTION_Z";
+const String _collisionRayRequestLength = "COLLISION_RAY_REQUEST_LENGTH";
+const String _collisionRayRequestGUID = "COLLISION_RAY_REQUEST_GUID";
 
 const String _changeAnimationByIndex = "CHANGE_ANIMATION_BY_INDEX";
 const String _changeAnimationByIndexKey = "CHANGE_ANIMATION_BY_INDEX_KEY";

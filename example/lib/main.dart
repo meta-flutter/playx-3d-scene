@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
+import 'package:uuid/uuid.dart';
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+
+// Rebuilding materials to match filament versions.
+//tcna@TC-4000713:~/dev/workspace-automation/app/playx-3d-scene/example/assets/materials$
+// /home/tcna/dev/workspace-automation/app/filament/cmake-build-release/staging/release/bin/matc -a vulkan -o lit.filamat raw/lit.mat
+//tcna@TC-4000713:~/dev/workspace-automation/app/playx-3d-scene/example/assets/materials$
+///home/tcna/dev/workspace-automation/app/filament/cmake-build-release/staging/release/bin/matc -a vulkan -o textured_pbr.filamat raw/textured_pbr.mat
 
 ////////////////////////////////////////////////////////////////////////
 void main() {
@@ -46,6 +53,7 @@ class _MyAppState extends State<MyApp> {
   double _cameraRotation = 0;
   bool _autoRotate = true;
   bool _toggleShapes = true;
+  bool _toggleCollidableVisuals = true;
 
   static const String litMat = "assets/materials/lit.filamat";
   static const String texturedMat = "assets/materials/textured_pbr.filamat";
@@ -54,6 +62,7 @@ class _MyAppState extends State<MyApp> {
   static const String sequoiaAsset = "assets/models/sequoia.glb";
   static const String garageAsset = "assets/models/garagescene.glb";
   static const String viewerChannelName = "plugin.filament_view.frame_view";
+  static const String collisionChannelName = "plugin.filament_view.collision_info";
 
   ////////////////////////////////////////////////////////////////////////
   @override
@@ -210,6 +219,18 @@ class _MyAppState extends State<MyApp> {
                             ? 'Toggle Shapes: On'
                             : 'Toggle Shapes: Off'),
                       ),
+                      const SizedBox(width: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            poController.toggleCollidableVisualsInScene(_toggleCollidableVisuals);
+                            _toggleCollidableVisuals = !_toggleCollidableVisuals;
+                          });
+                        },
+                        child: Text(_toggleCollidableVisuals
+                            ? 'Toggle Collidables: On'
+                            : 'Toggle Collidables: Off'),
+                      ),
                     ],
                   ),
                 ],
@@ -223,14 +244,18 @@ class _MyAppState extends State<MyApp> {
 
   ////////////////////////////////////////////////////////////////////////
   GlbModel poGetModel(String szAsset, PlayxPosition position, PlayxSize scale,
-  PlayxRotation rotation) {
+  PlayxRotation rotation, Collidable? collidable) {
     return GlbModel.asset(
       szAsset,
       //animation: PlayxAnimation.byIndex(0, autoPlay: false),
       //fallback: GlbModel.asset(helmetAsset),
+      collidable: collidable,
       centerPosition: position,
       scale: scale,
       rotation: rotation,
+      name: szAsset,
+      // ignore: prefer_const_constructors
+      global_guid: Uuid().v4()
     );
   }
 
@@ -239,23 +264,23 @@ class _MyAppState extends State<MyApp> {
     return Scene(
       skybox: ColoredSkybox(color: Colors.black),
       //skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
-      indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
+      //indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
       //skybox: ColoredSkybox(color: Colors.red),
-      // indirectLight: DefaultIndirectLight(
-      //     intensity: 1000000, // indirect light intensity.
-      //     radianceBands: 1, // Number of spherical harmonics bands.
-      //     radianceSh: [
-      //       1,
-      //       1,
-      //       1
-      //     ], // Array containing the spherical harmonics coefficients.
-      //     irradianceBands: 1, // Number of spherical harmonics bands.
-      //     irradianceSh: [
-      //       1,
-      //       1,
-      //       1
-      //     ] // Array containing the spherical harmonics coefficients.
-      //     ),
+      indirectLight: DefaultIndirectLight(
+          intensity: 1000000, // indirect light intensity.
+          radianceBands: 1, // Number of spherical harmonics bands.
+          radianceSh: [
+            1,
+            1,
+            1
+          ], // Array containing the spherical harmonics coefficients.
+          irradianceBands: 1, // Number of spherical harmonics bands.
+          irradianceSh: [
+            1,
+            1,
+            1
+          ] // Array containing the spherical harmonics coefficients.
+          ),
 
       // Note point lights seem to only value intensity at a high
       // range 30000000, for a 3 meter diameter of a circle, not caring about
@@ -267,7 +292,7 @@ class _MyAppState extends State<MyApp> {
           colorTemperature: 36500,
           color: _directLightColor,
           intensity: _directIntensity,
-          castShadows: false,
+          castShadows: true,
           castLight: true,
           spotLightConeInner: 1,
           spotLightConeOuter: 10,
@@ -409,7 +434,12 @@ class _MyAppState extends State<MyApp> {
       size: sizeExtents,
       centerPosition: pos,
       scale: scale,
+      castShadows: true,
+      receiveShadows: true,
       material: poGetTexturedMaterial(),
+      collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
+      // ignore: prefer_const_constructors
+      global_guid: Uuid().v4()
       //material: colorOveride != null
       //    ? poGetBaseMaterial(colorOveride)
       //    : poGetBaseMaterialWithRandomValues(),
@@ -431,8 +461,11 @@ class _MyAppState extends State<MyApp> {
         material: poGetTexturedMaterial(),
         //material: poGetBaseMaterial(null),
         stacks: stacks,
+      collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
         slices: slices,
         cullingEnabled: false,
+        castShadows: true,
+        receiveShadows: true,
         scale: scale,
         size: sizeExtents);
   }
@@ -445,9 +478,13 @@ class _MyAppState extends State<MyApp> {
         doubleSided: true,
         size: sizeExtents,
         scale: scale,
+        castShadows: true,
+        receiveShadows: true,
         centerPosition: pos,
+        collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
+
         // facing UP
-        rotation: PlayxRotation(x: .7071, y: .7071, z: 0, w: 0),
+        rotation: PlayxRotation(x: 0, y: .7071, z: .7071, w: 0),
         // identity
         // rotation: PlayxRotation(x: 0, y: 0, z: 0, w: 1),
         material: poGetTexturedMaterial());
@@ -546,15 +583,14 @@ class _MyAppState extends State<MyApp> {
         .add(poGetModel(sequoiaAsset
           , PlayxPosition(x: 0, y: 0, z: -14.77)
           , PlayxSize(x:.5, y:1, z:1)
-          // when i exported the model out, I did in the wrong direction
-          // this will rotate it correctly.
-          , PlayxRotation(x: 1, y: 0, z: 0, w: 0)));
+          , PlayxRotation(x: 0, y: 0, z: 0, w: 1)
+          , Collidable(isStatic: false, shouldMatchAttachedObject: true)));
 
     itemsToReturn
         .add(poGetModel(garageAsset
         , PlayxPosition(x: 0, y: 0, z: -16)
         , PlayxSize(x:1, y:1, z:1)
-        , PlayxRotation(x: 1, y: 0, z: 0, w: 0)));
+        , PlayxRotation(x: 0, y: 0, z: 0, w: 1), null));
     return itemsToReturn;
   }
 
@@ -590,6 +626,17 @@ class _MyAppState extends State<MyApp> {
               // vOnEachFrameRender();
            }
          });
+
+        // kCollisionEvent = "collision_event";
+        // kCollisionEventType = "collision_event_type";
+        // enum CollisionEventType { eFromNonNative, eNativeOnTouchBegin
+        // , eNativeOnTouchHeld, eNativeOnTouchEnd };
+        const MethodChannel methodChannelCollision = MethodChannel(collisionChannelName);
+        methodChannelCollision.setMethodCallHandler((call) async {
+          if (call.method == "collision_event") {
+            // Map<String, dynamic> arguments = call.arguments;
+          }
+        });
 
         logToStdOut('poGetPlayx3dScene onCreated');
         return;

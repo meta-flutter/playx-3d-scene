@@ -4,7 +4,10 @@ import 'package:playx_3d_scene/src/models/model/gltf_model.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/position.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/size.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/rotation.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/collidable.dart';
 
+import '../scene/geometry/collidable.dart';
+  
 /// represents base object of the 3d model to be rendered.
 ///
 /// see also :
@@ -18,6 +21,12 @@ abstract class Model {
   /// Model url to load the model from url.
   String? url;
 
+  /// used for communication back and forth from dart/native
+  String? name;
+
+  /// used for communication back and forth from dart/native
+  String? global_guid;
+
   /// Model to be shown when error happened.
   ///
   /// can be whether [GlbModel] or [GltfModel]
@@ -27,7 +36,10 @@ abstract class Model {
   /// Should be greater than 0.
   /// Defaults to 1.
   PlayxSize? scale;
-  //double? scale;
+
+  /// Do we have a collidable for this object (expecting to collide)
+  /// For now this will create a box using the extents value
+  Collidable? collidable;
 
   ///Coordinate of center point position of the rendered model.
   ///
@@ -46,8 +58,11 @@ abstract class Model {
       this.fallback,
       this.scale,
       this.rotation,
+      this.collidable,
       this.centerPosition,
-      this.animation});
+      this.animation,
+      this.global_guid,
+      this.name,});
 
   Map<String, dynamic> toJson() {
     if (this is GlbModel) {
