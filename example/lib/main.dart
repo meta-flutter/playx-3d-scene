@@ -6,12 +6,15 @@ import 'package:uuid/uuid.dart';
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'utils.dart';
+import 'materialHelpers.dart';
+import 'shapeAndObjectCreators.dart';
 
 // Rebuilding materials to match filament versions.
-//tcna@TC-4000713:~/dev/workspace-automation/app/playx-3d-scene/example/assets/materials$
+// playx-3d-scene/example/assets/materials$
 // /home/tcna/dev/workspace-automation/app/filament/cmake-build-release/staging/release/bin/matc -a vulkan -o lit.filamat raw/lit.mat
-//tcna@TC-4000713:~/dev/workspace-automation/app/playx-3d-scene/example/assets/materials$
-///home/tcna/dev/workspace-automation/app/filament/cmake-build-release/staging/release/bin/matc -a vulkan -o textured_pbr.filamat raw/textured_pbr.mat
+// playx-3d-scene/example/assets/materials$
+// /home/tcna/dev/workspace-automation/app/filament/cmake-build-release/staging/release/bin/matc -a vulkan -o textured_pbr.filamat raw/textured_pbr.mat
 
 ////////////////////////////////////////////////////////////////////////
 void main() {
@@ -55,14 +58,9 @@ class _MyAppState extends State<MyApp> {
   bool _toggleShapes = true;
   bool _toggleCollidableVisuals = true;
 
-  static const String litMat = "assets/materials/lit.filamat";
-  static const String texturedMat = "assets/materials/textured_pbr.filamat";
-  //static const String foxAsset = "assets/models/Fox.glb";
-  //static const String helmetAsset = "assets/models/DamagedHelmet.glb";
-  static const String sequoiaAsset = "assets/models/sequoia.glb";
-  static const String garageAsset = "assets/models/garagescene.glb";
   static const String viewerChannelName = "plugin.filament_view.frame_view";
-  static const String collisionChannelName = "plugin.filament_view.collision_info";
+  static const String collisionChannelName =
+      "plugin.filament_view.collision_info";
 
   ////////////////////////////////////////////////////////////////////////
   @override
@@ -72,8 +70,6 @@ class _MyAppState extends State<MyApp> {
 
   ////////////////////////////////////////////////////////////////////////
   void logToStdOut(String strOut) {
-
-
     DateTime now = DateTime.now();
     stdout.write('DART : $strOut: $now\n');
   }
@@ -223,8 +219,10 @@ class _MyAppState extends State<MyApp> {
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            poController.toggleCollidableVisualsInScene(_toggleCollidableVisuals);
-                            _toggleCollidableVisuals = !_toggleCollidableVisuals;
+                            poController.toggleCollidableVisualsInScene(
+                                _toggleCollidableVisuals);
+                            _toggleCollidableVisuals =
+                                !_toggleCollidableVisuals;
                           });
                         },
                         child: Text(_toggleCollidableVisuals
@@ -239,23 +237,6 @@ class _MyAppState extends State<MyApp> {
           ],
         ),
       ),
-    );
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  GlbModel poGetModel(String szAsset, PlayxPosition position, PlayxSize scale,
-  PlayxRotation rotation, Collidable? collidable) {
-    return GlbModel.asset(
-      szAsset,
-      //animation: PlayxAnimation.byIndex(0, autoPlay: false),
-      //fallback: GlbModel.asset(helmetAsset),
-      collidable: collidable,
-      centerPosition: position,
-      scale: scale,
-      rotation: rotation,
-      name: szAsset,
-      // ignore: prefer_const_constructors
-      global_guid: Uuid().v4()
     );
   }
 
@@ -312,288 +293,6 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  PlayxMaterial poGetBaseMaterial(Color? colorOveride) {
-    return PlayxMaterial.asset(
-      litMat,
-      //usually the material file contains values for these properties,
-      //but if we want to customize it we can like that.
-      parameters: [
-        //update base color property with color
-        MaterialParameter.color(
-            color: colorOveride ?? Colors.white, name: "baseColor"),
-        //update roughness property with it's value
-        MaterialParameter.float(value: .8, name: "roughness"),
-        //update metallicproperty with it's value
-        MaterialParameter.float(value: .0, name: "metallic"),
-      ],
-    );
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  Color getTrueRandomColor() {
-    Random random = Random();
-
-    // Generate random values for red, green, and blue channels
-    int red = random.nextInt(256);
-    int green = random.nextInt(256);
-    int blue = random.nextInt(256);
-
-    // Create and return a Color object
-    return Color.fromARGB(255, red, green, blue);
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-  Color getRandomPresetColor() {
-    // List of preset colors from the Flutter Material color palette
-    List<Color> presetColors = [
-      Colors.red,
-      Colors.pink,
-      Colors.purple,
-      Colors.deepPurple,
-      Colors.indigo,
-      Colors.blue,
-      Colors.lightBlue,
-      Colors.cyan,
-      Colors.teal,
-      Colors.green,
-      Colors.lightGreen,
-      Colors.lime,
-      Colors.yellow,
-      Colors.amber,
-      Colors.orange,
-      Colors.deepOrange,
-      Colors.brown,
-      Colors.grey,
-      Colors.blueGrey,
-    ];
-
-    // Create a random instance
-    Random random = Random();
-
-    // Select a random color from the list
-    return presetColors[random.nextInt(presetColors.length)];
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-  PlayxMaterial poGetBaseMaterialWithRandomValues() {
-    Random random = Random();
-
-    return PlayxMaterial.asset(
-      litMat,
-      //usually the material file contains values for these properties,
-      //but if we want to customize it we can like that.
-      parameters: [
-        //update base color property with color
-        MaterialParameter.color(
-            color: getRandomPresetColor(), name: "baseColor"),
-        //update roughness property with it's value
-        MaterialParameter.float(value: random.nextDouble(), name: "roughness"),
-        //update metallicproperty with it's value
-        MaterialParameter.float(value: random.nextDouble(), name: "metallic"),
-      ],
-    );
-  }
-  ////////////////////////////////////////////////////////////////////////////////
-  PlayxMaterial poGetTexturedMaterial() {
-    return PlayxMaterial.asset(texturedMat,
-      parameters: [
-        MaterialParameter.texture(
-          value: PlayxTexture.asset(
-            "assets/materials/texture/floor_basecolor.png",
-            type: TextureType.color,
-            sampler: PlayxTextureSampler(anisotropy: 8),
-          ),
-          name: "baseColor",
-        ),
-        MaterialParameter.texture(
-          value: PlayxTexture.asset(
-            "assets/materials/texture/floor_normal.png",
-            type: TextureType.normal,
-            sampler: PlayxTextureSampler(anisotropy: 8),
-          ),
-          name: "normal",
-        ),
-        MaterialParameter.texture(
-          value: PlayxTexture.asset(
-            "assets/materials/texture/floor_ao_roughness_metallic.png",
-            type: TextureType.data,
-            sampler: PlayxTextureSampler(anisotropy: 8),
-          ),
-          name: "aoRoughnessMetallic",
-        ),
-      ]
-    );
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-  Shape poCreateCube(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
-      int idToSet, Color? colorOveride) {
-    return Cube(
-      id: idToSet,
-      size: sizeExtents,
-      centerPosition: pos,
-      scale: scale,
-      castShadows: true,
-      receiveShadows: true,
-      material: poGetTexturedMaterial(),
-      collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
-      // ignore: prefer_const_constructors
-      global_guid: Uuid().v4()
-      //material: colorOveride != null
-      //    ? poGetBaseMaterial(colorOveride)
-      //    : poGetBaseMaterialWithRandomValues(),
-    );
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-  Shape poCreateSphere(
-      PlayxPosition pos,
-      PlayxSize scale,
-      PlayxSize sizeExtents,
-      int idToSet,
-      int stacks,
-      int slices,
-      Color? colorOveride) {
-    return Sphere(
-        id: idToSet,
-        centerPosition: pos,
-        material: poGetTexturedMaterial(),
-        //material: poGetBaseMaterial(null),
-        stacks: stacks,
-      collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
-        slices: slices,
-        cullingEnabled: false,
-        castShadows: true,
-        receiveShadows: true,
-        scale: scale,
-        size: sizeExtents);
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-  Shape poCreatePlane(
-      PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents, int idToSet) {
-    return Plane(
-        id: idToSet,
-        doubleSided: true,
-        size: sizeExtents,
-        scale: scale,
-        castShadows: true,
-        receiveShadows: true,
-        centerPosition: pos,
-        collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
-
-        // facing UP
-        rotation: PlayxRotation(x: 0, y: .7071, z: .7071, w: 0),
-        // identity
-        // rotation: PlayxRotation(x: 0, y: 0, z: 0, w: 1),
-        material: poGetTexturedMaterial());
-        //material: poGetBaseMaterialWithRandomValues());
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-  List<Shape> poCreateLineGrid() {
-    List<Shape> itemsToReturn = [];
-    int idIter = 40;
-    double countExtents = 6;
-    for (double i = -countExtents; i <= countExtents; i += 2) {
-      for (int j = 0; j < 1; j++) {
-        for (double k = -countExtents; k <= countExtents; k += 2) {
-          itemsToReturn.add(poCreateCube(
-              PlayxPosition(x: i, y: 0, z: k),
-              PlayxSize(x: 1, y: 1, z: 1),
-              PlayxSize(x: 1, y: 1, z: 1),
-              idIter++,
-              null));
-        }
-      }
-    }
-
-    return itemsToReturn;
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-  List<Shape> poGetScenesShapes() {
-    //return poCreateLineGrid();
-
-    List<Shape> itemsToReturn = [];
-    int idToSet = 10;
-
-    itemsToReturn.add(poCreateCube(
-        PlayxPosition(x: 3, y: 1, z: 3),
-        PlayxSize(x: 2, y: 2, z: 2),
-        PlayxSize(x: 2, y: 2, z: 2),
-        idToSet++,
-        null));
-
-    itemsToReturn.add(poCreateCube(
-        PlayxPosition(x: 0, y: 1, z: 3),
-        PlayxSize(x: .1, y: 1, z: .1),
-        PlayxSize(x: 1, y: 1, z: 1),
-        idToSet++,
-        null));
-
-    itemsToReturn.add(poCreateCube(
-        PlayxPosition(x: -3, y: 1, z: 3),
-        PlayxSize(x: .5, y: .5, z: .5),
-        PlayxSize(x: 1, y: 1, z: 1),
-        idToSet++,
-        null));
-
-   itemsToReturn.add(poCreateSphere(
-        PlayxPosition(x: 3, y: 1, z: -3),
-        PlayxSize(x: 1, y: 1, z: 1),
-        PlayxSize(x: 1, y: 1, z: 1),
-        idToSet++,
-        11,
-        5,
-        null));
-
-    itemsToReturn.add(poCreateSphere(
-        PlayxPosition(x: 0, y: 1, z: -3),
-        PlayxSize(x: 1, y: 1, z: 1),
-        PlayxSize(x: 1, y: 1, z: 1),
-        idToSet++,
-        20,
-        20,
-        null));
-
-    itemsToReturn.add(poCreateSphere(
-        PlayxPosition(x: -3, y: 1, z: -3),
-        PlayxSize(x: 1, y: .5, z: 1),
-        PlayxSize(x: 1, y: 1, z: 1),
-        idToSet++,
-        20,
-        20,
-        null));
-
-    itemsToReturn.add(poCreatePlane(PlayxPosition(x: -5, y: 1, z: 0),
-        PlayxSize(x: 1, y: 1, z: 1), PlayxSize(x: 2, y: 1, z: 2), idToSet++));
-
-    itemsToReturn.add(poCreatePlane(PlayxPosition(x: 5, y: 1, z: 0),
-        PlayxSize(x: 4, y: 1, z: 4), PlayxSize(x: 4, y: 1, z: 4), idToSet++));
-
-    return itemsToReturn;
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-  List<Model> poGetModelList() {
-    List<Model> itemsToReturn = [];
-    itemsToReturn
-        .add(poGetModel(sequoiaAsset
-          , PlayxPosition(x: 0, y: 0, z: -14.77)
-          , PlayxSize(x:.5, y:1, z:1)
-          , PlayxRotation(x: 0, y: 0, z: 0, w: 1)
-          , Collidable(isStatic: false, shouldMatchAttachedObject: true)));
-
-    itemsToReturn
-        .add(poGetModel(garageAsset
-        , PlayxPosition(x: 0, y: 0, z: -16)
-        , PlayxSize(x:1, y:1, z:1)
-        , PlayxRotation(x: 0, y: 0, z: 0, w: 1), null));
-    return itemsToReturn;
-  }
-
   ////////////////////////////////////////////////////////////////////////////////
   void vOnEachFrameRender(num? frameTimeNano) {
     if (frameTimeNano != null) {}
@@ -610,28 +309,29 @@ class _MyAppState extends State<MyApp> {
         // from the UI / 'gameplay' in the future.
         poController = controller;
 
-        // Frames from Native to here, currently run in order of 
+        // Frames from Native to here, currently run in order of
         // - updateFrame - Called regardless if a frame is going to be drawn or not
         // - preRenderFrame - Called before native <features>, but we know we're going to draw a frame
         // - renderFrame - Called after native <features>, right before drawing a frame
         // - postRenderFrame - Called after we've drawn natively, right after drawing a frame.
 
         const MethodChannel methodChannel = MethodChannel(viewerChannelName);
-         methodChannel.setMethodCallHandler((call) async {
-           if (call.method == "renderFrame") {
-              // Map<String, dynamic> arguments = call.arguments;
-              
-              // double timeSinceLastRenderedSec = arguments['timeSinceLastRenderedSec'];
-              // double fps = arguments['fps'];
-              // vOnEachFrameRender();
-           }
-         });
+        methodChannel.setMethodCallHandler((call) async {
+          if (call.method == "renderFrame") {
+            // Map<String, dynamic> arguments = call.arguments;
+
+            // double timeSinceLastRenderedSec = arguments['timeSinceLastRenderedSec'];
+            // double fps = arguments['fps'];
+            // vOnEachFrameRender();
+          }
+        });
 
         // kCollisionEvent = "collision_event";
         // kCollisionEventType = "collision_event_type";
         // enum CollisionEventType { eFromNonNative, eNativeOnTouchBegin
         // , eNativeOnTouchHeld, eNativeOnTouchEnd };
-        const MethodChannel methodChannelCollision = MethodChannel(collisionChannelName);
+        const MethodChannel methodChannelCollision =
+            MethodChannel(collisionChannelName);
         methodChannelCollision.setMethodCallHandler((call) async {
           if (call.method == "collision_event") {
             // Map<String, dynamic> arguments = call.arguments;
