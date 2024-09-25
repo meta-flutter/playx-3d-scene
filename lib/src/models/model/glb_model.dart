@@ -10,6 +10,7 @@ class GlbModel extends Model {
       {super.fallback, super.scale
       , super.collidable, super.centerPosition
       , super.animation, super.rotation
+      , required super.castShadows, required  super.receiveShadows
       , super.name, super.global_guid})
       : super(assetPath: path) {
     assert(path.isNotEmpty);
@@ -18,8 +19,10 @@ class GlbModel extends Model {
 
   /// creates glb model based on glb file url.
   GlbModel.url(String url,
-      {super.fallback, super.scale, super.centerPosition, super.animation})
-      : super(url: url);
+      {super.fallback, super.scale, super.centerPosition
+      , super.animation, required bool receiveShadows, required bool castShadows})
+      : super(url: url, receiveShadows: receiveShadows
+                        , castShadows: castShadows);
 
   @override
   Map<String, dynamic> toJson() => {
@@ -31,6 +34,8 @@ class GlbModel extends Model {
         'rotation': rotation?.toJson(),
         'centerPosition': centerPosition?.toJson(),
         'animation': animation?.toJson(),
+        'castShadows': castShadows,
+        'receiveShadows': receiveShadows,
         'isGlb': true,
         'name': name,
         'global_guid' : global_guid,

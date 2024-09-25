@@ -3,7 +3,9 @@
 enum Mode {
   orbit,
   map,
-  freeFlight;
+  freeFlight,
+  autoOrbit,
+  inertiaAndGestures;
 
   String toName() {
     switch (this) {
@@ -13,6 +15,10 @@ enum Mode {
         return "MAP";
       case Mode.freeFlight:
         return "FREE_FLIGHT";
+      case Mode.autoOrbit:
+        return "AUTO_ORBIT";
+      case Mode.inertiaAndGestures:
+        return "INERTIA_AND_GESTURES";
       default:
         return "ORBIT";
     }

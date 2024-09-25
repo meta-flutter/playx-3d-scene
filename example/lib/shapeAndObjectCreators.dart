@@ -23,6 +23,8 @@ GlbModel poGetModel(String szAsset, PlayxPosition position, PlayxSize scale,
       scale: scale,
       rotation: rotation,
       name: szAsset,
+      receiveShadows: true,
+      castShadows: true,
       // ignore: prefer_const_constructors
       global_guid: Uuid().v4());
 }
@@ -188,4 +190,23 @@ List<Model> poGetModelList() {
       PlayxRotation(x: 0, y: 0, z: 0, w: 1),
       null));
   return itemsToReturn;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+DefaultIndirectLight poGetDefaultIndirectLight() {
+  return DefaultIndirectLight(
+      intensity: 1000000, // indirect light intensity.
+      radianceBands: 1, // Number of spherical harmonics bands.
+      radianceSh: [
+        1,
+        1,
+        1
+      ], // Array containing the spherical harmonics coefficients.
+      irradianceBands: 1, // Number of spherical harmonics bands.
+      irradianceSh: [
+        1,
+        1,
+        1
+      ] // Array containing the spherical harmonics coefficients.
+      );
 }

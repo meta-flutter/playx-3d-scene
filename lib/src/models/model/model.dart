@@ -52,6 +52,12 @@ abstract class Model {
     /// Quaternion rotation for the shape
   PlayxRotation? rotation;
 
+/// Variables for filament renderer upon shape creation
+bool receiveShadows;
+
+/// Variables for filament renderer upon shape creation
+bool castShadows;
+
   Model(
       {this.assetPath,
       this.url,
@@ -62,6 +68,8 @@ abstract class Model {
       this.centerPosition,
       this.animation,
       this.global_guid,
+      required this.castShadows,
+      required this.receiveShadows,
       this.name,});
 
   Map<String, dynamic> toJson() {

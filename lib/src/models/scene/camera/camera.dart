@@ -152,6 +152,44 @@ class Camera {
     _mode = Mode.freeFlight;
   }
 
+Camera.autoOrbit({
+      this.exposure,
+      this.projection,
+      this.lensProjection,
+      this.scaling,
+      this.shift,
+      this.targetPosition,
+      this.upVector,
+      this.zoomSpeed,
+      this.groundPlane,
+      this.flightStartPosition,
+      this.flightStartOrientation,
+      this.flightMaxMoveSpeed,
+      this.flightSpeedSteps,
+      this.flightMoveDamping,
+    }) {
+      _mode = Mode.autoOrbit;
+    }
+
+    Camera.inertiaAndGestures({
+          this.exposure,
+          this.projection,
+          this.lensProjection,
+          this.scaling,
+          this.shift,
+          this.targetPosition,
+          this.upVector,
+          this.zoomSpeed,
+          this.groundPlane,
+          this.flightStartPosition,
+          this.flightStartOrientation,
+          this.flightMaxMoveSpeed,
+          this.flightSpeedSteps,
+          this.flightMoveDamping,
+        }) {
+          _mode = Mode.inertiaAndGestures;
+        }
+
   Map<String, dynamic> toJson() {
     return {
       "exposure": exposure?.toJson(),
