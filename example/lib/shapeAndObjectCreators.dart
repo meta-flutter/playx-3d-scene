@@ -210,3 +210,26 @@ DefaultIndirectLight poGetDefaultIndirectLight() {
       ] // Array containing the spherical harmonics coefficients.
       );
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Note point lights seem to only value intensity at a high
+// range 30000000, for a 3 meter diameter of a circle, not caring about
+// falloffradius
+//
+// Note for Spot lights you must specify a direction != 0,0,0
+////////////////////////////////////////////////////////////////////////////////
+Light poGetDefaultPointLight(Color directLightColor, double intensity) {
+  return Light(
+      type: LightType.point,
+      colorTemperature: 36500,
+      color: directLightColor,
+      intensity: intensity,
+      castShadows: true,
+      castLight: true,
+      spotLightConeInner: 1,
+      spotLightConeOuter: 10,
+      falloffRadius: 300.1, // what base is this in? meters?
+      position: PlayxPosition(x: 0, y: 3, z: 0),
+      // should be a unit vector
+      direction: PlayxDirection(x: 0, y: 1, z: 0));
+}

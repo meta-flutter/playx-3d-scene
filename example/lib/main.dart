@@ -9,6 +9,7 @@ import 'dart:math';
 import 'utils.dart';
 import 'materialHelpers.dart';
 import 'shapeAndObjectCreators.dart';
+import 'demoUI.dart';
 
 // Rebuilding materials to match filament versions.
 // playx-3d-scene/example/assets/materials$
@@ -47,7 +48,6 @@ class _MyAppState extends State<MyApp> {
   bool isModelLoading = false;
   bool isSceneLoading = false;
   bool isShapeLoading = false;
-  bool showloading = true;
   late Playx3dSceneController poController;
   Color _directLightColor = Colors.purple;
   double _directIntensity = 300000000;
@@ -72,33 +72,6 @@ class _MyAppState extends State<MyApp> {
   void logToStdOut(String strOut) {
     DateTime now = DateTime.now();
     stdout.write('DART : $strOut: $now\n');
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  TextStyle getTextStyle() {
-    return const TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.bold,
-      color: Colors.black,
-      shadows: [
-        Shadow(
-          offset: Offset(-1.5, -1.5),
-          color: Colors.white,
-        ),
-        Shadow(
-          offset: Offset(1.5, -1.5),
-          color: Colors.white,
-        ),
-        Shadow(
-          offset: Offset(1.5, 1.5),
-          color: Colors.white,
-        ),
-        Shadow(
-          offset: Offset(-1.5, 1.5),
-          color: Colors.white,
-        ),
-      ],
-    );
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -246,42 +219,9 @@ class _MyAppState extends State<MyApp> {
       skybox: ColoredSkybox(color: Colors.black),
       //skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
       //indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
-      //skybox: ColoredSkybox(color: Colors.red),
-      indirectLight: DefaultIndirectLight(
-          intensity: 1000000, // indirect light intensity.
-          radianceBands: 1, // Number of spherical harmonics bands.
-          radianceSh: [
-            1,
-            1,
-            1
-          ], // Array containing the spherical harmonics coefficients.
-          irradianceBands: 1, // Number of spherical harmonics bands.
-          irradianceSh: [
-            1,
-            1,
-            1
-          ] // Array containing the spherical harmonics coefficients.
-          ),
-
-      // Note point lights seem to only value intensity at a high
-      // range 30000000, for a 3 meter diameter of a circle, not caring about
-      // falloffradius
-      //
-      // Note for Spot lights you must specify a direction != 0,0,0
-      light: Light(
-          type: LightType.point,
-          colorTemperature: 36500,
-          color: _directLightColor,
-          intensity: _directIntensity,
-          castShadows: true,
-          castLight: true,
-          spotLightConeInner: 1,
-          spotLightConeOuter: 10,
-          falloffRadius: 300.1, // what base is this in? meters?
-          position: PlayxPosition(x: 0, y: 3, z: 0),
-          // should be a unit vector
-          direction: PlayxDirection(x: 0, y: 1, z: 0)),
-      camera: Camera.freeFlight(
+      indirectLight: poGetDefaultIndirectLight(),
+      light: poGetDefaultPointLight(_directLightColor, _directIntensity),
+      camera: Camera.inertiaAndGestures(
         exposure: Exposure.formAperture(
           aperture: 24.0,
           shutterSpeed: 1 / 60,
@@ -289,6 +229,7 @@ class _MyAppState extends State<MyApp> {
         ),
         targetPosition: PlayxPosition(x: 0.0, y: 0.0, z: 0.0),
         upVector: PlayxPosition(x: 0.0, y: 1.0, z: 0.0),
+        flightStartPosition: PlayxPosition(x: 0.0, y: 1.0, z: 5.0),
       ),
     );
   }
