@@ -95,6 +95,11 @@ class Camera {
   ///The ground plane equation used for ray casts. This is a plane equation as in Ax + By + Cz + D = 0. Defaults to (0, 0, 1, 0).
   List<double>? groundPlane;
 
+/// Used for when the camera is in inertia & gesture mode
+double? inertia_rotationSpeed;
+double? inertia_velocityFactor;
+double? inertia_decayFactor;
+
   ///Creates a camera on orbit mode.
   Camera.orbit({
     this.exposure,
@@ -186,6 +191,9 @@ Camera.autoOrbit({
           this.flightMaxMoveSpeed,
           this.flightSpeedSteps,
           this.flightMoveDamping,
+          this.inertia_rotationSpeed,
+          this.inertia_velocityFactor,
+          this.inertia_decayFactor
         }) {
           _mode = Mode.inertiaAndGestures;
         }
@@ -214,6 +222,9 @@ Camera.autoOrbit({
       "flightSpeedSteps": flightSpeedSteps,
       "flightMoveDamping": flightMoveDamping,
       "groundPlane": groundPlane,
+      "inertia_rotationSpeed" : inertia_rotationSpeed,
+      "inertia_velocityFactor" : inertia_velocityFactor,
+      "inertia_decayFactor" : inertia_decayFactor,
     };
   }
 
