@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
   final double _minIntensity = 10000000;
   final double _maxIntensity = 300000000;
   double _cameraRotation = 0;
-  bool _autoRotate = true;
+  bool _autoRotate = false;
   bool _toggleShapes = true;
   bool _toggleCollidableVisuals = true;
 
@@ -169,12 +169,18 @@ class _MyAppState extends State<MyApp> {
                         onPressed: () {
                           setState(() {
                             _autoRotate = !_autoRotate;
-                            poController.toggleCameraAutoRotate(_autoRotate);
+                            //static constexpr char kModeAutoOrbit[] = "AUTO_ORBIT";
+                            //static constexpr char kModeInertiaAndGestures[] = "INERTIA_AND_GESTURES";
+                            if (_autoRotate)
+                              poController.changeCameraMode("AUTO_ORBIT");
+                            else
+                              poController
+                                  .changeCameraMode("INERTIA_AND_GESTURES");
                           });
                         },
                         child: Text(_autoRotate
-                            ? 'Toggle Rotate: On'
-                            : 'Toggle Rotate: Off'),
+                            ? 'Auto Orbit On'
+                            : 'Inertia & Gestures On'),
                       ),
                       const SizedBox(width: 20),
                       ElevatedButton(
