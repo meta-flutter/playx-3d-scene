@@ -94,11 +94,11 @@ class Playx3dSceneController {
     return _handleError(data);
   }
 
-  Future<Result<int>> toggleCameraAutoRotate(bool value) {
+  Future<Result<int>> changeCameraMode(String value) {
     final data = _channel.invokeMethod<int>(
-      _toggleCameraAutoRotate,
+      _changeCameraMode,
       {
-        _toggleCameraAutoRotateValue: value,
+        _changeCameraModeValue: value,
       },
     );
     return _handleError(data);
@@ -782,8 +782,8 @@ const String _toggleShapesInSceneValue = "TOGGLE_SHAPES_IN_SCENE_VALUE";
 const String _toggleCollidableVisualsInScene = "TOGGLE_COLLIDABLE_VISUALS_IN_SCENE";
 const String _toggleCollidableVisualsInSceneValue ="TOGGLE_COLLIDABLE_VISUALS_IN_SCENE_VALUE";
 
-const String _toggleCameraAutoRotate = "TOGGLE_CAMERA_AUTO_ROTATE";
-const String _toggleCameraAutoRotateValue = "TOGGLE_CAMERA_AUTO_ROTATE_VALUE";
+const String _changeCameraMode = "CHANGE_CAMERA_MODE";
+const String _changeCameraModeValue = "CHANGE_CAMERA_MODE_VALUE";
 
 const String _changeCameraRotation = "ROTATE_CAMERA";
 const String _changeCameraRotationValue = "ROTATE_CAMERA_VALUE";

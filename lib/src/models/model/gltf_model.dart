@@ -35,6 +35,7 @@ class GltfModel extends Model {
     super.collidable,
     super.rotation,
     super.animation,
+    required super.castShadows, required  super.receiveShadows,
     super.name,
     super.global_guid,
   }) : super(assetPath: path) {
@@ -57,9 +58,12 @@ class GltfModel extends Model {
     super.centerPosition,
     super.rotation,
     super.animation,
+    required bool receiveShadows, required bool castShadows,
     super.name,
     super.global_guid,
-  }) : super(url: url);
+  }) : super(url: url
+  , receiveShadows: receiveShadows
+  , castShadows: castShadows);
 
   @override
   Map<String, dynamic> toJson() => {
@@ -73,6 +77,8 @@ class GltfModel extends Model {
         'rotation': rotation?.toJson(),
         'centerPosition': centerPosition?.toJson(),
         'animation': animation?.toJson(),
+                'castShadows': castShadows,
+                'receiveShadows': receiveShadows,
         'isGlb': false,
         'name': name,
         'global_guid' : global_guid,
