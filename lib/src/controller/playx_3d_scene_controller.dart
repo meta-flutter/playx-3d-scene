@@ -104,6 +104,15 @@ class Playx3dSceneController {
     return _handleError(data);
   }
 
+    Future<Result<int>> resetInertiaCameraToDefaultValues() {
+      final data = _channel.invokeMethod<int>(
+        _resetInertiaCameraToDefaultValues,
+        {
+        },
+      );
+      return _handleError(data);
+    }
+
   Future<Result<int>> setCameraRotation(double fValue) {
     final data = _channel.invokeMethod<int>(
       _changeCameraRotation,
@@ -784,6 +793,7 @@ const String _toggleCollidableVisualsInSceneValue ="TOGGLE_COLLIDABLE_VISUALS_IN
 
 const String _changeCameraMode = "CHANGE_CAMERA_MODE";
 const String _changeCameraModeValue = "CHANGE_CAMERA_MODE_VALUE";
+const String _resetInertiaCameraToDefaultValues = "RESET_INERTIA_TO_DEFAULTS";
 
 const String _changeCameraRotation = "ROTATE_CAMERA";
 const String _changeCameraRotationValue = "ROTATE_CAMERA_VALUE";

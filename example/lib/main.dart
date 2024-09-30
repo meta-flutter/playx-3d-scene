@@ -171,6 +171,8 @@ class _MyAppState extends State<MyApp> {
                             _autoRotate = !_autoRotate;
                             //static constexpr char kModeAutoOrbit[] = "AUTO_ORBIT";
                             //static constexpr char kModeInertiaAndGestures[] = "INERTIA_AND_GESTURES";
+                            // poController.resetInertiaCameraToDefaultValues();
+
                             if (_autoRotate)
                               poController.changeCameraMode("AUTO_ORBIT");
                             else
@@ -181,6 +183,15 @@ class _MyAppState extends State<MyApp> {
                         child: Text(_autoRotate
                             ? 'Auto Orbit On'
                             : 'Inertia & Gestures On'),
+                      ),
+                      const SizedBox(width: 5),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            poController.resetInertiaCameraToDefaultValues();
+                          });
+                        },
+                        child: Text('Reset'),
                       ),
                       const SizedBox(width: 20),
                       ElevatedButton(
@@ -228,29 +239,28 @@ class _MyAppState extends State<MyApp> {
       indirectLight: poGetDefaultIndirectLight(),
       light: poGetDefaultPointLight(_directLightColor, _directIntensity),
       camera: Camera.inertiaAndGestures(
-        exposure: Exposure.formAperture(
-          aperture: 24.0,
-          shutterSpeed: 1 / 60,
-          sensitivity: 150,
-        ),
-        targetPosition: PlayxPosition(x: 0.0, y: 0.0, z: 0.0),
-        upVector: PlayxPosition(x: 0.0, y: 1.0, z: 0.0),
-        // This is used as your extents when orbiting around an object
-        // when the camera is set to inertiaAndGestures
-        flightStartPosition: PlayxPosition(x: 8.0, y: 3.0, z: 8.0),
-        // how much ongoing rotation velocity effects, default 0.05
-        inertia_rotationSpeed: 0.05,
-        // 0-1 how much of a flick distance / delta gets multiplied, default 0.2
-        inertia_velocityFactor: 0.2,
-        // 0-1 larger number means it takes longer for it to decay, default 0.86
-        inertia_decayFactor: 0.86,
-        pan_angleCapX: 15,
-        pan_angleCapY: 20,
-        // how close can you zoom in.
-        zoom_minCap: 3,
-        // max that you're able to zoom out.
-        zoom_maxCap: 10
-      ),
+          exposure: Exposure.formAperture(
+            aperture: 24.0,
+            shutterSpeed: 1 / 60,
+            sensitivity: 150,
+          ),
+          targetPosition: PlayxPosition(x: 0.0, y: 0.0, z: 0.0),
+          upVector: PlayxPosition(x: 0.0, y: 1.0, z: 0.0),
+          // This is used as your extents when orbiting around an object
+          // when the camera is set to inertiaAndGestures
+          flightStartPosition: PlayxPosition(x: 8.0, y: 3.0, z: 8.0),
+          // how much ongoing rotation velocity effects, default 0.05
+          inertia_rotationSpeed: 0.05,
+          // 0-1 how much of a flick distance / delta gets multiplied, default 0.2
+          inertia_velocityFactor: 0.2,
+          // 0-1 larger number means it takes longer for it to decay, default 0.86
+          inertia_decayFactor: 0.86,
+          pan_angleCapX: 15,
+          pan_angleCapY: 20,
+          // how close can you zoom in.
+          zoom_minCap: 3,
+          // max that you're able to zoom out.
+          zoom_maxCap: 10),
     );
   }
 
