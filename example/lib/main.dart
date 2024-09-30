@@ -171,7 +171,6 @@ class _MyAppState extends State<MyApp> {
                             _autoRotate = !_autoRotate;
                             //static constexpr char kModeAutoOrbit[] = "AUTO_ORBIT";
                             //static constexpr char kModeInertiaAndGestures[] = "INERTIA_AND_GESTURES";
-                            // poController.resetInertiaCameraToDefaultValues();
 
                             if (_autoRotate)
                               poController.changeCameraMode("AUTO_ORBIT");
