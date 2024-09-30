@@ -244,6 +244,12 @@ class _MyAppState extends State<MyApp> {
         inertia_velocityFactor: 0.2,
         // 0-1 larger number means it takes longer for it to decay, default 0.86
         inertia_decayFactor: 0.86,
+        pan_angleCapX: 15,
+        pan_angleCapY: 20,
+        // how close can you zoom in.
+        zoom_minCap: 3,
+        // max that you're able to zoom out.
+        zoom_maxCap: 10
       ),
     );
   }
