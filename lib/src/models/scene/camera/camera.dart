@@ -99,6 +99,12 @@ class Camera {
 double? inertia_rotationSpeed;
 double? inertia_velocityFactor;
 double? inertia_decayFactor;
+double? pan_angleCapX;
+double? pan_angleCapY;
+// how close can you zoom in.
+double? zoom_minCap;
+// max that you're able to zoom out.
+double? zoom_maxCap;
 
   ///Creates a camera on orbit mode.
   Camera.orbit({
@@ -193,7 +199,11 @@ Camera.autoOrbit({
           this.flightMoveDamping,
           this.inertia_rotationSpeed,
           this.inertia_velocityFactor,
-          this.inertia_decayFactor
+          this.inertia_decayFactor,
+          this.pan_angleCapX,
+          this.pan_angleCapY,
+          this.zoom_minCap,
+          this.zoom_maxCap
         }) {
           _mode = Mode.inertiaAndGestures;
         }
@@ -225,6 +235,10 @@ Camera.autoOrbit({
       "inertia_rotationSpeed" : inertia_rotationSpeed,
       "inertia_velocityFactor" : inertia_velocityFactor,
       "inertia_decayFactor" : inertia_decayFactor,
+      "pan_angleCapX" : pan_angleCapX,
+      "pan_angleCapY" : pan_angleCapY,
+      "zoom_minCap" : zoom_minCap,
+      "zoom_maxCap" : zoom_maxCap
     };
   }
 
