@@ -9,7 +9,7 @@ import 'dart:math';
 import 'utils.dart';
 import 'materialHelpers.dart';
 
-const String sequoiaAsset = "assets/models/sequoia.glb";
+const String sequoiaAsset = "assets/models/sequoia_ngp.glb";
 const String garageAsset = "assets/models/garagescene.glb";
 
 ////////////////////////////////////////////////////////////////////////
@@ -178,7 +178,7 @@ List<Model> poGetModelList() {
   List<Model> itemsToReturn = [];
   itemsToReturn.add(poGetModel(
       sequoiaAsset,
-      PlayxPosition(x: 0, y: 0, z: -14.77),
+      PlayxPosition(x: 0, y: 0, z: 0),
       PlayxSize(x: .5, y: 1, z: 1),
       PlayxRotation(x: 0, y: 0, z: 0, w: 1),
       Collidable(isStatic: false, shouldMatchAttachedObject: true)));
