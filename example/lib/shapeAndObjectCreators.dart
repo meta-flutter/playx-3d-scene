@@ -229,7 +229,7 @@ Light poGetDefaultPointLight(Color directLightColor, double intensity) {
       spotLightConeInner: 1,
       spotLightConeOuter: 10,
       falloffRadius: 300.1, // what base is this in? meters?
-      position: PlayxPosition(x: 0, y: 3, z: 0),
+      position: PlayxPosition(x: 0, y: 5, z: 1),
       // should be a unit vector
       direction: PlayxDirection(x: 0, y: 1, z: 0));
 }
