@@ -122,6 +122,13 @@ class Playx3dSceneController {
     );
     return _handleError(data);
   }
+  
+    Future<Result<int>> changeQualitySettings() {
+      final data = _channel.invokeMethod<int>(
+        _ChangeQualitySettings,
+      );
+      return _handleError(data);
+    }
 
    Future<Result<int>> requestCollisionCheckFromRay(String queryID,
     double originX, double originY, double originZ,
@@ -797,6 +804,7 @@ const String _resetInertiaCameraToDefaultValues = "RESET_INERTIA_TO_DEFAULTS";
 
 const String _changeCameraRotation = "ROTATE_CAMERA";
 const String _changeCameraRotationValue = "ROTATE_CAMERA_VALUE";
+const String _ChangeQualitySettings = "CHANGE_QUALITY_SETTINGS";
 
 const String _collisionRayRequest = "COLLISION_RAY_REQUEST";
 const String _collisionRayRequestOriginX = "COLLISION_RAY_REQUEST_ORIGIN_X";

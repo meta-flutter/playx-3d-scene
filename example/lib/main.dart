@@ -218,6 +218,15 @@ class _MyAppState extends State<MyApp> {
                             ? 'Toggle Collidables: On'
                             : 'Toggle Collidables: Off'),
                       ),
+                      const SizedBox(width: 5),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            poController.changeQualitySettings();
+                          });
+                        },
+                        child: Text('Qual'),
+                      ),
                     ],
                   ),
                 ],
