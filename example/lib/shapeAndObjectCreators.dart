@@ -30,8 +30,13 @@ GlbModel poGetModel(String szAsset, PlayxPosition position, PlayxSize scale,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+List<String> thingsWeCanChangeParamsOn = [];
 Shape poCreateCube(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
     int idToSet, Color? colorOveride) {
+  String uniqueGuid = Uuid().v4();
+  // Just to show off changing material params during runtime.
+  thingsWeCanChangeParamsOn.add(uniqueGuid);
+
   return Cube(
       id: idToSet,
       size: sizeExtents,
@@ -39,10 +44,10 @@ Shape poCreateCube(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
       scale: scale,
       castShadows: true,
       receiveShadows: true,
-      material: poGetTexturedMaterial(),
+      material: poGetLitMaterialWithRandomValues(),
       collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
       // ignore: prefer_const_constructors
-      global_guid: Uuid().v4()
+      global_guid: uniqueGuid
       //material: colorOveride != null
       //    ? poGetLitMaterial(colorOveride)
       //    : poGetLitMaterialWithRandomValues(),

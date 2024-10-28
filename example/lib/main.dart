@@ -312,8 +312,38 @@ class _MyAppState extends State<MyApp> {
         const MethodChannel methodChannelCollision =
             MethodChannel(collisionChannelName);
         methodChannelCollision.setMethodCallHandler((call) async {
-          if (call.method == "collision_event") {
-            // Map<String, dynamic> arguments = call.arguments;
+
+          Map<String, dynamic> arguments =
+              Map<String, dynamic>.from(call.arguments);
+
+          /* arguments.forEach((key, value) {
+              // Check if the value is a nested map
+              if (value is Map<String, dynamic>) {
+                print("Key: $key has nested data:");
+                value.forEach((nestedKey, nestedValue) {
+                  print("    $nestedKey: $nestedValue");
+                });
+              } else {
+                print("Key: $key, Value: $value");
+              }
+            }); */
+
+          // only works on first hit, go through all results if you want.
+          if (arguments.containsKey("collision_event_hit_result_0")) {
+            Map<String, dynamic> hitResult = Map<String, dynamic>.from(
+                arguments["collision_event_hit_result_0"]);
+            String guid = hitResult["guid"];
+            if (thingsWeCanChangeParamsOn.contains(guid)) {
+              //logToStdOut("Found guid: $guid");
+
+              Map<String, dynamic> ourJson =
+                  poGetRandomColorMaterialParam().toJson();
+              poController.changeMaterialParameterData(ourJson, guid);
+            } /* else {
+              logToStdOut("Didnt find guid: $guid");
+          } */
+          } else {
+            logToStdOut("No hit result found in arguments.");
           }
         });
 
