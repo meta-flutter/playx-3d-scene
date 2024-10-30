@@ -76,6 +76,18 @@ class Playx3dSceneController {
       return _handleError(data);
     }
 
+      Future<Result<int>> changeMaterialDefinitionData(
+            Map<String, dynamic> ourJson, String entity) {
+          final data = _channel.invokeMethod<int>(
+            _changeMaterialDefinition,
+            {
+              _changeMaterialDefinitionData: ourJson,
+              _changeMaterialDefinitionEntityGuid: entity,
+            },
+          );
+          return _handleError(data);
+        }
+
   Future<Result<int>> changeDirectLightValuesByIndex(
       int? index, Color? color, int? intensity) {
     final data = _channel.invokeMethod<int>(
@@ -810,6 +822,10 @@ const String _changeDirectLightColorByIndexIntensity =
 const String _changeMaterialParameter = "CHANGE_MATERIAL_PARAMETER";
 const String _changeMaterialParameterData = "CHANGE_MATERIAL_PARAMETER_DATA";
 const String _changeMaterialParameterEntityGuid = "CHANGE_MATERIAL_PARAMETER_ENTITY_GUID";
+
+const String _changeMaterialDefinition = "CHANGE_MATERIAL_DEFINITION";
+const String _changeMaterialDefinitionData = "CHANGE_MATERIAL_DEFINITION_DATA";
+const String _changeMaterialDefinitionEntityGuid = "CHANGE_MATERIAL_DEFINITION_ENTITY_GUID";
 
 const String _toggleShapesInScene = "TOGGLE_SHAPES_IN_SCENE";
 const String _toggleShapesInSceneValue = "TOGGLE_SHAPES_IN_SCENE_VALUE";

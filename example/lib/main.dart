@@ -334,14 +334,16 @@ class _MyAppState extends State<MyApp> {
                 arguments["collision_event_hit_result_0"]);
             String guid = hitResult["guid"];
             if (thingsWeCanChangeParamsOn.contains(guid)) {
-              //logToStdOut("Found guid: $guid");
-
               Map<String, dynamic> ourJson =
                   poGetRandomColorMaterialParam().toJson();
               poController.changeMaterialParameterData(ourJson, guid);
-            } /* else {
-              logToStdOut("Didnt find guid: $guid");
-          } */
+            } else {
+              logToStdOut("Didnt find guid, changing material definition: $guid");
+              Map<String, dynamic> ourJson = poGetLitMaterialWithRandomValues().toJson();
+              thingsWeCanChangeParamsOn.add(guid);
+              poController.changeMaterialDefinitionData(ourJson, guid);
+          }
+
           } else {
             logToStdOut("No hit result found in arguments.");
           }
