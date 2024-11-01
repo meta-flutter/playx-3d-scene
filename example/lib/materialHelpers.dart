@@ -49,6 +49,12 @@ PlayxMaterial poGetLitMaterialWithRandomValues() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+MaterialParameter poGetRandomColorMaterialParam() {
+  return MaterialParameter.color(
+      color: getRandomPresetColor(), name: "baseColor");
+}
+
+////////////////////////////////////////////////////////////////////////////////
 PlayxMaterial poGetTexturedMaterial() {
   return PlayxMaterial.asset(texturedMat, parameters: [
     MaterialParameter.texture(
