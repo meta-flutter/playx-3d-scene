@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
 import 'package:uuid/uuid.dart';
-import 'dart:async';
-import 'dart:io';
-import 'dart:math';
-import 'utils.dart';
-import 'materialHelpers.dart';
+import 'material_helpers.dart';
 
 const String sequoiaAsset = "assets/models/sequoia_ngp.glb";
 const String garageAsset = "assets/models/garagescene.glb";
@@ -41,7 +36,7 @@ GlbModel poGetModel(
 List<String> thingsWeCanChangeParamsOn = [];
 Shape poCreateCube(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
     int idToSet, Color? colorOveride) {
-  String uniqueGuid = Uuid().v4();
+  String uniqueGuid = const Uuid().v4();
   // Just to show off changing material params during runtime.
   thingsWeCanChangeParamsOn.add(uniqueGuid);
 

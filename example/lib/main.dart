@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
-import 'package:uuid/uuid.dart';
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
-import 'utils.dart';
-import 'materialHelpers.dart';
-import 'shapeAndObjectCreators.dart';
-import 'demoUI.dart';
+import 'material_helpers.dart';
+import 'shape_and_object_creators.dart';
+import 'demo_user_interface.dart';
 
 // Rebuilding materials to match filament versions.
 // playx-3d-scene/example/assets/materials$
@@ -174,11 +171,13 @@ class _MyAppState extends State<MyApp> {
                             //static constexpr char kModeAutoOrbit[] = "AUTO_ORBIT";
                             //static constexpr char kModeInertiaAndGestures[] = "INERTIA_AND_GESTURES";
 
-                            if (_autoRotate)
+                            if (_autoRotate) {
                               poController.changeCameraMode("AUTO_ORBIT");
-                            else
+                            }
+                            else {
                               poController
                                   .changeCameraMode("INERTIA_AND_GESTURES");
+                            }
                           });
                         },
                         child: Text(_autoRotate
@@ -192,7 +191,7 @@ class _MyAppState extends State<MyApp> {
                             poController.resetInertiaCameraToDefaultValues();
                           });
                         },
-                        child: Text('Reset'),
+                        child: const Text('Reset'),
                       ),
                       const SizedBox(width: 20),
                       ElevatedButton(
@@ -227,7 +226,7 @@ class _MyAppState extends State<MyApp> {
                             poController.changeQualitySettings();
                           });
                         },
-                        child: Text('Qual'),
+                        child: const Text('Qual'),
                       ),
                     ],
                   ),
