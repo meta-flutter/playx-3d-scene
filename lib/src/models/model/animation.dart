@@ -3,39 +3,65 @@ class PlayxAnimation {
   /// The Index of the Animation to be used.
   int? index;
 
-  /// The Name of the Animation to be used.
-  String? name;
-
   /// Decides whether to play the animation automatically or not.
   /// Default is true.
   bool autoPlay;
 
+  /// If this animation loops constantly or not.
+  /// Default to true;
+  bool loop;
+
+  // when animation is done if it should call to reset its pose to identity bones.
+  bool resetToTPoseOnReset;
+
+  // playback speed, defaults to 1, can speed up / slow down
+  double playbackSpeed;
+
+  // if you want to receive animation started/ended events.
+  bool notifyOfAnimationEvents;
+
   /// creates animation object by index to be played.
-  PlayxAnimation.byIndex(this.index, {this.autoPlay = true});
+  PlayxAnimation.byIndex(
+       this.index, {
+       this.autoPlay = true,
+       this.loop = true,
+       this.resetToTPoseOnReset = false,
+       this.playbackSpeed = 1.0,
+       this.notifyOfAnimationEvents = false,
+     });
 
-  /// creates animation object by name to be played.
-  PlayxAnimation.byName(this.name, {this.autoPlay = true});
+     Map<String, dynamic> toJson() => {
+           'index': index,
+           'autoPlay': autoPlay,
+           'loop': loop,
+           'resetToTPoseOnReset': resetToTPoseOnReset,
+           'playbackSpeed': playbackSpeed,
+           'notifyOfAnimationEvents': notifyOfAnimationEvents,
+         };
 
-  Map<String, dynamic> toJson() => {
-        'index': index,
-        'name': name,
-        'autoPlay': autoPlay,
-      };
+     @override
+     String toString() =>
+         'PlayxAnimation(index: $index, autoPlay: $autoPlay, loop: $loop, resetToTPoseOnReset: $resetToTPoseOnReset, playbackSpeed: $playbackSpeed, notifyOfAnimationEvents: $notifyOfAnimationEvents)';
 
-  @override
-  String toString() =>
-      'PlayxAnimation(index: $index, name: $name, autoPlay: $autoPlay)';
+     @override
+     bool operator ==(Object other) {
+       if (identical(this, other)) return true;
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+       return other is PlayxAnimation &&
+           other.index == index &&
+           other.autoPlay == autoPlay &&
+           other.loop == loop &&
+           other.resetToTPoseOnReset == resetToTPoseOnReset &&
+           other.playbackSpeed == playbackSpeed &&
+           other.notifyOfAnimationEvents == notifyOfAnimationEvents;
+     }
 
-    return other is PlayxAnimation &&
-        other.index == index &&
-        other.name == name &&
-        other.autoPlay == autoPlay;
-  }
-
-  @override
-  int get hashCode => index.hashCode ^ name.hashCode ^ autoPlay.hashCode;
+     @override
+     int get hashCode =>
+         index.hashCode ^
+         autoPlay.hashCode ^
+         loop.hashCode ^
+         resetToTPoseOnReset.hashCode ^
+         playbackSpeed.hashCode ^
+         notifyOfAnimationEvents.hashCode;
 }

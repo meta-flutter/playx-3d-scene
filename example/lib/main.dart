@@ -61,6 +61,8 @@ class _MyAppState extends State<MyApp> {
   static const String viewerChannelName = "plugin.filament_view.frame_view";
   static const String collisionChannelName =
       "plugin.filament_view.collision_info";
+  static const String animationChannelName =
+      "plugin.filament_view.animation_info";
 
   ////////////////////////////////////////////////////////////////////////
   @override
@@ -305,6 +307,37 @@ class _MyAppState extends State<MyApp> {
           }
         });
 
+        const MethodChannel methodChannelAnimation =
+            MethodChannel(animationChannelName);
+        methodChannelAnimation.setMethodCallHandler((call) async {
+          // Example:
+          /*
+            Key: animation_event_data, Value: 1 // m_nCurrentPlayingIndex
+            Key: animation_event_type, Value: 1 // AnimationEventType
+            // what you would use to call functionality from the controller
+            Key: global_guid, Value: 184ee0b0-a280-4976-8eae-0a33083b315b
+            Key: animation_event_data, Value: 1 // m_nCurrentPlayingIndex
+            Key: animation_event_type, Value: 0 // AnimationEventType
+            // what you would use to call functionality from the controller
+            Key: global_guid, Value: 184ee0b0-a280-4976-8eae-0a33083b315b
+          */
+
+          /* Map<String, dynamic> arguments =
+              Map<String, dynamic>.from(call.arguments);
+
+          arguments.forEach((key, value) {
+              // Check if the value is a nested map
+              if (value is Map<String, dynamic>) {
+                print("Key: $key has nested data:");
+                value.forEach((nestedKey, nestedValue) {
+                  print("    $nestedKey: $nestedValue");
+                });
+              } else {
+                print("Key: $key, Value: $value");
+              }
+            });*/
+        });
+
         // kCollisionEvent = "collision_event";
         // kCollisionEventType = "collision_event_type";
         // enum CollisionEventType { eFromNonNative, eNativeOnTouchBegin
@@ -312,7 +345,6 @@ class _MyAppState extends State<MyApp> {
         const MethodChannel methodChannelCollision =
             MethodChannel(collisionChannelName);
         methodChannelCollision.setMethodCallHandler((call) async {
-
           Map<String, dynamic> arguments =
               Map<String, dynamic>.from(call.arguments);
 
@@ -338,12 +370,13 @@ class _MyAppState extends State<MyApp> {
                   poGetRandomColorMaterialParam().toJson();
               poController.changeMaterialParameterData(ourJson, guid);
             } else {
-              logToStdOut("Didnt find guid, changing material definition: $guid");
-              Map<String, dynamic> ourJson = poGetLitMaterialWithRandomValues().toJson();
+              logToStdOut(
+                  "Didnt find guid, changing material definition: $guid");
+              Map<String, dynamic> ourJson =
+                  poGetLitMaterialWithRandomValues().toJson();
               thingsWeCanChangeParamsOn.add(guid);
               poController.changeMaterialDefinitionData(ourJson, guid);
-          }
-
+            }
           } else {
             logToStdOut("No hit result found in arguments.");
           }
