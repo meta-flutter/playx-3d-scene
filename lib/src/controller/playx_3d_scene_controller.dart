@@ -178,71 +178,76 @@ class Playx3dSceneController {
     }
 
   //animation
-  /// Updates the current animation by index.
-  /// Returns  the updated animation index.
-  ///
-  ///```
-  /// final result= await changeAnimationByIndex(1);
-  /// if (result.isSuccess()) {
-  /// final data = result.data;
-  /// print("success :$data");
-  /// } else {
-  /// print(result.message);
-  /// }
-  /// ```
-  Future<Result<int>> changeAnimationByIndex(int? index) {
+ Future<Result<int>> enqueueAnimation(String entityGUID, int animationIndex) {
     final data = _channel.invokeMethod<int>(
-      _changeAnimationByIndex,
-      {_changeAnimationByIndexKey: index},
+      _animationEnqueue,
+      {
+        _entityGUID: entityGUID,
+        _animationChangeSpeedValue: animationIndex,
+      },
     );
     return _handleError(data);
   }
 
-  /// Updates the current animation by animation name.
-  /// Returns  the updated animation index.
-  Future<Result<int>> changeAnimationByName(String? animationName) {
+  Future<Result<int>> clearAnimationQueue(String entityGUID) {
     final data = _channel.invokeMethod<int>(
-      _changeAnimationByName,
-      {_changeAnimationByNameKey: animationName},
+      _animationClearQueue,
+      {
+        _entityGUID: entityGUID,
+      },
     );
     return _handleError(data);
   }
 
-  /// Get current model animation names.\
-  /// Returns String message that it's succeeded.
-  Future<Result<List<String>>> getAnimationNames() {
-    final data = _channel.invokeMethod<List<Object?>>(
-      _getAnimationNames,
-      {},
-    ).then((value) {
-      return value?.map((e) => e as String).toList();
-    });
-    return _handleError(data);
-  }
-
-  /// Get current model animation count.
-  Future<Result<int>> getAnimationCount() {
+  Future<Result<int>> playAnimation(String entityGUID, int animationIndex) {
     final data = _channel.invokeMethod<int>(
-      _getAnimationCount,
-      {},
+      _animationPlay,
+      {
+        _entityGUID: entityGUID,
+        _animationChangeSpeedValue: animationIndex,
+      },
     );
     return _handleError(data);
   }
 
-  /// Get current animation index.
-  Future<Result<int>> getCurrentAnimationIndex() {
+  Future<Result<int>> changeAnimationSpeed(String entityGUID, double speed) {
     final data = _channel.invokeMethod<int>(
-      _getCurrentAnimationIndex,
-      {},
+      _animationChangeSpeed,
+      {
+        _entityGUID: entityGUID,
+        _animationChangeSpeedValue: speed,
+      },
     );
     return _handleError(data);
   }
 
-  /// Get Animation name by given index.
-  Future<Result<String>> getAnimationNameByIndex(int? index) {
-    final data = _channel.invokeMethod<String>(
-      _getAnimationNameByIndex,
-      {_getAnimationNameByIndexKey: index},
+  Future<Result<int>> pauseAnimation(String entityGUID) {
+    final data = _channel.invokeMethod<int>(
+      _animationPause,
+      {
+        _entityGUID: entityGUID,
+      },
+    );
+    return _handleError(data);
+  }
+
+  Future<Result<int>> resumeAnimation(String entityGUID) {
+    final data = _channel.invokeMethod<int>(
+      _animationResume,
+      {
+        _entityGUID: entityGUID,
+      },
+    );
+    return _handleError(data);
+  }
+
+  Future<Result<int>> setAnimationLooping(String entityGUID, bool looping) {
+    final data = _channel.invokeMethod<int>(
+      _animationSetLooping,
+      {
+        _entityGUID: entityGUID,
+        _animationSetLoopingValue: looping,
+      },
     );
     return _handleError(data);
   }
@@ -851,20 +856,6 @@ const String _collisionRayRequestDirectionZ = "COLLISION_RAY_REQUEST_DIRECTION_Z
 const String _collisionRayRequestLength = "COLLISION_RAY_REQUEST_LENGTH";
 const String _collisionRayRequestGUID = "COLLISION_RAY_REQUEST_GUID";
 
-const String _changeAnimationByIndex = "CHANGE_ANIMATION_BY_INDEX";
-const String _changeAnimationByIndexKey = "CHANGE_ANIMATION_BY_INDEX_KEY";
-
-const String _changeAnimationByName = "CHANGE_ANIMATION_BY_NAME";
-const String _changeAnimationByNameKey = "CHANGE_ANIMATION_BY_NAME_KEY";
-const String _getAnimationNames = "GET_ANIMATION_NAMES";
-
-const String _getAnimationNameByIndex = "GET_ANIMATION_NAME_BY_INDEX";
-const String _getAnimationNameByIndexKey = "GET_ANIMATION_NAME_BY_INDEX_KEY";
-
-const String _getAnimationCount = "GET_ANIMATION_COUNT";
-
-const String _getCurrentAnimationIndex = "GET_CURRENT_ANIMATION_INDEX";
-
 const String _changeSkyboxByAsset = "CHANGE_SKYBOX_BY_ASSET";
 const String _changeSkyboxByAssetKey = "CHANGE_SKYBOX_BY_ASSET_KEY";
 
@@ -1000,3 +991,14 @@ const String _updateShape = "UPDATE_SHAPE";
 const String _updateShapeKey = "UPDATE_SHAPE_KEY";
 const String _updateShapeIdKey = "UPDATE_SHAPE_ID_KEY";
 const String _getCurrentCreatedShapesIds = "CREATED_SHAPES_IDS";
+
+const String _animationEnqueue = "ANIMATION_ENQUEUE";
+const String _animationClearQueue = "ANIMATION_CLEAR_QUEUE";
+const String _animationPlay = "ANIMATION_PLAY";
+const String _animationChangeSpeed = "ANIMATION_CHANGE_SPEED";
+const String _animationChangeSpeedValue = "ANIMATION_CHANGE_SPEED_VALUE";
+const String _animationPause = "ANIMATION_PAUSE";
+const String _animationResume = "ANIMATION_RESUME";
+const String _animationSetLooping = "ANIMATION_SET_LOOPING";
+const String _animationSetLoopingValue = "ANIMATION_LOOPING_VALUE";
+const String _entityGUID = "ENTITY_GUID";

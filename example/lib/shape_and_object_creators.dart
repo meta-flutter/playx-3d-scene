@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
 import 'package:uuid/uuid.dart';
-import 'dart:async';
-import 'dart:io';
-import 'dart:math';
-import 'utils.dart';
-import 'materialHelpers.dart';
+import 'material_helpers.dart';
 
 const String sequoiaAsset = "assets/models/sequoia_ngp.glb";
 const String garageAsset = "assets/models/garagescene.glb";
+// fox has animation
+const String foxAsset = "assets/models/Fox.glb";
+const String dmgHelmAsset = "assets/models/DamagedHelmet.glb";
 
 ////////////////////////////////////////////////////////////////////////
-GlbModel poGetModel(String szAsset, PlayxPosition position, PlayxSize scale,
-    PlayxRotation rotation, Collidable? collidable) {
+GlbModel poGetModel(
+    String szAsset,
+    PlayxPosition position,
+    PlayxSize scale,
+    PlayxRotation rotation,
+    Collidable? collidable,
+    PlayxAnimation? animationInfo) {
   return GlbModel.asset(szAsset,
-      //animation: PlayxAnimation.byIndex(0, autoPlay: false),
+      animation: animationInfo,
       //fallback: GlbModel.asset(helmetAsset),
       collidable: collidable,
       centerPosition: position,
@@ -33,7 +36,7 @@ GlbModel poGetModel(String szAsset, PlayxPosition position, PlayxSize scale,
 List<String> thingsWeCanChangeParamsOn = [];
 Shape poCreateCube(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
     int idToSet, Color? colorOveride) {
-  String uniqueGuid = Uuid().v4();
+  String uniqueGuid = const Uuid().v4();
   // Just to show off changing material params during runtime.
   thingsWeCanChangeParamsOn.add(uniqueGuid);
 
@@ -186,14 +189,34 @@ List<Model> poGetModelList() {
       PlayxPosition(x: 0, y: 0, z: 0),
       PlayxSize(x: .5, y: 1, z: 1),
       PlayxRotation(x: 0, y: 0, z: 0, w: 1),
-      Collidable(isStatic: false, shouldMatchAttachedObject: true)));
+      Collidable(isStatic: false, shouldMatchAttachedObject: true),
+      null));
 
   itemsToReturn.add(poGetModel(
       garageAsset,
       PlayxPosition(x: 0, y: 0, z: -16),
       PlayxSize(x: 1, y: 1, z: 1),
       PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      null,
       null));
+
+  itemsToReturn.add(poGetModel(
+      foxAsset,
+      PlayxPosition(x: 1, y: 0, z: 4),
+      PlayxSize(x: .04, y: .04, z: .04),
+      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      null,
+      PlayxAnimation.byIndex(0, autoPlay: true)));
+
+  itemsToReturn.add(poGetModel(
+      foxAsset,
+      PlayxPosition(x: -1, y: 0, z: 4),
+      PlayxSize(x: .04, y: .04, z: .04),
+      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      null,
+      PlayxAnimation.byIndex(1,
+          autoPlay: true, notifyOfAnimationEvents: true)));
+
   return itemsToReturn;
 }
 
