@@ -46,9 +46,10 @@ class _MyAppState extends State<MyApp> {
   bool isSceneLoading = false;
   bool isShapeLoading = false;
   late Playx3dSceneController poController;
-  Color _directLightColor = Colors.purple;
+  // actually a point light
+  Color _directLightColor = Colors.white;
   double _directIntensity = 300000000;
-  final double _minIntensity = 10000000;
+  final double _minIntensity = 500000;
   final double _maxIntensity = 300000000;
   double _cameraRotation = 0;
   bool _autoRotate = false;
@@ -100,8 +101,11 @@ class _MyAppState extends State<MyApp> {
                         onColorChanged: (Color color) {
                           setState(() {
                             _directLightColor = color;
-                            poController.changeDirectLightValuesByIndex(
-                                0, _directLightColor, _directIntensity.toInt());
+                            logToStdOut(centerPointLightGUID);
+                            poController.changeLightValuesByGUID(
+                                centerPointLightGUID, _directLightColor, _directIntensity.toInt());
+                            logToStdOut(centerPointLightGUID);
+
                           });
                         },
                         //showLabel: false,
@@ -125,10 +129,14 @@ class _MyAppState extends State<MyApp> {
                             onChanged: (double value) {
                               setState(() {
                                 _directIntensity = value;
-                                poController.changeDirectLightValuesByIndex(
-                                    0,
+                                logToStdOut(centerPointLightGUID);
+
+                                poController.changeLightValuesByGUID(
+                                    centerPointLightGUID,
                                     _directLightColor,
                                     _directIntensity.toInt());
+                                logToStdOut(centerPointLightGUID);
+
                               });
                             },
                           ),
@@ -173,8 +181,7 @@ class _MyAppState extends State<MyApp> {
 
                             if (_autoRotate) {
                               poController.changeCameraMode("AUTO_ORBIT");
-                            }
-                            else {
+                            } else {
                               poController
                                   .changeCameraMode("INERTIA_AND_GESTURES");
                             }
@@ -246,7 +253,7 @@ class _MyAppState extends State<MyApp> {
       //skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
       //indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
       indirectLight: poGetDefaultIndirectLight(),
-      light: poGetDefaultPointLight(_directLightColor, _directIntensity),
+      lights: poGetSceneLightsList(),
       camera: Camera.inertiaAndGestures(
           exposure: Exposure.formAperture(
             aperture: 24.0,

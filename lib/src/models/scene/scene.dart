@@ -7,21 +7,21 @@ import 'package:playx_3d_scene/src/models/scene/skybox/skybox.dart';
 class Scene {
   Skybox? skybox;
   IndirectLight? indirectLight;
-  Light? light;
+  List<Light>? lights;
   Camera? camera;
 
-  Scene({this.skybox, this.indirectLight, this.light, this.camera});
+  Scene({this.skybox, this.indirectLight, this.lights, this.camera});
 
   Map<String, dynamic> toJson() => {
-        'skybox': skybox?.toJson(),
-        'light': light?.toJson(),
-        'indirectLight': indirectLight?.toJson(),
-        'camera': camera?.toJson(),
-      };
+    'skybox': skybox?.toJson(),
+    'lights': lights?.map((light) => light.toJson()).toList(),
+    'indirectLight': indirectLight?.toJson(),
+    'camera': camera?.toJson(),
+  };
 
   @override
   String toString() {
-    return 'Scene(skybox: $skybox, indirectLight: $indirectLight, light: $light, camera: $camera)';
+    return 'Scene(skybox: $skybox, indirectLight: $indirectLight, lights: $lights, camera: $camera)';
   }
 
   @override
@@ -31,7 +31,7 @@ class Scene {
     return other is Scene &&
         other.skybox == skybox &&
         other.indirectLight == indirectLight &&
-        other.light == light &&
+        other.lights == lights &&
         other.camera == camera;
   }
 
@@ -39,20 +39,20 @@ class Scene {
   int get hashCode {
     return skybox.hashCode ^
         indirectLight.hashCode ^
-        light.hashCode ^
+        lights.hashCode ^
         camera.hashCode;
   }
 
   Scene copyWith({
     Skybox? skybox,
     IndirectLight? indirectLight,
-    Light? light,
+    List<Light>? lights,
     Camera? camera,
   }) {
     return Scene(
       skybox: skybox ?? this.skybox,
       indirectLight: indirectLight ?? this.indirectLight,
-      light: light ?? this.light,
+      lights: lights ?? this.lights,
       camera: camera ?? this.camera,
     );
   }

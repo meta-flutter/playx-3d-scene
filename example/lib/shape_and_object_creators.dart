@@ -3,12 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
 import 'package:uuid/uuid.dart';
 import 'material_helpers.dart';
+import 'utils.dart';
 
 const String sequoiaAsset = "assets/models/sequoia_ngp.glb";
 const String garageAsset = "assets/models/garagescene.glb";
 // fox has animation
 const String foxAsset = "assets/models/Fox.glb";
-const String dmgHelmAsset = "assets/models/DamagedHelmet.glb";
+//const String dmgHelmAsset = "assets/models/DamagedHelmet.glb";
 
 ////////////////////////////////////////////////////////////////////////
 GlbModel poGetModel(
@@ -182,6 +183,92 @@ List<Shape> poGetScenesShapes() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+List<String> lightsWeCanChangeParamsOn = [];
+String centerPointLightGUID = const Uuid().v4();
+List<Light> poGetSceneLightsList() {
+  List<Light> itemsToReturn = [];
+
+  itemsToReturn.add(poGetDefaultPointLight(Colors.white, 10000000));
+
+  double yDirection = -1;
+  double fallOffRadius = 40;
+
+  String guid = Uuid().v4();
+  lightsWeCanChangeParamsOn.add(guid);
+
+  itemsToReturn.add(Light(
+      global_guid: guid,
+      type: LightType.point,
+      colorTemperature: 36500,
+      color: getRandomPresetColor(),
+      intensity: 100000000,
+      castShadows: false,
+      castLight: true,
+      spotLightConeInner: 1,
+      spotLightConeOuter: 5,
+      falloffRadius: fallOffRadius,
+      position: PlayxPosition(x: -15, y: 5, z: -15),
+      // should be a unit vector
+      direction: PlayxDirection(x: 0, y: yDirection, z: 0)));
+
+  guid = Uuid().v4();
+  lightsWeCanChangeParamsOn.add(guid);
+
+  itemsToReturn.add(Light(
+      global_guid: guid,
+      type: LightType.point,
+      colorTemperature: 36500,
+      color: getRandomPresetColor(),
+      intensity: 100000000,
+      castShadows: false,
+      castLight: true,
+      spotLightConeInner: 1,
+      spotLightConeOuter: 5,
+      falloffRadius: fallOffRadius,
+      position: PlayxPosition(x: 15, y: 5, z: 15),
+      // should be a unit vector
+      direction: PlayxDirection(x: 0, y: yDirection, z: 0)));
+
+  guid = Uuid().v4();
+  lightsWeCanChangeParamsOn.add(guid);
+
+  itemsToReturn.add(Light(
+      global_guid: guid,
+      type: LightType.point,
+      colorTemperature: 36500,
+      color: getRandomPresetColor(),
+      intensity: 100000000,
+      castShadows: false,
+      castLight: true,
+      spotLightConeInner: 1,
+      spotLightConeOuter: 5,
+      falloffRadius: fallOffRadius,
+      position: PlayxPosition(x: -15, y: 5, z: 15),
+      // should be a unit vector
+      direction: PlayxDirection(x: 0, y: yDirection, z: 0)));
+
+  guid = Uuid().v4();
+  lightsWeCanChangeParamsOn.add(guid);
+
+  itemsToReturn.add(Light(
+      global_guid: guid,
+      type: LightType.point,
+      colorTemperature: 36500,
+      color: getRandomPresetColor(),
+      intensity: 100000000,
+      castShadows: false,
+      castLight: true,
+      spotLightConeInner: 1,
+      spotLightConeOuter: 5,
+      falloffRadius: fallOffRadius,
+      position: PlayxPosition(x: 15, y: 5, z: -15),
+      // should be a unit vector
+      direction: PlayxDirection(x: 0, y: yDirection, z: 0)));
+
+  return itemsToReturn;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 List<Model> poGetModelList() {
   List<Model> itemsToReturn = [];
   itemsToReturn.add(poGetModel(
@@ -248,6 +335,7 @@ DefaultIndirectLight poGetDefaultIndirectLight() {
 ////////////////////////////////////////////////////////////////////////////////
 Light poGetDefaultPointLight(Color directLightColor, double intensity) {
   return Light(
+      global_guid: centerPointLightGUID,
       type: LightType.point,
       colorTemperature: 36500,
       color: directLightColor,
