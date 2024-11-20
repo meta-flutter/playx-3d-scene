@@ -216,7 +216,11 @@ List<Light> poGetSceneLightsList() {
   itemsToReturn.add(poGetDefaultPointLight(Colors.white, 10000000));
 
   double yDirection = -1;
-  double fallOffRadius = 40;
+  double fallOffRadius = 10;
+  double spotLightConeInnter = 0.1;
+  double spotLightConeOuter = 0.3;
+  //LightType lType = LightType.spot;
+  LightType lType = LightType.point;
 
   String guid = const Uuid().v4();
 
@@ -225,14 +229,14 @@ List<Light> poGetSceneLightsList() {
 
   itemsToReturn.add(Light(
       global_guid: guid,
-      type: LightType.point,
+      type: lType,
       colorTemperature: 36500,
-      color: getRandomPresetColor(),
+      color: Colors.red,
       intensity: 100000000,
       castShadows: true,
       castLight: true,
-      spotLightConeInner: 1,
-      spotLightConeOuter: 5,
+      spotLightConeInner: spotLightConeInnter,
+      spotLightConeOuter: spotLightConeOuter,
       falloffRadius: fallOffRadius,
       position: PlayxPosition(x: -15, y: 5, z: -15),
       // should be a unit vector
@@ -245,14 +249,14 @@ List<Light> poGetSceneLightsList() {
 
   itemsToReturn.add(Light(
       global_guid: guid,
-      type: LightType.point,
+      type: lType,
       colorTemperature: 36500,
-      color: getRandomPresetColor(),
+      color: Colors.blue,
       intensity: 100000000,
       castShadows: true,
       castLight: true,
-      spotLightConeInner: 1,
-      spotLightConeOuter: 5,
+      spotLightConeInner: spotLightConeInnter,
+      spotLightConeOuter: spotLightConeOuter,
       falloffRadius: fallOffRadius,
       position: PlayxPosition(x: 15, y: 5, z: 15),
       // should be a unit vector
@@ -265,14 +269,14 @@ List<Light> poGetSceneLightsList() {
 
   itemsToReturn.add(Light(
       global_guid: guid,
-      type: LightType.point,
+      type: lType,
       colorTemperature: 36500,
-      color: getRandomPresetColor(),
+      color: Colors.green,
       intensity: 100000000,
       castShadows: true,
       castLight: true,
-      spotLightConeInner: 1,
-      spotLightConeOuter: 5,
+      spotLightConeInner: spotLightConeInnter,
+      spotLightConeOuter: spotLightConeOuter,
       falloffRadius: fallOffRadius,
       position: PlayxPosition(x: -15, y: 5, z: 15),
       // should be a unit vector
@@ -285,14 +289,14 @@ List<Light> poGetSceneLightsList() {
 
   itemsToReturn.add(Light(
       global_guid: guid,
-      type: LightType.point,
+      type: lType,
       colorTemperature: 36500,
-      color: getRandomPresetColor(),
+      color: Colors.orange,
       intensity: 100000000,
       castShadows: true,
       castLight: true,
-      spotLightConeInner: 1,
-      spotLightConeOuter: 5,
+      spotLightConeInner: spotLightConeInnter,
+      spotLightConeOuter: spotLightConeOuter,
       falloffRadius: fallOffRadius,
       position: PlayxPosition(x: 15, y: 5, z: -15),
       // should be a unit vector
