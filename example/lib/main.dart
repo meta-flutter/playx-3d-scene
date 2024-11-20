@@ -7,6 +7,7 @@ import 'dart:io';
 import 'material_helpers.dart';
 import 'shape_and_object_creators.dart';
 import 'demo_user_interface.dart';
+import 'utils.dart';
 
 // Rebuilding materials to match filament versions.
 // playx-3d-scene/example/assets/materials$
@@ -103,9 +104,10 @@ class _MyAppState extends State<MyApp> {
                             _directLightColor = color;
                             logToStdOut(centerPointLightGUID);
                             poController.changeLightValuesByGUID(
-                                centerPointLightGUID, _directLightColor, _directIntensity.toInt());
+                                centerPointLightGUID,
+                                _directLightColor,
+                                _directIntensity.toInt());
                             logToStdOut(centerPointLightGUID);
-
                           });
                         },
                         //showLabel: false,
@@ -129,14 +131,10 @@ class _MyAppState extends State<MyApp> {
                             onChanged: (double value) {
                               setState(() {
                                 _directIntensity = value;
-                                logToStdOut(centerPointLightGUID);
-
                                 poController.changeLightValuesByGUID(
                                     centerPointLightGUID,
                                     _directLightColor,
                                     _directIntensity.toInt());
-                                logToStdOut(centerPointLightGUID);
-
                               });
                             },
                           ),
@@ -305,6 +303,7 @@ class _MyAppState extends State<MyApp> {
         const MethodChannel methodChannel = MethodChannel(viewerChannelName);
         methodChannel.setMethodCallHandler((call) async {
           if (call.method == "renderFrame") {
+            vRunLightLoops(poController);
             // Map<String, dynamic> arguments = call.arguments;
 
             // double timeSinceLastRenderedSec = arguments['timeSinceLastRenderedSec'];

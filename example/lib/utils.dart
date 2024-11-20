@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'shape_and_object_creators.dart';
+import 'package:playx_3d_scene/playx_3d_scene.dart';
 
 ////////////////////////////////////////////////////////////////////////
 Color getTrueRandomColor() {
@@ -44,4 +46,106 @@ Color getRandomPresetColor() {
 
   // Select a random color from the list
   return presetColors[random.nextInt(presetColors.length)];
+}
+
+enum LightState { stationary, goToNextCorner, crissCross, scatter }
+
+LightState currentState = LightState.stationary;
+
+const double roomMin = -15.0;
+const double roomMax = 15.0;
+
+double currentTimeInState = 0.0;
+
+////////////////////////////////////////////////////////////////////////////////
+double lerp(double start, double end, double t) {
+  return start + (end - start) * t;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void crissCross(
+    double deltaTime, double speed, Playx3dSceneController controller) {
+  for (var light in lightsWeCanChangeParamsOn) {
+    // Increment t based on deltaTime and speed
+    light.t += deltaTime * speed;
+
+    // If t reaches or exceeds 1.0, reset it and swap positions
+    if (light.t >= 1.0) {
+      light.t -= 1.0; // Handle any overflow
+
+      // Swap start and opposite positions
+      double tempX = light.startX;
+      double tempZ = light.startZ;
+      light.startX = light.oppositeX;
+      light.startZ = light.oppositeZ;
+      light.oppositeX = tempX;
+      light.oppositeZ = tempZ;
+
+      light.phase = 'done';
+    }
+
+    // Compute new position using lerp
+    light.originX = lerp(light.startX, light.oppositeX, light.t);
+    light.originZ = lerp(light.startZ, light.oppositeZ, light.t);
+
+    // Apply the new transform
+    controller.changeLightTransformByGUID(
+      light.guid,
+      light.originX,
+      light.originY,
+      light.originZ,
+      0,
+      -1,
+      0,
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void updateLights(double deltaTime, Playx3dSceneController controller) {
+  switch (currentState) {
+    case LightState.goToNextCorner:
+      break;
+    case LightState.crissCross:
+      crissCross(deltaTime, .1, controller);
+      break;
+    case LightState.scatter:
+      break;
+    case LightState.stationary:
+      break;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void transitionState(LightState newState) {
+  currentState = newState;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void vRunLightLoops(Playx3dSceneController controller) {
+  const double frameTime = 1 / 60.0; // Simulate 60 FPS
+  updateLights(frameTime, controller);
+
+  currentTimeInState += frameTime;
+
+  // add time check here.
+  if (currentState == LightState.stationary) {
+    transitionState(LightState.crissCross);
+  } // Transition state based on conditions
+
+  if (currentState == LightState.crissCross) {
+    // Check if all lights are done
+    bool allDone =
+        lightsWeCanChangeParamsOn.every((light) => light.phase == 'done');
+    if (allDone) {
+      // Reset lights for continuous crisscrossing or transition to next state
+      for (var light in lightsWeCanChangeParamsOn) {
+        // Reset phase to start over
+        light.phase = 'moving';
+      }
+
+      // Optionally transition to another state
+      // transitionState(LightState.scatter);
+    }
+  }
 }

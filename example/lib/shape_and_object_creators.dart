@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
 import 'package:uuid/uuid.dart';
 import 'material_helpers.dart';
@@ -183,7 +182,33 @@ List<Shape> poGetScenesShapes() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-List<String> lightsWeCanChangeParamsOn = [];
+class MovingDemoLight {
+  String guid;
+  double originX, originY, originZ;
+  double directionX, directionY, directionZ;
+
+  String phase = "moving"; // 'toCenter' or 'toOpposite'
+  double startX = 0, startZ = 0;
+  double oppositeX = 0, oppositeZ = 0;
+  double t = 0;
+
+  MovingDemoLight(this.guid, this.originX, this.originY, this.originZ,
+      this.directionX, this.directionY, this.directionZ) {
+    startX = originX;
+    startZ = originZ;
+
+    // Compute opposite positions using the formula
+    oppositeX = -startX;
+    oppositeZ = -startZ;
+  }
+
+  @override
+  String toString() {
+    return 'Light(guid: $guid, origin: ($originX, $originY, $originZ), direction: ($directionX, $directionY, $directionZ))';
+  }
+}
+
+List<MovingDemoLight> lightsWeCanChangeParamsOn = [];
 String centerPointLightGUID = const Uuid().v4();
 List<Light> poGetSceneLightsList() {
   List<Light> itemsToReturn = [];
@@ -193,8 +218,10 @@ List<Light> poGetSceneLightsList() {
   double yDirection = -1;
   double fallOffRadius = 40;
 
-  String guid = Uuid().v4();
-  lightsWeCanChangeParamsOn.add(guid);
+  String guid = const Uuid().v4();
+
+  lightsWeCanChangeParamsOn
+      .add(MovingDemoLight(guid, -15.0, 5.0, -15.0, 0.0, yDirection, 0.0));
 
   itemsToReturn.add(Light(
       global_guid: guid,
@@ -202,7 +229,7 @@ List<Light> poGetSceneLightsList() {
       colorTemperature: 36500,
       color: getRandomPresetColor(),
       intensity: 100000000,
-      castShadows: false,
+      castShadows: true,
       castLight: true,
       spotLightConeInner: 1,
       spotLightConeOuter: 5,
@@ -211,8 +238,10 @@ List<Light> poGetSceneLightsList() {
       // should be a unit vector
       direction: PlayxDirection(x: 0, y: yDirection, z: 0)));
 
-  guid = Uuid().v4();
-  lightsWeCanChangeParamsOn.add(guid);
+  guid = const Uuid().v4();
+
+  lightsWeCanChangeParamsOn
+      .add(MovingDemoLight(guid, 15.0, 5.0, 15.0, 0.0, yDirection, 0.0));
 
   itemsToReturn.add(Light(
       global_guid: guid,
@@ -220,7 +249,7 @@ List<Light> poGetSceneLightsList() {
       colorTemperature: 36500,
       color: getRandomPresetColor(),
       intensity: 100000000,
-      castShadows: false,
+      castShadows: true,
       castLight: true,
       spotLightConeInner: 1,
       spotLightConeOuter: 5,
@@ -229,8 +258,10 @@ List<Light> poGetSceneLightsList() {
       // should be a unit vector
       direction: PlayxDirection(x: 0, y: yDirection, z: 0)));
 
-  guid = Uuid().v4();
-  lightsWeCanChangeParamsOn.add(guid);
+  guid = const Uuid().v4();
+
+  lightsWeCanChangeParamsOn
+      .add(MovingDemoLight(guid, -15.0, 5.0, 15.0, 0.0, yDirection, 0.0));
 
   itemsToReturn.add(Light(
       global_guid: guid,
@@ -238,7 +269,7 @@ List<Light> poGetSceneLightsList() {
       colorTemperature: 36500,
       color: getRandomPresetColor(),
       intensity: 100000000,
-      castShadows: false,
+      castShadows: true,
       castLight: true,
       spotLightConeInner: 1,
       spotLightConeOuter: 5,
@@ -247,8 +278,10 @@ List<Light> poGetSceneLightsList() {
       // should be a unit vector
       direction: PlayxDirection(x: 0, y: yDirection, z: 0)));
 
-  guid = Uuid().v4();
-  lightsWeCanChangeParamsOn.add(guid);
+  guid = const Uuid().v4();
+
+  lightsWeCanChangeParamsOn
+      .add(MovingDemoLight(guid, 15.0, 5.0, -15.0, 0.0, yDirection, 0.0));
 
   itemsToReturn.add(Light(
       global_guid: guid,
@@ -256,7 +289,7 @@ List<Light> poGetSceneLightsList() {
       colorTemperature: 36500,
       color: getRandomPresetColor(),
       intensity: 100000000,
-      castShadows: false,
+      castShadows: true,
       castLight: true,
       spotLightConeInner: 1,
       spotLightConeOuter: 5,
@@ -274,7 +307,7 @@ List<Model> poGetModelList() {
   itemsToReturn.add(poGetModel(
       sequoiaAsset,
       PlayxPosition(x: 0, y: 0, z: 0),
-      PlayxSize(x: .5, y: 1, z: 1),
+      PlayxSize(x: 1, y: 1, z: 1),
       PlayxRotation(x: 0, y: 0, z: 0, w: 1),
       Collidable(isStatic: false, shouldMatchAttachedObject: true),
       null));
