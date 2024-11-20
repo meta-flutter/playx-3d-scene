@@ -290,6 +290,8 @@ class _MyAppState extends State<MyApp> {
       scene: poGetScene(),
       shapes: poGetScenesShapes(),
       onCreated: (Playx3dSceneController controller) async {
+        logToStdOut('poGetPlayx3dScene onCreated');
+
         // we'll save the controller so we can send messages
         // from the UI / 'gameplay' in the future.
         poController = controller;
