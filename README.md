@@ -27,6 +27,7 @@ Major Differences outlined:
 6. Resume
 7. Set Looping
 8. Whether you want callbacks or not.
+* Camera has a few new default abilities including a inertiaAndGestures mode for clicking & dragging the camera port around the center.
 
 Upcoming changes:
 
