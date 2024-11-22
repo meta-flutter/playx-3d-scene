@@ -7,6 +7,7 @@ import 'dart:io';
 import 'material_helpers.dart';
 import 'shape_and_object_creators.dart';
 import 'demo_user_interface.dart';
+import 'animation_event_channel.dart';
 import 'utils.dart';
 
 // Rebuilding materials to match filament versions.
@@ -43,6 +44,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ////////////////////////////////////////////////////////////////////////
+  final AnimationEventChannel _animEventChannel = new AnimationEventChannel();
+
   bool isModelLoading = false;
   bool isSceneLoading = false;
   bool isShapeLoading = false;
@@ -284,6 +287,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
+  bool hasInit = false;
   Playx3dScene poGetPlayx3dScene() {
     return Playx3dScene(
       models: poGetModelList(),
@@ -304,6 +308,15 @@ class _MyAppState extends State<MyApp> {
 
         const MethodChannel methodChannel = MethodChannel(viewerChannelName);
         methodChannel.setMethodCallHandler((call) async {
+
+          if(!hasInit) {
+            hasInit = true;
+
+            logToStdOut('initing event channel');
+            _animEventChannel.initEventChannel();
+            logToStdOut('done initing event channel');
+          }
+
           if (call.method == "renderFrame") {
             vRunLightLoops(poController);
             // Map<String, dynamic> arguments = call.arguments;
