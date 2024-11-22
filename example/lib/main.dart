@@ -7,6 +7,7 @@ import 'dart:io';
 import 'material_helpers.dart';
 import 'shape_and_object_creators.dart';
 import 'demo_user_interface.dart';
+import 'utils.dart';
 
 // Rebuilding materials to match filament versions.
 // playx-3d-scene/example/assets/materials$
@@ -46,9 +47,10 @@ class _MyAppState extends State<MyApp> {
   bool isSceneLoading = false;
   bool isShapeLoading = false;
   late Playx3dSceneController poController;
-  Color _directLightColor = Colors.purple;
+  // actually a point light
+  Color _directLightColor = Colors.white;
   double _directIntensity = 300000000;
-  final double _minIntensity = 10000000;
+  final double _minIntensity = 500000;
   final double _maxIntensity = 300000000;
   double _cameraRotation = 0;
   bool _autoRotate = false;
@@ -100,8 +102,12 @@ class _MyAppState extends State<MyApp> {
                         onColorChanged: (Color color) {
                           setState(() {
                             _directLightColor = color;
-                            poController.changeDirectLightValuesByIndex(
-                                0, _directLightColor, _directIntensity.toInt());
+                            logToStdOut(centerPointLightGUID);
+                            poController.changeLightValuesByGUID(
+                                centerPointLightGUID,
+                                _directLightColor,
+                                _directIntensity.toInt());
+                            logToStdOut(centerPointLightGUID);
                           });
                         },
                         //showLabel: false,
@@ -125,8 +131,8 @@ class _MyAppState extends State<MyApp> {
                             onChanged: (double value) {
                               setState(() {
                                 _directIntensity = value;
-                                poController.changeDirectLightValuesByIndex(
-                                    0,
+                                poController.changeLightValuesByGUID(
+                                    centerPointLightGUID,
                                     _directLightColor,
                                     _directIntensity.toInt());
                               });
@@ -173,8 +179,7 @@ class _MyAppState extends State<MyApp> {
 
                             if (_autoRotate) {
                               poController.changeCameraMode("AUTO_ORBIT");
-                            }
-                            else {
+                            } else {
                               poController
                                   .changeCameraMode("INERTIA_AND_GESTURES");
                             }
@@ -246,7 +251,7 @@ class _MyAppState extends State<MyApp> {
       //skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
       //indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
       indirectLight: poGetDefaultIndirectLight(),
-      light: poGetDefaultPointLight(_directLightColor, _directIntensity),
+      lights: poGetSceneLightsList(),
       camera: Camera.inertiaAndGestures(
           exposure: Exposure.formAperture(
             aperture: 24.0,
@@ -285,6 +290,8 @@ class _MyAppState extends State<MyApp> {
       scene: poGetScene(),
       shapes: poGetScenesShapes(),
       onCreated: (Playx3dSceneController controller) async {
+        logToStdOut('poGetPlayx3dScene onCreated');
+
         // we'll save the controller so we can send messages
         // from the UI / 'gameplay' in the future.
         poController = controller;
@@ -298,6 +305,7 @@ class _MyAppState extends State<MyApp> {
         const MethodChannel methodChannel = MethodChannel(viewerChannelName);
         methodChannel.setMethodCallHandler((call) async {
           if (call.method == "renderFrame") {
+            vRunLightLoops(poController);
             // Map<String, dynamic> arguments = call.arguments;
 
             // double timeSinceLastRenderedSec = arguments['timeSinceLastRenderedSec'];

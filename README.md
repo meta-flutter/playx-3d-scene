@@ -1,3 +1,42 @@
+# Forked Differences from Playx base
+
+This plugin is the scripting interface that is interacts directly with IVI homescreen plugins -> Filament_View.
+
+Major changes have occurred that changes from base PlayX how this plugin is intended to be used. These have been mostly 
+composed of making dynamic changes to the scene during runtime. Where the original intention of the plugin was setting a scene and just viewing it.
+
+Major Differences outlined:
+
+* Scene now has a list of lights that it is composed of instead of a singular one.
+* Scene now has a list of models that it is composed of instead of one.
+* Ground has been removed in favor of a 'plane' shape usage.
+* IDs are in the process of being removed, You can give objects names and GUIDs now and use those in referencing.
+* Original PlayX intention was to remove/add scenes wholly. This functionality purposefully does not exist. Instead you should load all assets you need at start, and turn on / off or move what you dont need.
+* Materials are instanced.
+* You can do full transform on models / shapes (scale, rotate, translate).
+* Geometry has new interfaces to manipulate animations during runtime.
+* You can add collision items on models/shapes that allow native to hit test. You can specify if you want hit test back to you.
+* You can receive callbacks for frame renders, collision detections, and animation start/stops now.
+* Can turn on/off shadows on all objects.
+* More functionality implemented for geometry animations:
+1. Enqueue
+2. Clear Queue
+3. Play single Animation
+4. Change animation speed
+5. Pause
+6. Resume
+7. Set Looping
+8. Whether you want callbacks or not.
+* Camera has a few new default abilities including a inertiaAndGestures mode for clicking & dragging the camera port around the center.
+
+Upcoming changes:
+
+* Using Pidgeon plugin for generated messages for communication.
+* Removal of un-used / un-implemented calls related to full scene tear down / reinit.
+* Removal of generic int ID system.
+
+# _Original Notes below:_
+
 # Playx 3d Scene
 
 [![pub package](https://img.shields.io/pub/v/playx_3d_scene.svg?color=1284C5)](https://pub.dev/packages/playx_3d_scene)

@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:uuid/uuid.dart';
 
 import 'package:playx_3d_scene/src/models/scene/geometry/direction.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/position.dart';
@@ -32,6 +33,9 @@ import 'package:playx_3d_scene/src/utils/utils.dart';
 ///Defaults to Directional light with  colorTemperature = 6_500.0, intensity = 100_000.0f,
 // And direction = Direction(x:0.0, y:-1.0,z: 0.0), castShadows = true, cast light=false
 class Light {
+  /// used for communication back and forth from dart/native
+  final String global_guid;
+
   ///Denotes the type of the light being created.
   LightType type;
 
@@ -50,7 +54,7 @@ class Light {
   /// This parameter depends on the LightType.
   /// For directional lights,it specifies the illuminance in lux (or lumen/m^2).
   /// For point lights and spot lights, it specifies the luminous power in lumen.
-// For example, the sun's illuminance is about 100,000 lux.
+  /// For example, the sun's illuminance is about 100,000 lux.
   double? intensity;
 
   ///Sets the initial position of the light in world space.
@@ -121,7 +125,8 @@ class Light {
   double? sunHaloFalloff;
 
   Light(
-      {this.type = LightType.directional,
+      {required this.global_guid,
+      this.type = LightType.directional,
       this.color,
       this.colorTemperature,
       this.intensity,
@@ -134,9 +139,11 @@ class Light {
       this.spotLightConeOuter,
       this.sunAngularRadius,
       this.sunHaloSize,
-      this.sunHaloFalloff});
+      this.sunHaloFalloff
+      });
 
   Map<String, dynamic> toJson() => {
+        'global_guid' : global_guid,
         'type': LightType.toName(type),
         'color': color?.toHex(),
         'colorTemperature': colorTemperature,

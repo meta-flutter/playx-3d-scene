@@ -88,14 +88,32 @@ class Playx3dSceneController {
           return _handleError(data);
         }
 
-  Future<Result<int>> changeDirectLightValuesByIndex(
-      int? index, Color? color, int? intensity) {
+  Future<Result<int>> changeLightValuesByGUID(
+      String entityGUID, Color? color, int? intensity) {
     final data = _channel.invokeMethod<int>(
-      _changeDirectLightColorByIndex,
+      _changeLightColorByGUID,
       {
-        _changeDirectLightColorByIndexKey: index,
-        _changeDirectLightColorByIndexColor: color?.toHex(),
-        _changeDirectLightColorByIndexIntensity: intensity
+        _entityGUID: entityGUID,
+        _changeLightColorByGUIDColor: color?.toHex(),
+        _changeLightColorByGUIDIntensity: intensity
+      },
+    );
+    return _handleError(data);
+  }
+
+  Future<Result<int>> changeLightTransformByGUID(
+      String entityGUID, double originX, double originY, double originZ,
+      double directionX, double directionY, double directionZ) {
+    final data = _channel.invokeMethod<int>(
+      _changeLightTransformByGUID,
+      {
+        _entityGUID: entityGUID,
+        _changeLightTransformByGUIDPosx: originX,
+        _changeLightTransformByGUIDPosy: originY,
+        _changeLightTransformByGUIDPosz: originZ,
+        _changeLightTransformByGUIDDirx: directionX,
+        _changeLightTransformByGUIDDiry: directionY,
+        _changeLightTransformByGUIDDirz: directionZ
       },
     );
     return _handleError(data);
@@ -815,14 +833,20 @@ const String _updatePlayx3dSceneSceneKey = "UPDATE_PLAYX_3D_SCENE_SCENE_KEY";
 const String _updatePlayx3dSceneModelKey = "UPDATE_PLAYX_3D_SCENE_MODEL_KEY";
 const String _updatePlayx3dSceneShapesKey = "UPDATE_PLAYX_3D_SCENE_SHAPES_KEY";
 
-const String _changeDirectLightColorByIndex =
-    "CHANGE_DIRECT_LIGHT_COLOR_BY_INDEX";
-const String _changeDirectLightColorByIndexKey =
-    "CHANGE_DIRECT_LIGHT_COLOR_BY_INDEX_KEY";
-const String _changeDirectLightColorByIndexColor =
-    "CHANGE_DIRECT_LIGHT_COLOR_BY_INDEX_COLOR";
-const String _changeDirectLightColorByIndexIntensity =
-    "CHANGE_DIRECT_LIGHT_COLOR_BY_INDEX_INTENSITY";
+const String _changeLightColorByGUID =
+    "CHANGE_LIGHT_COLOR_BY_GUID";
+const String _changeLightColorByGUIDColor =
+    "CHANGE_LIGHT_COLOR_BY_GUID_COLOR";
+const String _changeLightColorByGUIDIntensity =
+    "CHANGE_LIGHT_COLOR_BY_GUID_INTENSITY";
+
+const String _changeLightTransformByGUID = "CHANGE_LIGHT_TRANSFORM_BY_GUID";
+const String _changeLightTransformByGUIDPosx = "CHANGE_LIGHT_TRANSFORM_BY_GUID_POSX";
+const String _changeLightTransformByGUIDPosy = "CHANGE_LIGHT_TRANSFORM_BY_GUID_POSY";
+const String _changeLightTransformByGUIDPosz = "CHANGE_LIGHT_TRANSFORM_BY_GUID_POSZ";
+const String _changeLightTransformByGUIDDirx = "CHANGE_LIGHT_TRANSFORM_BY_GUID_DIRX";
+const String _changeLightTransformByGUIDDiry = "CHANGE_LIGHT_TRANSFORM_BY_GUID_DIRY";
+const String _changeLightTransformByGUIDDirz = "CHANGE_LIGHT_TRANSFORM_BY_GUID_DIRZ";
 
 const String _changeMaterialParameter = "CHANGE_MATERIAL_PARAMETER";
 const String _changeMaterialParameterData = "CHANGE_MATERIAL_PARAMETER_DATA";
