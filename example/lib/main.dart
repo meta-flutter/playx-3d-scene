@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
 import 'dart:async';
 import 'dart:io';
-import 'material_helpers.dart';
 import 'shape_and_object_creators.dart';
 import 'demo_user_interface.dart';
-import 'utils.dart';
+import 'events/animation_event_channel.dart';
+import 'events/frame_event_channel.dart';
+import 'events/collision_event_channel.dart';
+import 'events/native_readiness.dart';
 
 // Rebuilding materials to match filament versions.
 // playx-3d-scene/example/assets/materials$
@@ -43,9 +44,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ////////////////////////////////////////////////////////////////////////
-  bool isModelLoading = false;
-  bool isSceneLoading = false;
-  bool isShapeLoading = false;
+  final AnimationEventChannel _animEventChannel = AnimationEventChannel();
+  final CollisionEventChannel _collisionEventChannel = CollisionEventChannel();
+  final FrameEventChannel _frameEventChannel = FrameEventChannel();
+
   late Playx3dSceneController poController;
   // actually a point light
   Color _directLightColor = Colors.white;
@@ -57,16 +59,67 @@ class _MyAppState extends State<MyApp> {
   bool _toggleShapes = true;
   bool _toggleCollidableVisuals = true;
 
-  static const String viewerChannelName = "plugin.filament_view.frame_view";
-  static const String collisionChannelName =
-      "plugin.filament_view.collision_info";
-  static const String animationChannelName =
-      "plugin.filament_view.animation_info";
+  final NativeReadiness _nativeReadiness = NativeReadiness();
+  bool isReady = false;
 
   ////////////////////////////////////////////////////////////////////////
   @override
   void initState() {
     super.initState();
+    initializeReadiness();
+  }
+
+  Future<void> initializeReadiness() async {
+    const int maxRetries = 30; // Maximum number of retries
+    const Duration retryInterval =
+        Duration(seconds: 1); // Interval between retries
+
+    for (int attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        logToStdOut('Checking native readiness, attempt $attempt...');
+        final bool nativeReady = await _nativeReadiness.isNativeReady();
+
+        if (nativeReady) {
+          logToStdOut('Native is ready. Proceeding...');
+          startListeningForEvents(); // Start listening for readiness events
+
+          return; // Exit the function if ready
+        } else {
+          logToStdOut('Native is not ready. Retrying...');
+        }
+      } catch (e) {
+        logToStdOut('Error checking readiness: $e');
+      }
+
+      // Wait before the next retry
+      await Future.delayed(retryInterval);
+    }
+
+    // If we exhaust retries, log a message or take fallback action
+    logToStdOut(
+        'Failed to confirm native readiness after $maxRetries attempts.');
+  }
+
+  void startListeningForEvents() {
+    _nativeReadiness.readinessStream.listen(
+      (event) {
+        if (event == "ready") {
+          logToStdOut('Received ready event from native side.');
+          setState(() {
+            logToStdOut('Creating Event Channels');
+            _animEventChannel.initEventChannel();
+            _collisionEventChannel.initEventChannel();
+            _frameEventChannel.initEventChannel();
+            logToStdOut('Event Channels created.');
+
+            isReady = true;
+          });
+        }
+      },
+      onError: (error) {
+        logToStdOut('Error listening for readiness events: $error');
+      },
+    );
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -279,138 +332,24 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  void vOnEachFrameRender(num? frameTimeNano) {
-    if (frameTimeNano != null) {}
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
+  //bool hasInit = false;
   Playx3dScene poGetPlayx3dScene() {
     return Playx3dScene(
-      models: poGetModelList(),
-      scene: poGetScene(),
-      shapes: poGetScenesShapes(),
-      onCreated: (Playx3dSceneController controller) async {
-        logToStdOut('poGetPlayx3dScene onCreated');
+        models: poGetModelList(),
+        scene: poGetScene(),
+        shapes: poGetScenesShapes(),
+        onCreated: (Playx3dSceneController controller) async {
+          logToStdOut('poGetPlayx3dScene onCreated');
 
-        // we'll save the controller so we can send messages
-        // from the UI / 'gameplay' in the future.
-        poController = controller;
+          // we'll save the controller so we can send messages
+          // from the UI / 'gameplay' in the future.
+          poController = controller;
 
-        // Frames from Native to here, currently run in order of
-        // - updateFrame - Called regardless if a frame is going to be drawn or not
-        // - preRenderFrame - Called before native <features>, but we know we're going to draw a frame
-        // - renderFrame - Called after native <features>, right before drawing a frame
-        // - postRenderFrame - Called after we've drawn natively, right after drawing a frame.
+          _frameEventChannel.setController(poController);
+          _collisionEventChannel.setController(poController);
 
-        const MethodChannel methodChannel = MethodChannel(viewerChannelName);
-        methodChannel.setMethodCallHandler((call) async {
-          if (call.method == "renderFrame") {
-            vRunLightLoops(poController);
-            // Map<String, dynamic> arguments = call.arguments;
-
-            // double timeSinceLastRenderedSec = arguments['timeSinceLastRenderedSec'];
-            // double fps = arguments['fps'];
-            // vOnEachFrameRender();
-          }
+          logToStdOut('poGetPlayx3dScene onCreated completed');
+          return;
         });
-
-        const MethodChannel methodChannelAnimation =
-            MethodChannel(animationChannelName);
-        methodChannelAnimation.setMethodCallHandler((call) async {
-          // Example:
-          /*
-            Key: animation_event_data, Value: 1 // m_nCurrentPlayingIndex
-            Key: animation_event_type, Value: 1 // AnimationEventType
-            // what you would use to call functionality from the controller
-            Key: global_guid, Value: 184ee0b0-a280-4976-8eae-0a33083b315b
-            Key: animation_event_data, Value: 1 // m_nCurrentPlayingIndex
-            Key: animation_event_type, Value: 0 // AnimationEventType
-            // what you would use to call functionality from the controller
-            Key: global_guid, Value: 184ee0b0-a280-4976-8eae-0a33083b315b
-          */
-
-          /* Map<String, dynamic> arguments =
-              Map<String, dynamic>.from(call.arguments);
-
-          arguments.forEach((key, value) {
-              // Check if the value is a nested map
-              if (value is Map<String, dynamic>) {
-                print("Key: $key has nested data:");
-                value.forEach((nestedKey, nestedValue) {
-                  print("    $nestedKey: $nestedValue");
-                });
-              } else {
-                print("Key: $key, Value: $value");
-              }
-            });*/
-        });
-
-        // kCollisionEvent = "collision_event";
-        // kCollisionEventType = "collision_event_type";
-        // enum CollisionEventType { eFromNonNative, eNativeOnTouchBegin
-        // , eNativeOnTouchHeld, eNativeOnTouchEnd };
-        const MethodChannel methodChannelCollision =
-            MethodChannel(collisionChannelName);
-        methodChannelCollision.setMethodCallHandler((call) async {
-          Map<String, dynamic> arguments =
-              Map<String, dynamic>.from(call.arguments);
-
-          /* arguments.forEach((key, value) {
-              // Check if the value is a nested map
-              if (value is Map<String, dynamic>) {
-                print("Key: $key has nested data:");
-                value.forEach((nestedKey, nestedValue) {
-                  print("    $nestedKey: $nestedValue");
-                });
-              } else {
-                print("Key: $key, Value: $value");
-              }
-            }); */
-
-          // only works on first hit, go through all results if you want.
-          if (arguments.containsKey("collision_event_hit_result_0")) {
-            Map<String, dynamic> hitResult = Map<String, dynamic>.from(
-                arguments["collision_event_hit_result_0"]);
-            String guid = hitResult["guid"];
-            if (thingsWeCanChangeParamsOn.contains(guid)) {
-              Map<String, dynamic> ourJson =
-                  poGetRandomColorMaterialParam().toJson();
-              poController.changeMaterialParameterData(ourJson, guid);
-            } else {
-              logToStdOut(
-                  "Didnt find guid, changing material definition: $guid");
-              Map<String, dynamic> ourJson =
-                  poGetLitMaterialWithRandomValues().toJson();
-              thingsWeCanChangeParamsOn.add(guid);
-              poController.changeMaterialDefinitionData(ourJson, guid);
-            }
-          } else {
-            logToStdOut("No hit result found in arguments.");
-          }
-        });
-
-        logToStdOut('poGetPlayx3dScene onCreated');
-        return;
-      },
-      onModelStateChanged: (state) {
-        logToStdOut('poGetPlayx3dScene onModelStateChanged: $state');
-        setState(() {
-          isModelLoading = state == ModelState.loading;
-        });
-      },
-      onSceneStateChanged: (state) {
-        logToStdOut('poGetPlayx3dScene onSceneStateChanged: $state');
-        setState(() {
-          isSceneLoading = state == SceneState.loading;
-        });
-      },
-      onShapeStateChanged: (state) {
-        logToStdOut('poGetPlayx3dScene onShapeStateChanged: $state');
-        setState(() {
-          isShapeLoading = state == ShapeState.loading;
-        });
-      },
-      onEachRender: vOnEachFrameRender,
-    );
   } // end  poGetPlayx3dScene
 }
