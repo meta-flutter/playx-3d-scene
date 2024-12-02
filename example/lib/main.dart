@@ -45,8 +45,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   ////////////////////////////////////////////////////////////////////////
   final AnimationEventChannel _animEventChannel = AnimationEventChannel();
-  final CollisionEventChannel _collisionEventChannel =
-      CollisionEventChannel();
+  final CollisionEventChannel _collisionEventChannel = CollisionEventChannel();
   final FrameEventChannel _frameEventChannel = FrameEventChannel();
 
   late Playx3dSceneController poController;
@@ -60,8 +59,8 @@ class _MyAppState extends State<MyApp> {
   bool _toggleShapes = true;
   bool _toggleCollidableVisuals = true;
 
-  final NativeReadiness _nativeReadiness = NativeReadiness(); // Add this
-  bool isReady = false; // Add this to track readiness
+  final NativeReadiness _nativeReadiness = NativeReadiness();
+  bool isReady = false;
 
   ////////////////////////////////////////////////////////////////////////
   @override
@@ -97,7 +96,8 @@ class _MyAppState extends State<MyApp> {
     }
 
     // If we exhaust retries, log a message or take fallback action
-    logToStdOut('Failed to confirm native readiness after $maxRetries attempts.');
+    logToStdOut(
+        'Failed to confirm native readiness after $maxRetries attempts.');
   }
 
   void startListeningForEvents() {
