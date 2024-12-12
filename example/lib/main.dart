@@ -9,6 +9,7 @@ import 'events/animation_event_channel.dart';
 import 'events/frame_event_channel.dart';
 import 'events/collision_event_channel.dart';
 import 'events/native_readiness.dart';
+import 'messages.g.dart';
 
 // Rebuilding materials to match filament versions.
 // playx-3d-scene/example/assets/materials$
@@ -61,6 +62,8 @@ class _MyAppState extends State<MyApp> {
 
   final NativeReadiness _nativeReadiness = NativeReadiness();
   bool isReady = false;
+
+  final filamentViewApi = FilamentViewApi();
 
   ////////////////////////////////////////////////////////////////////////
   @override
@@ -155,12 +158,13 @@ class _MyAppState extends State<MyApp> {
                         onColorChanged: (Color color) {
                           setState(() {
                             _directLightColor = color;
-                            logToStdOut(centerPointLightGUID);
-                            poController.changeLightValuesByGUID(
+                            final String colorString =
+                                '#${_directLightColor.value.toRadixString(16).padLeft(8, '0')}';
+
+                            filamentViewApi.changeLightColorByGUID(
                                 centerPointLightGUID,
-                                _directLightColor,
+                                colorString,
                                 _directIntensity.toInt());
-                            logToStdOut(centerPointLightGUID);
                           });
                         },
                         //showLabel: false,
@@ -184,9 +188,13 @@ class _MyAppState extends State<MyApp> {
                             onChanged: (double value) {
                               setState(() {
                                 _directIntensity = value;
-                                poController.changeLightValuesByGUID(
+
+                                final String colorString =
+                                    '#${_directLightColor.value.toRadixString(16).padLeft(8, '0')}';
+
+                                filamentViewApi.changeLightColorByGUID(
                                     centerPointLightGUID,
-                                    _directLightColor,
+                                    colorString,
                                     _directIntensity.toInt());
                               });
                             },
@@ -215,7 +223,8 @@ class _MyAppState extends State<MyApp> {
                     onChanged: (double value) {
                       setState(() {
                         _cameraRotation = value;
-                        poController.setCameraRotation(_cameraRotation / 100);
+                        filamentViewApi
+                            .setCameraRotation(_cameraRotation / 100);
                       });
                     },
                   ),
@@ -231,9 +240,9 @@ class _MyAppState extends State<MyApp> {
                             //static constexpr char kModeInertiaAndGestures[] = "INERTIA_AND_GESTURES";
 
                             if (_autoRotate) {
-                              poController.changeCameraMode("AUTO_ORBIT");
+                              filamentViewApi.changeCameraMode("AUTO_ORBIT");
                             } else {
-                              poController
+                              filamentViewApi
                                   .changeCameraMode("INERTIA_AND_GESTURES");
                             }
                           });
@@ -246,7 +255,7 @@ class _MyAppState extends State<MyApp> {
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            poController.resetInertiaCameraToDefaultValues();
+                            filamentViewApi.resetInertiaCameraToDefaultValues();
                           });
                         },
                         child: const Text('Reset'),
@@ -256,7 +265,7 @@ class _MyAppState extends State<MyApp> {
                         onPressed: () {
                           setState(() {
                             _toggleShapes = !_toggleShapes;
-                            poController.toggleShapesInScene(_toggleShapes);
+                            filamentViewApi.toggleShapesInScene(_toggleShapes);
                           });
                         },
                         child: Text(_toggleShapes
@@ -267,8 +276,9 @@ class _MyAppState extends State<MyApp> {
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            poController.toggleCollidableVisualsInScene(
+                            filamentViewApi.toggleDebugCollidableViewsInScene(
                                 _toggleCollidableVisuals);
+
                             _toggleCollidableVisuals =
                                 !_toggleCollidableVisuals;
                           });
@@ -281,7 +291,7 @@ class _MyAppState extends State<MyApp> {
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            poController.changeQualitySettings();
+                            filamentViewApi.changeViewQualitySettings();
                           });
                         },
                         child: const Text('Qual'),
@@ -345,8 +355,8 @@ class _MyAppState extends State<MyApp> {
           // from the UI / 'gameplay' in the future.
           poController = controller;
 
-          _frameEventChannel.setController(poController);
-          _collisionEventChannel.setController(poController);
+          _frameEventChannel.setController(filamentViewApi);
+          _collisionEventChannel.setController(filamentViewApi);
 
           logToStdOut('poGetPlayx3dScene onCreated completed');
           return;

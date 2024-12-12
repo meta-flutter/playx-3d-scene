@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'dart:io';
 import '../utils.dart';
-import 'package:playx_3d_scene/playx_3d_scene.dart';
+import '../messages.g.dart';
 
 class FrameEventChannel {
   static const EventChannel _eventChannel =
@@ -9,10 +9,10 @@ class FrameEventChannel {
 
   bool bWriteEventsToLog = false;
 
-  late Playx3dSceneController poController; // Declare the controller
+  late FilamentViewApi filamentViewApi;
 
-  void setController(Playx3dSceneController controller) {
-    poController = controller;
+  void setController(FilamentViewApi api) {
+    filamentViewApi = api;
   }
 
   // Frames from Native to here, currently run in order of
@@ -34,7 +34,7 @@ class FrameEventChannel {
 
             // Log extracted values
             if (method == 'preRenderFrame') {
-              vRunLightLoops(poController);
+              vRunLightLoops(filamentViewApi);
             }
           }
         },

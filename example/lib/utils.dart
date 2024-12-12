@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'shape_and_object_creators.dart';
-import 'package:playx_3d_scene/playx_3d_scene.dart';
+import 'messages.g.dart';
 
 ////////////////////////////////////////////////////////////////////////
 Color getTrueRandomColor() {
@@ -63,8 +63,7 @@ double lerp(double start, double end, double t) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void crissCross(
-    double deltaTime, double speed, Playx3dSceneController controller) {
+void crissCross(double deltaTime, double speed, FilamentViewApi filamentView) {
   for (var light in lightsWeCanChangeParamsOn) {
     // Increment t based on deltaTime and speed
     light.t += deltaTime * speed;
@@ -89,7 +88,7 @@ void crissCross(
     light.originZ = lerp(light.startZ, light.oppositeZ, light.t);
 
     // Apply the new transform
-    controller.changeLightTransformByGUID(
+    filamentView.changeLightTransformByGUID(
       light.guid,
       light.originX,
       light.originY,
@@ -102,12 +101,12 @@ void crissCross(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void updateLights(double deltaTime, Playx3dSceneController controller) {
+void updateLights(double deltaTime, FilamentViewApi filamentView) {
   switch (currentState) {
     case LightState.goToNextCorner:
       break;
     case LightState.crissCross:
-      crissCross(deltaTime, .1, controller);
+      crissCross(deltaTime, .1, filamentView);
       break;
     case LightState.scatter:
       break;
@@ -122,9 +121,9 @@ void transitionState(LightState newState) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void vRunLightLoops(Playx3dSceneController controller) {
+void vRunLightLoops(FilamentViewApi filamentView) {
   const double frameTime = 1 / 60.0; // Simulate 60 FPS
-  updateLights(frameTime, controller);
+  updateLights(frameTime, filamentView);
 
   currentTimeInState += frameTime;
 
