@@ -1,8 +1,8 @@
 import 'package:flutter/services.dart';
 import 'dart:io';
-import 'package:playx_3d_scene/playx_3d_scene.dart';
 import '../shape_and_object_creators.dart';
 import '../material_helpers.dart';
+import '../messages.g.dart';
 
 class CollisionEventChannel {
   static const EventChannel _eventChannel =
@@ -10,10 +10,10 @@ class CollisionEventChannel {
 
   bool bWriteEventsToLog = false;
 
-  late Playx3dSceneController poController; // Declare the controller
+  late FilamentViewApi filamentViewApi;
 
-  void setController(Playx3dSceneController controller) {
-    poController = controller;
+  void setController(FilamentViewApi api) {
+    filamentViewApi = api;
   }
 
   void initEventChannel() {
@@ -33,12 +33,12 @@ class CollisionEventChannel {
             if (thingsWeCanChangeParamsOn.contains(guid)) {
               Map<String, dynamic> ourJson =
                   poGetRandomColorMaterialParam().toJson();
-              poController.changeMaterialParameterData(ourJson, guid);
+              filamentViewApi.changeMaterialParameter(ourJson, guid);
             } else {
               Map<String, dynamic> ourJson =
                   poGetLitMaterialWithRandomValues().toJson();
               thingsWeCanChangeParamsOn.add(guid);
-              poController.changeMaterialDefinitionData(ourJson, guid);
+              filamentViewApi.changeMaterialDefinition(ourJson, guid);
             }
           }
         },
