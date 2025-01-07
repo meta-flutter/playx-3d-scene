@@ -73,8 +73,7 @@ Shape poCreateSphere(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Shape poCreatePlane(
-    PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents) {
+Shape poCreatePlane(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents) {
   return Plane(
       doubleSided: true,
       size: sizeExtents,
@@ -99,11 +98,8 @@ List<Shape> poCreateLineGrid() {
   for (double i = -countExtents; i <= countExtents; i += 2) {
     for (int j = 0; j < 1; j++) {
       for (double k = -countExtents; k <= countExtents; k += 2) {
-        itemsToReturn.add(poCreateCube(
-            PlayxPosition(x: i, y: 0, z: k),
-            PlayxSize(x: 1, y: 1, z: 1),
-            PlayxSize(x: 1, y: 1, z: 1),
-            null));
+        itemsToReturn.add(poCreateCube(PlayxPosition(x: i, y: 0, z: k),
+            PlayxSize(x: 1, y: 1, z: 1), PlayxSize(x: 1, y: 1, z: 1), null));
       }
     }
   }
@@ -117,47 +113,23 @@ List<Shape> poGetScenesShapes() {
 
   List<Shape> itemsToReturn = [];
 
-  itemsToReturn.add(poCreateCube(
-      PlayxPosition(x: 3, y: 1, z: 3),
-      PlayxSize(x: 2, y: 2, z: 2),
-      PlayxSize(x: 2, y: 2, z: 2),
-      null));
+  itemsToReturn.add(poCreateCube(PlayxPosition(x: 3, y: 1, z: 3),
+      PlayxSize(x: 2, y: 2, z: 2), PlayxSize(x: 2, y: 2, z: 2), null));
 
-  itemsToReturn.add(poCreateCube(
-      PlayxPosition(x: 0, y: 1, z: 3),
-      PlayxSize(x: .1, y: 1, z: .1),
-      PlayxSize(x: 1, y: 1, z: 1),
-      null));
+  itemsToReturn.add(poCreateCube(PlayxPosition(x: 0, y: 1, z: 3),
+      PlayxSize(x: .1, y: 1, z: .1), PlayxSize(x: 1, y: 1, z: 1), null));
 
-  itemsToReturn.add(poCreateCube(
-      PlayxPosition(x: -3, y: 1, z: 3),
-      PlayxSize(x: .5, y: .5, z: .5),
-      PlayxSize(x: 1, y: 1, z: 1),
-      null));
+  itemsToReturn.add(poCreateCube(PlayxPosition(x: -3, y: 1, z: 3),
+      PlayxSize(x: .5, y: .5, z: .5), PlayxSize(x: 1, y: 1, z: 1), null));
 
-  itemsToReturn.add(poCreateSphere(
-      PlayxPosition(x: 3, y: 1, z: -3),
-      PlayxSize(x: 1, y: 1, z: 1),
-      PlayxSize(x: 1, y: 1, z: 1),
-      11,
-      5,
-      null));
+  itemsToReturn.add(poCreateSphere(PlayxPosition(x: 3, y: 1, z: -3),
+      PlayxSize(x: 1, y: 1, z: 1), PlayxSize(x: 1, y: 1, z: 1), 11, 5, null));
 
-  itemsToReturn.add(poCreateSphere(
-      PlayxPosition(x: 0, y: 1, z: -3),
-      PlayxSize(x: 1, y: 1, z: 1),
-      PlayxSize(x: 1, y: 1, z: 1),
-      20,
-      20,
-      null));
+  itemsToReturn.add(poCreateSphere(PlayxPosition(x: 0, y: 1, z: -3),
+      PlayxSize(x: 1, y: 1, z: 1), PlayxSize(x: 1, y: 1, z: 1), 20, 20, null));
 
-  itemsToReturn.add(poCreateSphere(
-      PlayxPosition(x: -3, y: 1, z: -3),
-      PlayxSize(x: 1, y: .5, z: 1),
-      PlayxSize(x: 1, y: 1, z: 1),
-      20,
-      20,
-      null));
+  itemsToReturn.add(poCreateSphere(PlayxPosition(x: -3, y: 1, z: -3),
+      PlayxSize(x: 1, y: .5, z: 1), PlayxSize(x: 1, y: 1, z: 1), 20, 20, null));
 
   itemsToReturn.add(poCreatePlane(PlayxPosition(x: -5, y: 1, z: 0),
       PlayxSize(x: 1, y: 1, z: 1), PlayxSize(x: 2, y: 1, z: 2)));
