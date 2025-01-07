@@ -76,4 +76,10 @@ abstract class FilamentViewApi {
       double directionY,
       double directionZ,
       double length);
+
+  // transform
+  void changeScaleByGUID(String guid, double x, double y, double z);
+  void changeTranslationByGUID(String guid, double x, double y, double z);
+  void changeRotationByGUID(
+      String guid, double x, double y, double z, double w);
 }
