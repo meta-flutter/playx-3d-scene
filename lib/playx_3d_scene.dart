@@ -36,7 +36,6 @@ export 'src/models/scene/skybox/colored_skybox.dart';
 export 'src/models/scene/skybox/hdr_skybox.dart';
 export 'src/models/scene/skybox/ktx_skybox.dart';
 export 'src/models/scene/skybox/skybox.dart';
-export 'src/models/scene/ground.dart';
 export 'src/models/scene/scene.dart';
 export 'src/models/shapes/cube.dart';
 export 'src/models/shapes/plane.dart';

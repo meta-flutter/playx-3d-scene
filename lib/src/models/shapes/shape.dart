@@ -15,9 +15,6 @@ import 'package:playx_3d_scene/src/models/scene/geometry/collidable.dart';
 /// [Plane]
 /// [Sphere]
 class Shape {
-  /// id of the shape to be used to update shapes.
-  int id;
-
   /// center position of the shape in the world space.
   PlayxPosition? centerPosition;
 
@@ -56,8 +53,7 @@ class Shape {
   bool castShadows;
 
   Shape(
-      {required this.id,
-      this.centerPosition,
+      {this.centerPosition,
       this.normal,
       this.material,
       this.scale,
@@ -71,7 +67,6 @@ class Shape {
       this.receiveShadows = false});
 
   Map<String, dynamic> toJson() => {
-        'id': id,
         'name': name,
         'global_guid' : global_guid,
         'centerPosition': centerPosition?.toJson(),
@@ -89,7 +84,7 @@ class Shape {
 
   @override
   String toString() {
-    return 'Shape(id: $id, centerPosition: $centerPosition normal: $normal, material: $material)';
+    return 'centerPosition: $centerPosition normal: $normal, material: $material)';
   }
 
   @override
@@ -97,7 +92,6 @@ class Shape {
     if (identical(this, other)) return true;
 
     return other is Shape &&
-        other.id == id &&
         other.centerPosition == centerPosition &&
         other.normal == normal &&
         other.material == material;
@@ -105,7 +99,6 @@ class Shape {
 
   @override
   int get hashCode =>
-      id.hashCode ^
       centerPosition.hashCode ^
       normal.hashCode ^
       material.hashCode;

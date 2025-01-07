@@ -13,8 +13,7 @@ class Sphere extends Shape {
   PlayxSize size;
 
   Sphere(
-      {required super.id,
-      required super.centerPosition,
+      {required super.centerPosition,
       this.stacks,
       this.slices,
       super.global_guid,
@@ -32,7 +31,6 @@ class Sphere extends Shape {
 
   @override
   Map<String, dynamic> toJson() => {
-        'id': id,
         'name': name,
         'global_guid' : global_guid,
         'centerPosition': centerPosition?.toJson(),
@@ -53,7 +51,7 @@ class Sphere extends Shape {
 
   @override
   String toString() {
-    return 'Sphere(id: $id, centerPosition: $centerPosition)';
+    return 'Sphere(centerPosition: $centerPosition)';
   }
 
   @override

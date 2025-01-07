@@ -11,8 +11,7 @@ class Plane extends Shape {
   PlayxSize size;
 
   Plane(
-      {required super.id,
-      required this.size,
+      {required this.size,
       required super.centerPosition,
       super.global_guid,
       super.name,
@@ -28,7 +27,6 @@ class Plane extends Shape {
 
   @override
   Map<String, dynamic> toJson() => {
-        'id': id,
         'name': name,
         'global_guid' : global_guid,
         'centerPosition': centerPosition?.toJson(),
@@ -47,7 +45,7 @@ class Plane extends Shape {
 
   @override
   String toString() {
-    return 'Plane(id: $id, size: $size, centerPosition: $centerPosition)';
+    return 'Plane(size: $size, centerPosition: $centerPosition)';
   }
 
   @override
