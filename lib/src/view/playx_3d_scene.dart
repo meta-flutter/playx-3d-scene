@@ -8,7 +8,6 @@ import 'package:flutter/widgets.dart';
 import 'package:playx_3d_scene/src/controller/playx_3d_scene_controller.dart';
 import 'package:playx_3d_scene/src/models/model/model.dart';
 import 'package:playx_3d_scene/src/models/scene/camera/camera.dart';
-import 'package:playx_3d_scene/src/models/scene/ground.dart';
 import 'package:playx_3d_scene/src/models/scene/indirect_light/indirect_light.dart';
 import 'package:playx_3d_scene/src/models/scene/light/light.dart';
 import 'package:playx_3d_scene/src/models/scene/scene.dart';

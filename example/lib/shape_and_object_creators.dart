@@ -34,13 +34,12 @@ GlbModel poGetModel(
 ////////////////////////////////////////////////////////////////////////////////
 List<String> thingsWeCanChangeParamsOn = [];
 Shape poCreateCube(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
-    int idToSet, Color? colorOveride) {
+    Color? colorOveride) {
   String uniqueGuid = const Uuid().v4();
   // Just to show off changing material params during runtime.
   thingsWeCanChangeParamsOn.add(uniqueGuid);
 
   return Cube(
-      id: idToSet,
       size: sizeExtents,
       centerPosition: pos,
       scale: scale,
@@ -58,9 +57,8 @@ Shape poCreateCube(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
 
 ////////////////////////////////////////////////////////////////////////////////
 Shape poCreateSphere(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
-    int idToSet, int stacks, int slices, Color? colorOveride) {
+    int stacks, int slices, Color? colorOveride) {
   return Sphere(
-      id: idToSet,
       centerPosition: pos,
       material: poGetTexturedMaterial(),
       //material: poGetLitMaterial(null),
@@ -76,9 +74,8 @@ Shape poCreateSphere(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
 
 ////////////////////////////////////////////////////////////////////////////////
 Shape poCreatePlane(
-    PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents, int idToSet) {
+    PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents) {
   return Plane(
-      id: idToSet,
       doubleSided: true,
       size: sizeExtents,
       scale: scale,
@@ -98,7 +95,6 @@ Shape poCreatePlane(
 ////////////////////////////////////////////////////////////////////////////////
 List<Shape> poCreateLineGrid() {
   List<Shape> itemsToReturn = [];
-  int idIter = 40;
   double countExtents = 6;
   for (double i = -countExtents; i <= countExtents; i += 2) {
     for (int j = 0; j < 1; j++) {
@@ -107,7 +103,6 @@ List<Shape> poCreateLineGrid() {
             PlayxPosition(x: i, y: 0, z: k),
             PlayxSize(x: 1, y: 1, z: 1),
             PlayxSize(x: 1, y: 1, z: 1),
-            idIter++,
             null));
       }
     }
@@ -121,34 +116,29 @@ List<Shape> poGetScenesShapes() {
   //return poCreateLineGrid();
 
   List<Shape> itemsToReturn = [];
-  int idToSet = 10;
 
   itemsToReturn.add(poCreateCube(
       PlayxPosition(x: 3, y: 1, z: 3),
       PlayxSize(x: 2, y: 2, z: 2),
       PlayxSize(x: 2, y: 2, z: 2),
-      idToSet++,
       null));
 
   itemsToReturn.add(poCreateCube(
       PlayxPosition(x: 0, y: 1, z: 3),
       PlayxSize(x: .1, y: 1, z: .1),
       PlayxSize(x: 1, y: 1, z: 1),
-      idToSet++,
       null));
 
   itemsToReturn.add(poCreateCube(
       PlayxPosition(x: -3, y: 1, z: 3),
       PlayxSize(x: .5, y: .5, z: .5),
       PlayxSize(x: 1, y: 1, z: 1),
-      idToSet++,
       null));
 
   itemsToReturn.add(poCreateSphere(
       PlayxPosition(x: 3, y: 1, z: -3),
       PlayxSize(x: 1, y: 1, z: 1),
       PlayxSize(x: 1, y: 1, z: 1),
-      idToSet++,
       11,
       5,
       null));
@@ -157,7 +147,6 @@ List<Shape> poGetScenesShapes() {
       PlayxPosition(x: 0, y: 1, z: -3),
       PlayxSize(x: 1, y: 1, z: 1),
       PlayxSize(x: 1, y: 1, z: 1),
-      idToSet++,
       20,
       20,
       null));
@@ -166,16 +155,15 @@ List<Shape> poGetScenesShapes() {
       PlayxPosition(x: -3, y: 1, z: -3),
       PlayxSize(x: 1, y: .5, z: 1),
       PlayxSize(x: 1, y: 1, z: 1),
-      idToSet++,
       20,
       20,
       null));
 
   itemsToReturn.add(poCreatePlane(PlayxPosition(x: -5, y: 1, z: 0),
-      PlayxSize(x: 1, y: 1, z: 1), PlayxSize(x: 2, y: 1, z: 2), idToSet++));
+      PlayxSize(x: 1, y: 1, z: 1), PlayxSize(x: 2, y: 1, z: 2)));
 
   itemsToReturn.add(poCreatePlane(PlayxPosition(x: 5, y: 1, z: 0),
-      PlayxSize(x: 4, y: 1, z: 4), PlayxSize(x: 4, y: 1, z: 4), idToSet++));
+      PlayxSize(x: 4, y: 1, z: 4), PlayxSize(x: 4, y: 1, z: 4)));
 
   return itemsToReturn;
 }
