@@ -43,6 +43,10 @@ abstract class FilamentViewApi {
   /// Change the camera mode by name.
   void changeCameraMode(String mode);
 
+  void changeCameraOrbitHomePosition(double x, double y, double z);
+  void changeCameraTargetPosition(double x, double y, double z);
+  void changeCameraFlightStartPosition(double x, double y, double z);
+
   /// Reset inertia camera to default values.
   void resetInertiaCameraToDefaultValues();
 
