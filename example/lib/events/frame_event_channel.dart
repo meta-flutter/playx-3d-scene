@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'dart:io';
 import '../utils.dart';
+import '../gameplay.dart';
 import '../messages.g.dart';
 
 class FrameEventChannel {
@@ -35,6 +36,7 @@ class FrameEventChannel {
             // Log extracted values
             if (method == 'preRenderFrame') {
               vRunLightLoops(filamentViewApi);
+              vUpdateGameplay(filamentViewApi, 0.016);
             }
           }
         },

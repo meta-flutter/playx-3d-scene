@@ -10,6 +10,7 @@ import 'events/frame_event_channel.dart';
 import 'events/collision_event_channel.dart';
 import 'events/native_readiness.dart';
 import 'messages.g.dart';
+import 'gameplay.dart';
 
 // Rebuilding materials to match filament versions.
 // playx-3d-scene/example/assets/materials$
@@ -21,10 +22,6 @@ import 'messages.g.dart';
 void main() {
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.presentError(details);
-
-    // If debugging and curious uncomment.
-    // stdout.write('Global error caught exception: ${details.exception}');
-    // stdout.write('Global error caught stack: ${details.stack}');
   };
 
   runZonedGuarded<Future<void>>(() async {
@@ -43,18 +40,23 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+////////////////////////////////////////////////////////////////////////
 class _MyAppState extends State<MyApp> {
   ////////////////////////////////////////////////////////////////////////
+  // Event channels
   final AnimationEventChannel _animEventChannel = AnimationEventChannel();
   final CollisionEventChannel _collisionEventChannel = CollisionEventChannel();
   final FrameEventChannel _frameEventChannel = FrameEventChannel();
 
   late Playx3dSceneController poController;
-  // actually a point light
+
+  // Point light controls
   Color _directLightColor = Colors.white;
   double _directIntensity = 300000000;
   final double _minIntensity = 500000;
   final double _maxIntensity = 300000000;
+
+  // Camera controls
   double _cameraRotation = 0;
   bool _autoRotate = false;
   bool _toggleShapes = true;
@@ -65,17 +67,30 @@ class _MyAppState extends State<MyApp> {
 
   final filamentViewApi = FilamentViewApi();
 
+  // 0 = original UI scene, 1 = alternate UI scene
+  int _currentScene = 0;
+
+  // ------------------------------------------------------------------------
+  //  field to store the scene widget so it's created only once
+  late final Playx3dScene _sceneWidget;
+  // ------------------------------------------------------------------------
+
   ////////////////////////////////////////////////////////////////////////
   @override
   void initState() {
     super.initState();
+
+    // ------------------------------------------------------------------------
+    _sceneWidget = poGetPlayx3dScene();
+    // ------------------------------------------------------------------------
+
     initializeReadiness();
   }
 
+  ////////////////////////////////////////////////////////////////////////
   Future<void> initializeReadiness() async {
-    const int maxRetries = 30; // Maximum number of retries
-    const Duration retryInterval =
-        Duration(seconds: 1); // Interval between retries
+    const int maxRetries = 30;
+    const Duration retryInterval = Duration(seconds: 1);
 
     for (int attempt = 1; attempt <= maxRetries; attempt++) {
       try {
@@ -84,9 +99,8 @@ class _MyAppState extends State<MyApp> {
 
         if (nativeReady) {
           logToStdOut('Native is ready. Proceeding...');
-          startListeningForEvents(); // Start listening for readiness events
-
-          return; // Exit the function if ready
+          startListeningForEvents();
+          return;
         } else {
           logToStdOut('Native is not ready. Retrying...');
         }
@@ -94,15 +108,14 @@ class _MyAppState extends State<MyApp> {
         logToStdOut('Error checking readiness: $e');
       }
 
-      // Wait before the next retry
       await Future.delayed(retryInterval);
     }
 
-    // If we exhaust retries, log a message or take fallback action
     logToStdOut(
         'Failed to confirm native readiness after $maxRetries attempts.');
   }
 
+  ////////////////////////////////////////////////////////////////////////
   void startListeningForEvents() {
     _nativeReadiness.readinessStream.listen(
       (event) {
@@ -114,7 +127,6 @@ class _MyAppState extends State<MyApp> {
             _collisionEventChannel.initEventChannel();
             _frameEventChannel.initEventChannel();
             logToStdOut('Event Channels created.');
-
             isReady = true;
           });
         }
@@ -139,167 +151,33 @@ class _MyAppState extends State<MyApp> {
         backgroundColor: Colors.black.withOpacity(0.0),
         body: Stack(
           children: [
-            poGetPlayx3dScene(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Direct Light',
-                      style: getTextStyle(),
-                    ),
-                    SizedBox(
-                      width: 100,
-                      child: ColorPicker(
-                        colorPickerWidth: 100,
-                        pickerColor: _directLightColor,
-                        onColorChanged: (Color color) {
-                          setState(() {
-                            _directLightColor = color;
-                            final String colorString =
-                                '#${_directLightColor.value.toRadixString(16).padLeft(8, '0')}';
+            _sceneWidget,
 
-                            filamentViewApi.changeLightColorByGUID(
-                                centerPointLightGUID,
-                                colorString,
-                                _directIntensity.toInt());
-                          });
-                        },
-                        //showLabel: false,
-                        pickerAreaHeightPercent: 1.0,
-                        enableAlpha: false,
-                        displayThumbColor: false,
-                        portraitOnly: true,
-                        paletteType: PaletteType.hueWheel,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: 150,
-                      child: Column(
-                        children: [
-                          Text('Intensity', style: getTextStyle()),
-                          Slider(
-                            value: _directIntensity,
-                            min: _minIntensity,
-                            max: _maxIntensity,
-                            onChanged: (double value) {
-                              setState(() {
-                                _directIntensity = value;
-
-                                final String colorString =
-                                    '#${_directLightColor.value.toRadixString(16).padLeft(8, '0')}';
-
-                                filamentViewApi.changeLightColorByGUID(
-                                    centerPointLightGUID,
-                                    colorString,
-                                    _directIntensity.toInt());
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+            // A button at the top-right to switch scenes
+            Positioned(
+              top: 50,
+              right: 20,
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    // Toggle between scene 0 and scene 1
+                    _currentScene = (_currentScene + 1) % 2;
+                  });
+                },
+                child: Text(
+                  _currentScene == 0
+                      ? 'Show Radar Scene'
+                      : 'Show Original Scene',
                 ),
-              ],
+              ),
             ),
+
+            // Bottom-left: build whichever UI belongs to the current scene
             Positioned(
               bottom: 50,
-              left: 0,
-              right: 0,
-              child: Column(
-                children: [
-                  Text(
-                    'Camera Rotation',
-                    style: getTextStyle(),
-                  ),
-                  Slider(
-                    value: _cameraRotation,
-                    min: 0,
-                    max: 600,
-                    onChanged: (double value) {
-                      setState(() {
-                        _cameraRotation = value;
-                        filamentViewApi
-                            .setCameraRotation(_cameraRotation / 100);
-                      });
-                    },
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(width: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _autoRotate = !_autoRotate;
-                            //static constexpr char kModeAutoOrbit[] = "AUTO_ORBIT";
-                            //static constexpr char kModeInertiaAndGestures[] = "INERTIA_AND_GESTURES";
-
-                            if (_autoRotate) {
-                              filamentViewApi.changeCameraMode("AUTO_ORBIT");
-                            } else {
-                              filamentViewApi
-                                  .changeCameraMode("INERTIA_AND_GESTURES");
-                            }
-                          });
-                        },
-                        child: Text(_autoRotate
-                            ? 'Auto Orbit On'
-                            : 'Inertia & Gestures On'),
-                      ),
-                      const SizedBox(width: 5),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            filamentViewApi.resetInertiaCameraToDefaultValues();
-                          });
-                        },
-                        child: const Text('Reset'),
-                      ),
-                      const SizedBox(width: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _toggleShapes = !_toggleShapes;
-                            filamentViewApi.toggleShapesInScene(_toggleShapes);
-                          });
-                        },
-                        child: Text(_toggleShapes
-                            ? 'Toggle Shapes: On'
-                            : 'Toggle Shapes: Off'),
-                      ),
-                      const SizedBox(width: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            filamentViewApi.toggleDebugCollidableViewsInScene(
-                                _toggleCollidableVisuals);
-
-                            _toggleCollidableVisuals =
-                                !_toggleCollidableVisuals;
-                          });
-                        },
-                        child: Text(_toggleCollidableVisuals
-                            ? 'Toggle Collidables: On'
-                            : 'Toggle Collidables: Off'),
-                      ),
-                      const SizedBox(width: 5),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            filamentViewApi.changeViewQualitySettings();
-                          });
-                        },
-                        child: const Text('Qual'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              left: 20,
+              // Right is not strictly needed, but you can set right: 20 if desired
+              child: _buildUIForScene(_currentScene),
             ),
           ],
         ),
@@ -308,24 +186,243 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////
+  Widget _buildUIForScene(int sceneIndex) {
+    switch (sceneIndex) {
+      case 0:
+        filamentViewApi.changeCameraOrbitHomePosition(8, 3, 0);
+        filamentViewApi.changeCameraTargetPosition(0, 0, 0);
+        filamentViewApi.changeCameraFlightStartPosition(8, 3, 8);
+
+        return _buildSceneZeroUI();
+      case 1:
+        filamentViewApi.changeCameraOrbitHomePosition(-40, 5, 0);
+        filamentViewApi.changeCameraTargetPosition(-45, 0, 0);
+        filamentViewApi.changeCameraFlightStartPosition(-25, 15, 0);
+
+        return _buildSceneOneUI();
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  Widget _buildSceneZeroUI() {
+    return Column(
+      // Force left justification in the column
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // -- DIRECT LIGHT CONTROLS --
+        Text('Direct Light', style: getTextStyle()),
+        const SizedBox(height: 8),
+        SizedBox(
+          width: 100,
+          child: ColorPicker(
+            colorPickerWidth: 100,
+            pickerColor: _directLightColor,
+            onColorChanged: (Color color) {
+              setState(() {
+                _directLightColor = color;
+                final String colorString =
+                    '#${_directLightColor.value.toRadixString(16).padLeft(8, '0')}';
+
+                filamentViewApi.changeLightColorByGUID(
+                  centerPointLightGUID,
+                  colorString,
+                  _directIntensity.toInt(),
+                );
+              });
+            },
+            pickerAreaHeightPercent: 1.0,
+            enableAlpha: false,
+            displayThumbColor: false,
+            portraitOnly: true,
+            paletteType: PaletteType.hueWheel,
+          ),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: 150,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Intensity', style: getTextStyle()),
+              Slider(
+                value: _directIntensity,
+                min: _minIntensity,
+                max: _maxIntensity,
+                onChanged: (double value) {
+                  setState(() {
+                    _directIntensity = value;
+                    final String colorString =
+                        '#${_directLightColor.value.toRadixString(16).padLeft(8, '0')}';
+
+                    filamentViewApi.changeLightColorByGUID(
+                      centerPointLightGUID,
+                      colorString,
+                      _directIntensity.toInt(),
+                    );
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // -- CAMERA ROTATION SLIDER --
+        Text('Camera Rotation', style: getTextStyle()),
+        Slider(
+          value: _cameraRotation,
+          min: 0,
+          max: 600,
+          onChanged: (double value) {
+            setState(() {
+              _cameraRotation = value;
+              filamentViewApi.setCameraRotation(_cameraRotation / 100);
+            });
+          },
+        ),
+
+        const SizedBox(height: 20),
+
+        // -- ORIGINAL BUTTONS ROW --
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: _buildSceneZeroUIButtons(),
+        ),
+      ],
+    );
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  Widget _buildSceneOneUI() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: _buildSceneOneUIButtons(),
+    );
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  List<Widget> _buildSceneZeroUIButtons() {
+    return [
+      ElevatedButton(
+        onPressed: () {
+          setState(() {
+            _autoRotate = !_autoRotate;
+            if (_autoRotate) {
+              filamentViewApi.changeCameraMode("AUTO_ORBIT");
+            } else {
+              filamentViewApi.changeCameraMode("INERTIA_AND_GESTURES");
+            }
+          });
+        },
+        child: Text(
+          _autoRotate ? 'Auto Orbit On' : 'Inertia & Gestures On',
+        ),
+      ),
+      const SizedBox(width: 5),
+      ElevatedButton(
+        onPressed: () {
+          setState(() {
+            filamentViewApi.resetInertiaCameraToDefaultValues();
+          });
+        },
+        child: const Text('Reset'),
+      ),
+      const SizedBox(width: 20),
+      ElevatedButton(
+        onPressed: () {
+          setState(() {
+            _toggleShapes = !_toggleShapes;
+            filamentViewApi.toggleShapesInScene(_toggleShapes);
+          });
+        },
+        child: Text(
+          _toggleShapes ? 'Toggle Shapes: On' : 'Toggle Shapes: Off',
+        ),
+      ),
+      const SizedBox(width: 20),
+      ElevatedButton(
+        onPressed: () {
+          setState(() {
+            filamentViewApi.toggleDebugCollidableViewsInScene(
+              _toggleCollidableVisuals,
+            );
+            _toggleCollidableVisuals = !_toggleCollidableVisuals;
+          });
+        },
+        child: Text(
+          _toggleCollidableVisuals
+              ? 'Toggle Collidables: On'
+              : 'Toggle Collidables: Off',
+        ),
+      ),
+      const SizedBox(width: 5),
+      ElevatedButton(
+        onPressed: () {
+          setState(() {
+            filamentViewApi.changeViewQualitySettings();
+          });
+        },
+        child: const Text('Qual'),
+      ),
+    ];
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  List<Widget> _buildSceneOneUIButtons() {
+    return [
+      ElevatedButton(
+        onPressed: () {
+          setState(() {
+            vDoOneWaveSegment(filamentViewApi);
+          });
+        },
+        child: const Text('Send Single Line out'),
+      ),
+      const SizedBox(width: 5),
+      ElevatedButton(
+        onPressed: () {
+          setState(() {
+            vDo3RadarWaveSegments(filamentViewApi);
+          });
+        },
+        child: const Text('Send Wave Out'),
+      ),
+      // Add more alternate buttons if needed
+    ];
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   Scene poGetScene() {
     return Scene(
       skybox: ColoredSkybox(color: Colors.black),
       //skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
-      //indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
-      indirectLight: poGetDefaultIndirectLight(),
+      indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
+      //indirectLight: poGetDefaultIndirectLight(),
       lights: poGetSceneLightsList(),
+
       camera: Camera.inertiaAndGestures(
           exposure: Exposure.formAperture(
             aperture: 24.0,
             shutterSpeed: 1 / 60,
             sensitivity: 150,
           ),
+
+          /*orbitHomePosition: PlayxPosition(x: -40, y: 5, z: 0),
+          targetPosition: PlayxPosition(x: -50.0, y: 0.0, z: 0.0),
+          // This is used as your extents when orbiting around an object
+          // when the camera is set to inertiaAndGestures
+          flightStartPosition: PlayxPosition(x: -25.0, y: 15.0, z: 0),
+*/
+          orbitHomePosition: PlayxPosition(x: 0, y: 3.0, z: 0),
           targetPosition: PlayxPosition(x: 0.0, y: 0.0, z: 0.0),
-          upVector: PlayxPosition(x: 0.0, y: 1.0, z: 0.0),
           // This is used as your extents when orbiting around an object
           // when the camera is set to inertiaAndGestures
           flightStartPosition: PlayxPosition(x: 8.0, y: 3.0, z: 8.0),
+          upVector: PlayxPosition(x: 0.0, y: 1.0, z: 0.0),
           // how much ongoing rotation velocity effects, default 0.05
           inertia_rotationSpeed: 0.05,
           // 0-1 how much of a flick distance / delta gets multiplied, default 0.2
@@ -341,25 +438,22 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  ////////////////////////////////////////////////////////////////////////////////
-  //bool hasInit = false;
+  ////////////////////////////////////////////////////////////////////////
   Playx3dScene poGetPlayx3dScene() {
     return Playx3dScene(
-        models: poGetModelList(),
-        scene: poGetScene(),
-        shapes: poGetScenesShapes(),
-        onCreated: (Playx3dSceneController controller) async {
-          logToStdOut('poGetPlayx3dScene onCreated');
+      models: poGetModelList(),
+      scene: poGetScene(),
+      shapes: poGetScenesShapes(),
+      onCreated: (Playx3dSceneController controller) async {
+        logToStdOut('poGetPlayx3dScene onCreated');
 
-          // we'll save the controller so we can send messages
-          // from the UI / 'gameplay' in the future.
-          poController = controller;
+        poController = controller;
 
-          _frameEventChannel.setController(filamentViewApi);
-          _collisionEventChannel.setController(filamentViewApi);
+        _frameEventChannel.setController(filamentViewApi);
+        _collisionEventChannel.setController(filamentViewApi);
 
-          logToStdOut('poGetPlayx3dScene onCreated completed');
-          return;
-        });
-  } // end  poGetPlayx3dScene
+        logToStdOut('poGetPlayx3dScene onCreated completed');
+      },
+    );
+  }
 }

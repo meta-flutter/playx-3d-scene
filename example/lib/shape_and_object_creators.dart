@@ -5,6 +5,11 @@ import 'material_helpers.dart';
 
 const String sequoiaAsset = "assets/models/sequoia_ngp.glb";
 const String garageAsset = "assets/models/garagescene.glb";
+
+const String radarConeAsset = "assets/models/radar_cone.glb";
+const String radarSegmentAsset = "assets/models/half_torus.glb";
+const String roadAsset = "assets/models/road_segment.glb";
+
 // fox has animation
 const String foxAsset = "assets/models/Fox.glb";
 //const String dmgHelmAsset = "assets/models/DamagedHelmet.glb";
@@ -16,7 +21,10 @@ GlbModel poGetModel(
     PlayxSize scale,
     PlayxRotation rotation,
     Collidable? collidable,
-    PlayxAnimation? animationInfo) {
+    PlayxAnimation? animationInfo,
+    bool bReceiveShadows,
+    bool bCastShadows,
+    String overrideGUID) {
   return GlbModel.asset(szAsset,
       animation: animationInfo,
       //fallback: GlbModel.asset(helmetAsset),
@@ -25,10 +33,10 @@ GlbModel poGetModel(
       scale: scale,
       rotation: rotation,
       name: szAsset,
-      receiveShadows: true,
-      castShadows: true,
+      receiveShadows: bReceiveShadows,
+      castShadows: bCastShadows,
       // ignore: prefer_const_constructors
-      global_guid: Uuid().v4());
+      global_guid: overrideGUID);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -265,15 +273,24 @@ List<Light> poGetSceneLightsList() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+List<String> radarConePieceGUID = [];
+List<String> radarSegmentPiecesGUIDS = [];
+
 List<Model> poGetModelList() {
   List<Model> itemsToReturn = [];
+
+  // scene 0
+
   itemsToReturn.add(poGetModel(
       sequoiaAsset,
       PlayxPosition(x: 0, y: 0, z: 0),
       PlayxSize(x: 1, y: 1, z: 1),
       PlayxRotation(x: 0, y: 0, z: 0, w: 1),
       Collidable(isStatic: false, shouldMatchAttachedObject: true),
-      null));
+      null,
+      true,
+      true,
+      const Uuid().v4()));
 
   itemsToReturn.add(poGetModel(
       garageAsset,
@@ -281,7 +298,10 @@ List<Model> poGetModelList() {
       PlayxSize(x: 1, y: 1, z: 1),
       PlayxRotation(x: 0, y: 0, z: 0, w: 1),
       null,
-      null));
+      null,
+      false,
+      true,
+      const Uuid().v4()));
 
   itemsToReturn.add(poGetModel(
       foxAsset,
@@ -289,7 +309,10 @@ List<Model> poGetModelList() {
       PlayxSize(x: .04, y: .04, z: .04),
       PlayxRotation(x: 0, y: 0, z: 0, w: 1),
       null,
-      PlayxAnimation.byIndex(0, autoPlay: true)));
+      PlayxAnimation.byIndex(0, autoPlay: true),
+      true,
+      true,
+      const Uuid().v4()));
 
   itemsToReturn.add(poGetModel(
       foxAsset,
@@ -297,8 +320,65 @@ List<Model> poGetModelList() {
       PlayxSize(x: .04, y: .04, z: .04),
       PlayxRotation(x: 0, y: 0, z: 0, w: 1),
       null,
-      PlayxAnimation.byIndex(1,
-          autoPlay: true, notifyOfAnimationEvents: true)));
+      PlayxAnimation.byIndex(1, autoPlay: true, notifyOfAnimationEvents: true),
+      true,
+      true,
+      const Uuid().v4()));
+
+  // scene 1
+
+  itemsToReturn.add(poGetModel(
+      sequoiaAsset,
+      PlayxPosition(x: -40, y: 0, z: 0),
+      PlayxSize(x: 1, y: 1, z: 1),
+      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      null,
+      null,
+      true,
+      true,
+      const Uuid().v4()));
+
+  itemsToReturn.add(poGetModel(
+      roadAsset,
+      PlayxPosition(x: -40, y: 0, z: 0),
+      PlayxSize(x: .4, y: .1, z: .2),
+      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      null,
+      null,
+      true,
+      false,
+      const Uuid().v4()));
+
+  String guid = const Uuid().v4();
+  radarConePieceGUID.add(guid);
+
+  itemsToReturn.add(poGetModel(
+      radarConeAsset,
+      PlayxPosition(x: -42.1, y: 1, z: 0),
+      PlayxSize(x: 4, y: 1, z: 3),
+      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      null,
+      null,
+      false,
+      false,
+      guid));
+
+  for (int i = 0; i < 20; i++) {
+    String guidForSegment = const Uuid().v4();
+
+    itemsToReturn.add(poGetModel(
+        radarSegmentAsset,
+        PlayxPosition(x: -42.2, y: 0, z: 0),
+        PlayxSize(x: 0, y: 0, z: 0),
+        PlayxRotation(x: 0.7071, y: 0, z: 0.7071, w: 0),
+        null,
+        null,
+        false,
+        false,
+        guidForSegment));
+
+    radarSegmentPiecesGUIDS.add(guidForSegment);
+  }
 
   return itemsToReturn;
 }
