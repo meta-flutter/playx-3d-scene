@@ -27,11 +27,6 @@ abstract class Model {
   /// used for communication back and forth from dart/native
   String? global_guid;
 
-  /// Model to be shown when error happened.
-  ///
-  /// can be whether [GlbModel] or [GltfModel]
-  Model? fallback;
-
   /// Scale Factor of the model.
   /// Should be greater than 0.
   /// Defaults to 1.
@@ -61,7 +56,6 @@ bool castShadows;
   Model(
       {this.assetPath,
       this.url,
-      this.fallback,
       this.scale,
       this.rotation,
       this.collidable,
@@ -84,7 +78,7 @@ bool castShadows;
 
   @override
   String toString() {
-    return 'Model(assetPath: $assetPath, url: $url, fallback: $fallback, scale: $scale, centerPosition: $centerPosition, animation: $animation)';
+    return 'Model(assetPath: $assetPath, url: $url, scale: $scale, centerPosition: $centerPosition, animation: $animation)';
   }
 
   @override
@@ -94,7 +88,6 @@ bool castShadows;
     return other is Model &&
         other.assetPath == assetPath &&
         other.url == url &&
-        other.fallback == fallback &&
         other.scale == scale &&
         other.centerPosition == centerPosition &&
         other.animation == animation;
@@ -104,7 +97,6 @@ bool castShadows;
   int get hashCode {
     return assetPath.hashCode ^
         url.hashCode ^
-        fallback.hashCode ^
         scale.hashCode ^
         centerPosition.hashCode ^
         animation.hashCode;

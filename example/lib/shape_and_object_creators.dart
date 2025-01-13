@@ -27,7 +27,6 @@ GlbModel poGetModel(
     String overrideGUID) {
   return GlbModel.asset(szAsset,
       animation: animationInfo,
-      //fallback: GlbModel.asset(helmetAsset),
       collidable: collidable,
       centerPosition: position,
       scale: scale,
