@@ -24,6 +24,7 @@ void vDoOneWaveSegment(FilamentViewApi filamentView) {
 
     // Set the position and scale for this segment
     vSetPositionAndScale(filamentView, segmentData.guid, 0.0, 0.0);
+    filamentView.turnOnVisualForEntity(segmentData.guid); // turnOnVisualForEntity
 
     // if you want a specific color; note the game models i checked in dont have
     // materials on them.
@@ -47,6 +48,7 @@ void vDo3RadarWaveSegments(FilamentViewApi filamentView) {
 
       // Set the position and scale for this segment
       vSetPositionAndScale(filamentView, segmentData.guid, 0.0, 0.0);
+      filamentView.turnOnVisualForEntity(segmentData.guid); // turnOnVisualForEntity
 
       // Debugging: Print the current state
       //print('vDo3RadarWaveSegments: Moved GUID to inUse: ${segmentData.guid}');
@@ -96,6 +98,14 @@ void vSetPositionAndScale(FilamentViewApi filamentView, String guid,
 
   filamentView.changeTranslationByGUID(guid, -42.2 - positionOffset, 1, 0);
 
+ /* if(scaleFactor == 0) {
+    filamentView.turnOffVisualForEntity(guid); // turnOnVisualForEntity
+
+    return;
+  } else {
+    filamentView.turnOnVisualForEntity(guid); // turnOnVisualForEntity
+  }*/
+
   filamentView.changeScaleByGUID(
       guid, scaleFactor * 6, scaleFactor, scaleFactor);
 }
@@ -111,6 +121,8 @@ void resetSegment(FilamentViewApi filamentView, String guid) {
     // Only proceed if we found a matching segment
     inUse.remove(segmentData);
     free.add(segmentData); // Add the segment back to the free list
+
+    filamentView.turnOffVisualForEntity(guid); // turnOnVisualForEntity
 
     vSetPositionAndScale(filamentView, guid, 0, 0);
 
