@@ -7,7 +7,7 @@ import 'model.dart';
 class GlbModel extends Model {
   /// creates glb model based on glb file asset path.
   GlbModel.asset(String path,
-      {super.fallback, super.scale
+      {super.scale
       , super.collidable, super.centerPosition
       , super.animation, super.rotation
       , required super.castShadows, required  super.receiveShadows
@@ -19,7 +19,7 @@ class GlbModel extends Model {
 
   /// creates glb model based on glb file url.
   GlbModel.url(String url,
-      {super.fallback, super.scale, super.centerPosition
+      {super.scale, super.centerPosition
       , super.animation, required bool receiveShadows, required bool castShadows})
       : super(url: url, receiveShadows: receiveShadows
                         , castShadows: castShadows);
@@ -28,7 +28,6 @@ class GlbModel extends Model {
   Map<String, dynamic> toJson() => {
         'assetPath': assetPath,
         'url': url,
-        'fallback': fallback?.toJson(),
         'scale': scale?.toJson(),
         'collidable': collidable?.toJson(),
         'rotation': rotation?.toJson(),
@@ -43,7 +42,7 @@ class GlbModel extends Model {
 
   @override
   String toString() {
-    return 'GlbModel(assetPath: $assetPath, url: $url, fallback: $fallback, scale: $scale, centerPosition: $centerPosition, animation: $animation)';
+    return 'GlbModel(assetPath: $assetPath, url: $url, scale: $scale, centerPosition: $centerPosition, animation: $animation)';
   }
 
   @override
@@ -53,7 +52,6 @@ class GlbModel extends Model {
     return other is GlbModel &&
         other.assetPath == assetPath &&
         other.url == url &&
-        other.fallback == fallback &&
         other.scale == scale &&
         other.centerPosition == centerPosition &&
         other.animation == animation;
@@ -63,7 +61,6 @@ class GlbModel extends Model {
   int get hashCode {
     return assetPath.hashCode ^
         url.hashCode ^
-        fallback.hashCode ^
         scale.hashCode ^
         centerPosition.hashCode ^
         animation.hashCode;

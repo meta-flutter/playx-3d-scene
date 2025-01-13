@@ -29,7 +29,6 @@ class GltfModel extends Model {
     String path, {
     this.prefix = "",
     this.postfix = "",
-    super.fallback,
     super.scale,
     super.centerPosition,
     super.collidable,
@@ -53,7 +52,6 @@ class GltfModel extends Model {
     String url, {
     this.prefix = "",
     this.postfix = "",
-    super.fallback,
     super.scale,
     super.centerPosition,
     super.rotation,
@@ -71,7 +69,6 @@ class GltfModel extends Model {
         'url': url,
         'pathPrefix': prefix,
         'pathPostfix': postfix,
-        'fallback': fallback?.toJson(),
         'collidable': collidable?.toJson(),
         'scale': scale?.toJson(),
         'rotation': rotation?.toJson(),
@@ -86,7 +83,7 @@ class GltfModel extends Model {
 
   @override
   String toString() {
-    return 'GltfModel(assetPath: $assetPath, url: $url, prefix: $prefix, postfix: $postfix, fallback: $fallback, scale: $scale, centerPosition: $centerPosition, animation: $animation)';
+    return 'GltfModel(assetPath: $assetPath, url: $url, prefix: $prefix, postfix: $postfix, scale: $scale, centerPosition: $centerPosition, animation: $animation)';
   }
 
   @override
@@ -98,7 +95,6 @@ class GltfModel extends Model {
         other.url == url &&
         other.prefix == prefix &&
         other.postfix == postfix &&
-        other.fallback == fallback &&
         other.scale == scale &&
         other.centerPosition == centerPosition &&
         other.animation == animation;
@@ -110,7 +106,6 @@ class GltfModel extends Model {
         url.hashCode ^
         prefix.hashCode ^
         postfix.hashCode ^
-        fallback.hashCode ^
         scale.hashCode ^
         centerPosition.hashCode ^
         animation.hashCode;
