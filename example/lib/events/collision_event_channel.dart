@@ -71,15 +71,22 @@ class CollisionEventChannel {
               filamentViewApi.changeMaterialDefinition(ourJson, guid);
             }
 
-            filamentViewApi.changeTranslationByGUID(guid, randomInRange(-5, 5),
-                randomInRange(0, 2), randomInRange(-5, 5));
+            // These are here & comment out to show additional functionality
+            // you can do.
 
-            final quat = randomQuaternion();
-            filamentViewApi.changeRotationByGUID(
-                guid, quat.x, quat.y, quat.z, quat.w);
+            // checke, works. only can do once. (since it turns it off)
+            // filamentViewApi.turnOffCollisionChecksForEntity(guid); // turnOnCollisionChecksForEntity
+            // filamentViewApi.turnOffVisualForEntity(guid); // turnOnVisualForEntity
 
-            filamentViewApi.changeScaleByGUID(guid, randomInRange(0.4, 1.5),
-                randomInRange(0.4, 1.5), randomInRange(0.4, 1.5));
+            //filamentViewApi.changeTranslationByGUID(guid, randomInRange(-5, 5),
+            //    randomInRange(0, 2), randomInRange(-5, 5));
+
+            //final quat = randomQuaternion();
+            //filamentViewApi.changeRotationByGUID(
+            //    guid, quat.x, quat.y, quat.z, quat.w);
+
+            //filamentViewApi.changeScaleByGUID(guid, randomInRange(0.4, 1.5),
+            //    randomInRange(0.4, 1.5), randomInRange(0.4, 1.5));
           }
         },
         onError: (error) {

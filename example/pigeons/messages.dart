@@ -86,4 +86,12 @@ abstract class FilamentViewApi {
   void changeTranslationByGUID(String guid, double x, double y, double z);
   void changeRotationByGUID(
       String guid, double x, double y, double z, double w);
+
+  // runtime visual / collision on/offs
+  void turnOffVisualForEntity(String guid);
+  void turnOnVisualForEntity(String guid);
+  // These won't change the visual of the collision data showing in viewport
+  // (purposefully)
+  void turnOffCollisionChecksForEntity(String guid);
+  void turnOnCollisionChecksForEntity(String guid);
 }
