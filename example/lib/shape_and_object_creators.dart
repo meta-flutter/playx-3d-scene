@@ -8,6 +8,8 @@ const String garageAsset = "assets/models/garagescene.glb";
 
 const String radarConeAsset = "assets/models/radar_cone.glb";
 const String radarSegmentAsset = "assets/models/half_torus.glb";
+//const String radarSegmentAsset = "assets/models/half_torus_parent_mat.glb";
+//const String radarSegmentAsset = "assets/models/2-Candle.glb";
 const String roadAsset = "assets/models/road_segment.glb";
 
 // fox has animation
@@ -25,9 +27,11 @@ GlbModel poGetModel(
     bool bReceiveShadows,
     bool bCastShadows,
     String overrideGUID,
-    bool bKeepInMemory) {
+    bool bKeepInMemory,
+    bool bWhenInstanceableIsPrimary) {
   return GlbModel.asset(szAsset,
       should_keep_asset_in_memory: bKeepInMemory,
+      is_primary_to_instance_from: bWhenInstanceableIsPrimary,
       animation: animationInfo,
       collidable: collidable,
       centerPosition: position,
@@ -282,6 +286,20 @@ List<Model> poGetModelList() {
 
   // scene 0
 
+  // 'primary object'
+  itemsToReturn.add(poGetModel(
+      sequoiaAsset,
+      PlayxPosition(x: 0, y: 0, z: 0),
+      PlayxSize(x: 1, y: 1, z: 1),
+      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      null,
+      null,
+      true,
+      true,
+      const Uuid().v4(),
+      true,
+      true));
+
   itemsToReturn.add(poGetModel(
       sequoiaAsset,
       PlayxPosition(x: 0, y: 0, z: 0),
@@ -292,7 +310,8 @@ List<Model> poGetModelList() {
       true,
       true,
       const Uuid().v4(),
-      true));
+      true,
+      false));
 
   itemsToReturn.add(poGetModel(
       garageAsset,
@@ -303,32 +322,50 @@ List<Model> poGetModelList() {
       null,
       false,
       true,
-      const Uuid().v4(), false));
+      const Uuid().v4(),
+      false,
+      false));
 
   itemsToReturn.add(poGetModel(
       foxAsset,
-      PlayxPosition(x: 1, y: 0, z: 4),
-      PlayxSize(x: .04, y: .04, z: .04),
+      PlayxPosition(x: 0, y: 0, z: 0),
+      PlayxSize(x: 1, y: 1, z: 1),
       PlayxRotation(x: 0, y: 0, z: 0, w: 1),
       null,
       PlayxAnimation.byIndex(0, autoPlay: true),
       true,
       true,
-      const Uuid().v4(), true));
+      const Uuid().v4(),
+      true,
+      true));
+
+  itemsToReturn.add(poGetModel(
+      foxAsset,
+      PlayxPosition(x: 1, y: 0, z: 4),
+      PlayxSize(x: 0.04, y: 0.04, z: 0.04),
+      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      null,
+      PlayxAnimation.byIndex(0, autoPlay: true),
+      true,
+      true,
+      const Uuid().v4(),
+      true,
+      false));
 
   itemsToReturn.add(poGetModel(
       foxAsset,
       PlayxPosition(x: -1, y: 0, z: 4),
-      PlayxSize(x: .04, y: .04, z: .04),
+      PlayxSize(x: 0.04, y: 0.04, z: 0.04),
       PlayxRotation(x: 0, y: 0, z: 0, w: 1),
       null,
       PlayxAnimation.byIndex(1, autoPlay: true, notifyOfAnimationEvents: true),
       true,
       true,
-      const Uuid().v4(), true));
+      const Uuid().v4(),
+      true,
+      false));
 
   // scene 1
-
   for (int i = 0; i < 10; i++) {
     itemsToReturn.add(poGetModel(
         sequoiaAsset,
@@ -340,7 +377,8 @@ List<Model> poGetModelList() {
         true,
         true,
         const Uuid().v4(),
-        true));
+        true,
+        false));
   }
 
   itemsToReturn.add(poGetModel(
@@ -352,7 +390,9 @@ List<Model> poGetModelList() {
       null,
       true,
       false,
-      const Uuid().v4(), false));
+      const Uuid().v4(),
+      false,
+      false));
 
   String guid = const Uuid().v4();
   radarConePieceGUID.add(guid);
@@ -366,7 +406,22 @@ List<Model> poGetModelList() {
       null,
       false,
       false,
-      guid, false));
+      guid,
+      false,
+      false));
+
+  itemsToReturn.add(poGetModel(
+      radarSegmentAsset,
+      PlayxPosition(x: 0, y: 0, z: 0),
+      PlayxSize(x: 1, y: 1, z: 1),
+      PlayxRotation(x: 0.0, y: 0, z: 0, w: 1),
+      null,
+      null,
+      true,
+      true,
+      const Uuid().v4(),
+      true,
+      true));
 
   for (int i = 0; i < 20; i++) {
     String guidForSegment = const Uuid().v4();
@@ -378,9 +433,11 @@ List<Model> poGetModelList() {
         PlayxRotation(x: 0.7071, y: 0, z: 0.7071, w: 0),
         null,
         null,
-        false,
-        false,
-        guidForSegment, true));
+        true,
+        true,
+        guidForSegment,
+        true,
+        false));
 
     radarSegmentPiecesGUIDS.add(guidForSegment);
   }
