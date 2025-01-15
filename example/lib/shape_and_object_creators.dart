@@ -24,8 +24,10 @@ GlbModel poGetModel(
     PlayxAnimation? animationInfo,
     bool bReceiveShadows,
     bool bCastShadows,
-    String overrideGUID) {
+    String overrideGUID,
+    bool bKeepInMemory) {
   return GlbModel.asset(szAsset,
+      should_keep_asset_in_memory: bKeepInMemory,
       animation: animationInfo,
       collidable: collidable,
       centerPosition: position,
@@ -289,7 +291,8 @@ List<Model> poGetModelList() {
       null,
       true,
       true,
-      const Uuid().v4()));
+      const Uuid().v4(),
+      true));
 
   itemsToReturn.add(poGetModel(
       garageAsset,
@@ -300,7 +303,7 @@ List<Model> poGetModelList() {
       null,
       false,
       true,
-      const Uuid().v4()));
+      const Uuid().v4(), false));
 
   itemsToReturn.add(poGetModel(
       foxAsset,
@@ -311,7 +314,7 @@ List<Model> poGetModelList() {
       PlayxAnimation.byIndex(0, autoPlay: true),
       true,
       true,
-      const Uuid().v4()));
+      const Uuid().v4(), true));
 
   itemsToReturn.add(poGetModel(
       foxAsset,
@@ -322,20 +325,23 @@ List<Model> poGetModelList() {
       PlayxAnimation.byIndex(1, autoPlay: true, notifyOfAnimationEvents: true),
       true,
       true,
-      const Uuid().v4()));
+      const Uuid().v4(), true));
 
   // scene 1
 
-  itemsToReturn.add(poGetModel(
-      sequoiaAsset,
-      PlayxPosition(x: -40, y: 0, z: 0),
-      PlayxSize(x: 1, y: 1, z: 1),
-      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
-      null,
-      null,
-      true,
-      true,
-      const Uuid().v4()));
+  for (int i = 0; i < 10; i++) {
+    itemsToReturn.add(poGetModel(
+        sequoiaAsset,
+        PlayxPosition(x: -40, y: 0, z: i * 5 - 25),
+        PlayxSize(x: 1, y: 1, z: 1),
+        PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+        null,
+        null,
+        true,
+        true,
+        const Uuid().v4(),
+        true));
+  }
 
   itemsToReturn.add(poGetModel(
       roadAsset,
@@ -346,7 +352,7 @@ List<Model> poGetModelList() {
       null,
       true,
       false,
-      const Uuid().v4()));
+      const Uuid().v4(), false));
 
   String guid = const Uuid().v4();
   radarConePieceGUID.add(guid);
@@ -360,7 +366,7 @@ List<Model> poGetModelList() {
       null,
       false,
       false,
-      guid));
+      guid, false));
 
   for (int i = 0; i < 20; i++) {
     String guidForSegment = const Uuid().v4();
@@ -374,7 +380,7 @@ List<Model> poGetModelList() {
         null,
         false,
         false,
-        guidForSegment));
+        guidForSegment, true));
 
     radarSegmentPiecesGUIDS.add(guidForSegment);
   }

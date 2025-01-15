@@ -18,6 +18,10 @@ abstract class Model {
   /// Model asset path to load the model from assets.
   String? assetPath;
 
+  // if this is true, we'll keep it in memory so other objects
+  // can use that memory and load from it, not incurring a disk load.
+  bool? should_keep_asset_in_memory;
+
   /// Model url to load the model from url.
   String? url;
 
@@ -55,6 +59,7 @@ bool castShadows;
 
   Model(
       {this.assetPath,
+      this.should_keep_asset_in_memory,
       this.url,
       this.scale,
       this.rotation,

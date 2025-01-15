@@ -8,6 +8,7 @@ class GlbModel extends Model {
   /// creates glb model based on glb file asset path.
   GlbModel.asset(String path,
       {super.scale
+        , super.should_keep_asset_in_memory
       , super.collidable, super.centerPosition
       , super.animation, super.rotation
       , required super.castShadows, required  super.receiveShadows
@@ -20,6 +21,7 @@ class GlbModel extends Model {
   /// creates glb model based on glb file url.
   GlbModel.url(String url,
       {super.scale, super.centerPosition
+        , super.should_keep_asset_in_memory
       , super.animation, required bool receiveShadows, required bool castShadows})
       : super(url: url, receiveShadows: receiveShadows
                         , castShadows: castShadows);
@@ -28,6 +30,7 @@ class GlbModel extends Model {
   Map<String, dynamic> toJson() => {
         'assetPath': assetPath,
         'url': url,
+        'should_keep_asset_in_memory': should_keep_asset_in_memory,
         'scale': scale?.toJson(),
         'collidable': collidable?.toJson(),
         'rotation': rotation?.toJson(),
