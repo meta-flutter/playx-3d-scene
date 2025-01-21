@@ -29,6 +29,8 @@ class GltfModel extends Model {
     String path, {
     this.prefix = "",
     this.postfix = "",
+    super.should_keep_asset_in_memory,
+        super.is_primary_to_instance_from,
     super.scale,
     super.centerPosition,
     super.collidable,
@@ -52,6 +54,8 @@ class GltfModel extends Model {
     String url, {
     this.prefix = "",
     this.postfix = "",
+    super.should_keep_asset_in_memory,
+        super.is_primary_to_instance_from,
     super.scale,
     super.centerPosition,
     super.rotation,
@@ -67,6 +71,8 @@ class GltfModel extends Model {
   Map<String, dynamic> toJson() => {
         'assetPath': assetPath,
         'url': url,
+        'should_keep_asset_in_memory': should_keep_asset_in_memory,
+    'is_primary_to_instance_from': is_primary_to_instance_from,
         'pathPrefix': prefix,
         'pathPostfix': postfix,
         'collidable': collidable?.toJson(),

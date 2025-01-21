@@ -18,6 +18,15 @@ abstract class Model {
   /// Model asset path to load the model from assets.
   String? assetPath;
 
+  /// if this is true, we'll keep it in memory so other objects
+  /// can use that memory and load from it, not incurring a disk load.
+  bool? should_keep_asset_in_memory;
+
+  /// all instances inherit the base transform so you might want a specific
+  /// transform to inherit from.
+  /// By default these DO NOT get added to the renderable scene!
+  bool? is_primary_to_instance_from;
+
   /// Model url to load the model from url.
   String? url;
 
@@ -55,6 +64,8 @@ bool castShadows;
 
   Model(
       {this.assetPath,
+      this.should_keep_asset_in_memory,
+        this.is_primary_to_instance_from,
       this.url,
       this.scale,
       this.rotation,
