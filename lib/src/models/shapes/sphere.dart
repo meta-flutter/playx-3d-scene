@@ -1,5 +1,5 @@
 import 'package:playx_3d_scene/src/models/scene/geometry/vectors.dart';
-import 'package:playx_3d_scene/src/models/shapes/shape.dart';
+import 'package:playx_3d_scene/src/models/shapes/shapes.dart';
 
 /// An object that represents a cube shape to be rendered.
 class Sphere extends Shape {

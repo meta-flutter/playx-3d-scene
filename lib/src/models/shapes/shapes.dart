@@ -1,12 +1,14 @@
-import 'package:playx_3d_scene/src/models/scene/geometry/direction.dart';
-import 'package:playx_3d_scene/src/models/scene/geometry/position.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/vectors.dart';
 import 'package:playx_3d_scene/src/models/scene/material/material.dart';
-import 'package:playx_3d_scene/src/models/scene/geometry/size.dart';
-import 'package:playx_3d_scene/src/models/scene/geometry/rotation.dart';
-import 'package:playx_3d_scene/src/models/shapes/cube.dart';
-import 'package:playx_3d_scene/src/models/shapes/plane.dart';
-import 'package:playx_3d_scene/src/models/shapes/sphere.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/collidable.dart';
+
+import 'cube.dart';
+import 'plane.dart';
+import 'sphere.dart';
+
+export 'cube.dart';
+export 'plane.dart';
+export 'sphere.dart';
 
 /// An object that represents shapes to be rendered on the scene.
 ///
@@ -16,19 +18,19 @@ import 'package:playx_3d_scene/src/models/scene/geometry/collidable.dart';
 /// [Sphere]
 class Shape {
   /// center position of the shape in the world space.
-  PlayxPosition? centerPosition;
+  Vector3? centerPosition;
 
   /// Scale of the shape
-  PlayxSize? scale;
+  Vector3? scale;
 
   /// direction of the shape rotation in the world space
-  PlayxDirection? normal;
+  Vector3? normal;
 
   /// material to be used for the shape.
   PlayxMaterial? material;
 
   /// Quaternion rotation for the shape
-  PlayxRotation? rotation;
+  Vector4? rotation;
 
   /// Do we have a collidable for this object (expecting to collide)
   Collidable? collidable;

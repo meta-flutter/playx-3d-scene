@@ -5,23 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:playx_3d_scene/src/controller/playx_3d_scene_controller.dart';
 import 'package:playx_3d_scene/src/models/model/model.dart';
-import 'package:playx_3d_scene/src/models/scene/camera/camera.dart';
-import 'package:playx_3d_scene/src/models/scene/indirect_light/indirect_light.dart';
-import 'package:playx_3d_scene/src/models/scene/light/light.dart';
 import 'package:playx_3d_scene/src/models/scene/scene.dart';
-import 'package:playx_3d_scene/src/models/scene/skybox/skybox.dart';
-import 'package:playx_3d_scene/src/models/shapes/cube.dart';
-import 'package:playx_3d_scene/src/models/shapes/plane.dart';
-import 'package:playx_3d_scene/src/models/shapes/shape.dart';
-import 'package:playx_3d_scene/src/models/shapes/sphere.dart';
-import 'package:playx_3d_scene/src/models/state/model_state.dart';
-import 'package:playx_3d_scene/src/models/state/scene_state.dart';
-import 'package:playx_3d_scene/src/models/state/shape_state.dart';
+import 'package:playx_3d_scene/src/models/shapes/shapes.dart';
+import 'package:playx_3d_scene/src/utils/result.dart';
 
-typedef Playx3dSceneCreatedCallback = void Function(
-    Playx3dSceneController controller);
+typedef Playx3dSceneCreatedCallback = void Function( Playx3dSceneController controller);
 const String _channelName = "io.sourcya.playx.3d.scene.channel";
 const String _viewType = "${_channelName}_3d_scene";
 
