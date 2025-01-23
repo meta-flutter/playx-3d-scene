@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:uuid/uuid.dart';
 
 import 'package:playx_3d_scene/src/models/scene/geometry/vectors.dart';
 import 'package:playx_3d_scene/src/models/scene/light/light_type.dart';
