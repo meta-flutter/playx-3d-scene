@@ -1,4 +1,4 @@
-import 'package:playx_3d_scene/src/models/model/model.dart';
+import './model.dart';
 
 /// represents object of model that will be loaded from gltf file.
 ///

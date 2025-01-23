@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:playx_3d_scene/src/models/model/model.dart';
+import 'package:playx_3d_scene/src/model/model.dart';
 import 'package:playx_3d_scene/src/models/scene/scene.dart';
 import 'package:playx_3d_scene/src/models/shapes/shapes.dart';
 import 'package:playx_3d_scene/src/utils/result.dart';

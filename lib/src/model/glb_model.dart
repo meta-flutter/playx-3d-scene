@@ -1,4 +1,4 @@
-import 'model.dart';
+import './model.dart';
 
 /// represents object of model that will be loaded from glb file.
 ///

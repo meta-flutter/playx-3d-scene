@@ -1,9 +1,6 @@
 export 'src/scene_widget.dart';
 export 'src/utils/result.dart';
-export 'src/models/model/animation.dart';
-export 'src/models/model/glb_model.dart';
-export 'src/models/model/gltf_model.dart';
-export 'src/models/model/model.dart';
+export 'src/model/model.dart';
 export 'src/models/scene/camera/camera.dart';
 export 'src/models/scene/camera/exposure.dart';
 export 'src/models/scene/camera/lens_projection.dart';

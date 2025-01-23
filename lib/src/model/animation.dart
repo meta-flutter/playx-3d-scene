@@ -1,5 +1,5 @@
 /// An object representing what animation to be played for current model.
-class PlayxAnimation {
+class Animation {
   /// The Index of the Animation to be used.
   int? index;
 
@@ -21,7 +21,7 @@ class PlayxAnimation {
   bool notifyOfAnimationEvents;
 
   /// creates animation object by index to be played.
-  PlayxAnimation.byIndex(
+  Animation.byIndex(
        this.index, {
        this.autoPlay = true,
        this.loop = true,
@@ -47,7 +47,7 @@ class PlayxAnimation {
      bool operator ==(Object other) {
        if (identical(this, other)) return true;
 
-       return other is PlayxAnimation &&
+       return other is Animation &&
            other.index == index &&
            other.autoPlay == autoPlay &&
            other.loop == loop &&

@@ -1,4 +1,4 @@
-import 'package:playx_3d_scene/src/models/model/model.dart';
+import 'package:playx_3d_scene/src/model/model.dart';
 import 'package:playx_3d_scene/src/models/scene/scene.dart';
 import 'package:playx_3d_scene/src/models/shapes/shapes.dart';
 

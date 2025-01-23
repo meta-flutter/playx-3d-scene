@@ -1,8 +1,12 @@
-import 'package:playx_3d_scene/src/models/model/animation.dart';
-import 'package:playx_3d_scene/src/models/model/glb_model.dart';
-import 'package:playx_3d_scene/src/models/model/gltf_model.dart';
+import './animation.dart';
+import './glb_model.dart';
+import './gltf_model.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/collidable.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/vectors.dart';
+
+export './animation.dart';
+export './glb_model.dart';
+export './gltf_model.dart';
   
 /// represents base object of the 3d model to be rendered.
 ///
@@ -47,7 +51,7 @@ abstract class Model {
   Vector3? centerPosition;
 
   /// Controls what animation should be played by the rendered model.
-  PlayxAnimation? animation;
+  Animation? animation;
 
   /// Quaternion rotation for the shape
   Vector4? rotation;
