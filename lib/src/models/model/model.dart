@@ -41,37 +41,38 @@ abstract class Model {
   /// For now this will create a box using the extents value
   Collidable? collidable;
 
-  ///Coordinate of center point position of the rendered model.
+  /// Coordinate of center point position of the rendered model.
   ///
   /// Defaults to ( x:0,y: 0,z: -4)
   Vector3? centerPosition;
 
-  ///Controls what animation should be played by the rendered model.
+  /// Controls what animation should be played by the rendered model.
   PlayxAnimation? animation;
 
-    /// Quaternion rotation for the shape
+  /// Quaternion rotation for the shape
   Vector4? rotation;
 
-/// Variables for filament renderer upon shape creation
-bool receiveShadows;
+  /// Variables for filament renderer upon shape creation
+  bool receiveShadows;
 
-/// Variables for filament renderer upon shape creation
-bool castShadows;
+  /// Variables for filament renderer upon shape creation
+  bool castShadows;
 
-  Model(
-      {this.assetPath,
-      this.should_keep_asset_in_memory,
-        this.is_primary_to_instance_from,
-      this.url,
-      this.scale,
-      this.rotation,
-      this.collidable,
-      this.centerPosition,
-      this.animation,
-      this.global_guid,
-      required this.castShadows,
-      required this.receiveShadows,
-      this.name,});
+  Model({
+    this.assetPath,
+    this.should_keep_asset_in_memory,
+    this.is_primary_to_instance_from,
+    this.url,
+    this.scale,
+    this.rotation,
+    this.collidable,
+    this.centerPosition,
+    this.animation,
+    this.global_guid,
+    required this.castShadows,
+    required this.receiveShadows,
+    this.name,
+  });
 
   Map<String, dynamic> toJson() {
     if (this is GlbModel) {
