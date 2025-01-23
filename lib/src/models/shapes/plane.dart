@@ -1,4 +1,4 @@
-import 'package:playx_3d_scene/src/models/scene/geometry/size.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/vectors.dart';
 import 'package:playx_3d_scene/src/models/shapes/shape.dart';
 
 /// An object that represents a plane shape to be rendered.
@@ -8,7 +8,7 @@ class Plane extends Shape {
   /// should provide only 2 coordinates of the plane.
   /// To draw horizontally y must be 0.
   /// To draw vertically z must be 0.
-  PlayxSize size;
+  Vector3 size;
 
   Plane(
       {required this.size,

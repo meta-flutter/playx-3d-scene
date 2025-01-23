@@ -4,9 +4,10 @@ import 'package:playx_3d_scene/src/models/scene/camera/enums/camera_mode.dart';
 import 'package:playx_3d_scene/src/models/scene/camera/enums/fov.dart';
 import 'package:playx_3d_scene/src/models/scene/camera/exposure.dart';
 import 'package:playx_3d_scene/src/models/scene/camera/projection.dart';
-import 'package:playx_3d_scene/src/models/scene/geometry/position.dart';
+
 
 import 'lens_projection.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/vectors.dart';
 
 /// An object that controls camera, it describes what mode it operates on, position, exposure and more.
 class Camera {
@@ -37,17 +38,17 @@ class Camera {
   Mode? _mode;
 
   ///The world-space position of interest, which defaults to (x:0,y:0,z:-4).
-  PlayxPosition? targetPosition;
+  Vector3? targetPosition;
 
   ///The orientation for the home position, which defaults to (x:0,y:1,z:0).
-  PlayxPosition? upVector;
+  Vector3? upVector;
 
   ///The scroll delta multiplier, which defaults to 0.01.
   double? zoomSpeed;
   //orbit
   ///The initial eye position in world space for ORBIT mode.
   ///This defaults to (x:0,y:0,z:1).
-  PlayxPosition? orbitHomePosition;
+  Vector3? orbitHomePosition;
 
   ///Sets the multiplier with viewport delta for ORBIT mode.This defaults to 0.01
   ///List of 2 double :[x,y]
@@ -74,7 +75,7 @@ class Camera {
   //freeflight
   ///The initial eye position in world space for FREE_FLIGHT mode.
   ///Defaults to (x:0,y:0,z:0).
-  PlayxPosition? flightStartPosition;
+  Vector3? flightStartPosition;
 
   ///The initial orientation in pitch and yaw for FREE_FLIGHT mode.
   ///Defaults to [0,0].

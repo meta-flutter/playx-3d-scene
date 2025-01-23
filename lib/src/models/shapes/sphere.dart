@@ -1,4 +1,4 @@
-import 'package:playx_3d_scene/src/models/scene/geometry/size.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/vectors.dart';
 import 'package:playx_3d_scene/src/models/shapes/shape.dart';
 
 /// An object that represents a cube shape to be rendered.
@@ -10,7 +10,7 @@ class Sphere extends Shape {
   int? slices;
 
   // this ends up becoming the scaled size
-  PlayxSize size;
+  Vector3 size;
 
   Sphere(
       {required super.centerPosition,

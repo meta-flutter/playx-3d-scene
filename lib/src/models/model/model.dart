@@ -1,12 +1,8 @@
 import 'package:playx_3d_scene/src/models/model/animation.dart';
 import 'package:playx_3d_scene/src/models/model/glb_model.dart';
 import 'package:playx_3d_scene/src/models/model/gltf_model.dart';
-import 'package:playx_3d_scene/src/models/scene/geometry/position.dart';
-import 'package:playx_3d_scene/src/models/scene/geometry/size.dart';
-import 'package:playx_3d_scene/src/models/scene/geometry/rotation.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/collidable.dart';
-
-import '../scene/geometry/collidable.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/vectors.dart';
   
 /// represents base object of the 3d model to be rendered.
 ///
@@ -39,7 +35,7 @@ abstract class Model {
   /// Scale Factor of the model.
   /// Should be greater than 0.
   /// Defaults to 1.
-  PlayxSize? scale;
+  Vector3? scale;
 
   /// Do we have a collidable for this object (expecting to collide)
   /// For now this will create a box using the extents value
@@ -48,13 +44,13 @@ abstract class Model {
   ///Coordinate of center point position of the rendered model.
   ///
   /// Defaults to ( x:0,y: 0,z: -4)
-  PlayxPosition? centerPosition;
+  Vector3? centerPosition;
 
   ///Controls what animation should be played by the rendered model.
   PlayxAnimation? animation;
 
     /// Quaternion rotation for the shape
-  PlayxRotation? rotation;
+  Vector4? rotation;
 
 /// Variables for filament renderer upon shape creation
 bool receiveShadows;

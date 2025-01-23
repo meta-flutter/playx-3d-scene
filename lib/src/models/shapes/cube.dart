@@ -1,12 +1,12 @@
-import 'package:playx_3d_scene/src/models/scene/geometry/size.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/vectors.dart';
 import 'package:playx_3d_scene/src/models/shapes/shape.dart';
 
 /// An object that represents a cube shape to be rendered.
 class Cube extends Shape {
   /// Length of the cube.
-  PlayxSize size;
+  Vector3 size;
 
-  late PlayxSize _size;
+  late Vector3 _size;
 
   Cube(
       {required this.size,
