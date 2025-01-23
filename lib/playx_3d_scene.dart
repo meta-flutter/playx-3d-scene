@@ -1,4 +1,4 @@
-export 'src/view/playx_3d_scene.dart';
+export 'src/scene_widget.dart';
 export 'src/utils/result.dart';
 export 'src/models/model/animation.dart';
 export 'src/models/model/glb_model.dart';
