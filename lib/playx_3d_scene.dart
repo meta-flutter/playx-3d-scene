@@ -1,5 +1,5 @@
 export 'src/scene_widget.dart';
-export 'src/utils/result.dart';
+export 'src/utils/utils.dart';
 export 'src/model/model.dart';
 export 'src/models/scene/camera/camera.dart';
 export 'src/models/scene/camera/exposure.dart';
@@ -27,4 +27,3 @@ export 'src/models/scene/skybox/ktx_skybox.dart';
 export 'src/models/scene/skybox/skybox.dart';
 export 'src/models/scene/scene.dart';
 export 'src/models/shapes/shapes.dart';
-export 'src/models/state/loading_state.dart';
