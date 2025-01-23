@@ -122,7 +122,7 @@ class MaterialParameter {
     return {
       'name': name,
       'value': valueJson,
-      'type': type.toName(),
+      'type': type.value,
     };
   }
 
