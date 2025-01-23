@@ -1,13 +1,41 @@
 import 'dart:core';
 
-import 'package:playx_3d_scene/src/models/scene/camera/enums/camera_mode.dart';
-import 'package:playx_3d_scene/src/models/scene/camera/enums/fov.dart';
 import 'package:playx_3d_scene/src/models/scene/camera/exposure.dart';
 import 'package:playx_3d_scene/src/models/scene/camera/projection.dart';
 
-
-import 'lens_projection.dart';
+import 'package:playx_3d_scene/src/models/scene/camera/lens_projection.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/vectors.dart';
+
+///Camera Modes that operates on.
+///Three modes are supported: ORBIT, MAP, and FREE_FLIGHT.
+enum CameraMode {
+  orbit("ORBIT"),
+  map("MAP"),
+  freeFlight("FREE_FLIGHT"),
+  autoOrbit("AUTO_ORBIT"),
+  inertiaAndGestures("INERTIA_AND_GESTURES");
+
+  final String value;
+  const CameraMode(this.value);
+
+  static CameraMode from(final String? mode) => CameraMode.values.asNameMap()[mode] ?? CameraMode.orbit;
+}
+
+///Denotes a field-of-view direction.
+enum Fov {
+  /// The field-of-view angle is defined on the vertical axis.
+  vertical("VERTICAL"),
+
+  /// The field-of-view angle is defined on the horizontal axis.
+  horizontal("HORIZONTAL");
+
+  final String value;
+  const Fov(this.value);
+
+  static Fov from(final String? fov) => Fov.values.asNameMap()[fov] ?? Fov.vertical;
+}
+
+
 
 /// An object that controls camera, it describes what mode it operates on, position, exposure and more.
 class Camera {
@@ -35,7 +63,7 @@ class Camera {
   List<double>? shift;
 
   ///Mode of the camera that operates on.
-  Mode? _mode;
+  CameraMode? _mode;
 
   ///The world-space position of interest, which defaults to (x:0,y:0,z:-4).
   Vector3? targetPosition;
@@ -124,7 +152,7 @@ double? zoom_maxCap;
     this.fovDegrees,
     this.farPlane,
   }) {
-    _mode = Mode.orbit;
+    _mode = CameraMode.orbit;
   }
 
   ///Creates a camera on map mode.
@@ -141,7 +169,7 @@ double? zoom_maxCap;
     this.mapExtent,
     this.mapMinDistance,
   }) {
-    _mode = Mode.map;
+    _mode = CameraMode.map;
   }
 
   ///Creates a camera on free flight mode.
@@ -161,7 +189,7 @@ double? zoom_maxCap;
     this.flightSpeedSteps,
     this.flightMoveDamping,
   }) {
-    _mode = Mode.freeFlight;
+    _mode = CameraMode.freeFlight;
   }
 
 Camera.autoOrbit({
@@ -181,7 +209,7 @@ Camera.autoOrbit({
       this.flightSpeedSteps,
       this.flightMoveDamping,
     }) {
-      _mode = Mode.autoOrbit;
+      _mode = CameraMode.autoOrbit;
     }
 
     Camera.inertiaAndGestures({
@@ -208,8 +236,10 @@ Camera.autoOrbit({
           this.zoom_minCap,
           this.zoom_maxCap
         }) {
-          _mode = Mode.inertiaAndGestures;
+          _mode = CameraMode.inertiaAndGestures;
         }
+
+  // TODO(kerberjg): replace with serialization lib
 
   Map<String, dynamic> toJson() {
     return {
@@ -218,13 +248,13 @@ Camera.autoOrbit({
       "lensProjection": lensProjection?.toJson(),
       "scaling": scaling,
       "shift": shift,
-      "mode": _mode?.toName(),
+      "mode": _mode?.value,
       "targetPosition": targetPosition?.toJson(),
       "upVector": upVector?.toJson(),
       "zoomSpeed": zoomSpeed,
       "orbitHomePosition": orbitHomePosition?.toJson(),
       "orbitSpeed": orbitSpeed,
-      "fovDirection": fovDirection?.toName(),
+      "fovDirection": fovDirection?.value,
       "fovDegrees": fovDegrees,
       "farPlane": farPlane,
       "mapExtent": mapExtent,
