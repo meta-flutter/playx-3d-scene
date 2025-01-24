@@ -1,8 +1,20 @@
 import 'dart:core';
 
-import 'package:playx_3d_scene/src/models/scene/camera/enums/fov.dart';
+import 'package:playx_3d_scene/playx_3d_scene.dart';
 
-import 'enums/projection_type.dart';
+///Denotes the projection type used by this camera.
+enum ProjectionType {
+  /// Perspective projection, objects get smaller as they are farther.
+  perspective("PERSPECTIVE"),
+
+  /// Orthonormal projection, preserves distances.
+  ortho("ORTHO");
+
+  final String value;
+  const ProjectionType(this.value);
+
+  static ProjectionType from(final String? type) => ProjectionType.values.asNameMap()[type] ?? ProjectionType.perspective;
+}
 
 ///An object that controls camera projection matrix.
 class Projection {
@@ -60,7 +72,7 @@ class Projection {
 
   Map<String, dynamic> toJson() {
     return {
-      "projection": projection?.toName(),
+      "projection": projection?.value,
       "left": left,
       "right": right,
       "bottom": bottom,
@@ -69,7 +81,7 @@ class Projection {
       "far": far,
       "fovInDegrees": fovInDegrees,
       "aspect": aspect,
-      "direction": fovDirection?.toName(),
+      "direction": fovDirection?.value,
     };
   }
 

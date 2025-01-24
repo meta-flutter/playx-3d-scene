@@ -5,27 +5,65 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:playx_3d_scene/src/controller/playx_3d_scene_controller.dart';
-import 'package:playx_3d_scene/src/models/model/model.dart';
-import 'package:playx_3d_scene/src/models/scene/camera/camera.dart';
-import 'package:playx_3d_scene/src/models/scene/indirect_light/indirect_light.dart';
-import 'package:playx_3d_scene/src/models/scene/light/light.dart';
+import 'package:playx_3d_scene/src/model/model.dart';
 import 'package:playx_3d_scene/src/models/scene/scene.dart';
-import 'package:playx_3d_scene/src/models/scene/skybox/skybox.dart';
-import 'package:playx_3d_scene/src/models/shapes/cube.dart';
-import 'package:playx_3d_scene/src/models/shapes/plane.dart';
-import 'package:playx_3d_scene/src/models/shapes/shape.dart';
-import 'package:playx_3d_scene/src/models/shapes/sphere.dart';
-import 'package:playx_3d_scene/src/models/state/model_state.dart';
-import 'package:playx_3d_scene/src/models/state/scene_state.dart';
-import 'package:playx_3d_scene/src/models/state/shape_state.dart';
+import 'package:playx_3d_scene/src/shapes/shapes.dart';
+import 'package:playx_3d_scene/src/utils/result.dart';
 
-typedef Playx3dSceneCreatedCallback = void Function(
-    Playx3dSceneController controller);
+typedef Playx3dSceneCreatedCallback = void Function( Playx3dSceneController controller);
 const String _channelName = "io.sourcya.playx.3d.scene.channel";
 const String _viewType = "${_channelName}_3d_scene";
 
-class Playx3dScene extends StatefulWidget {
+
+/// An object which helps facilitate communication between the [Playx3dSceneView] Widget
+/// and android side model viewer based on Filament.
+/// 
+/// It provides utility methods to update the viewer, change the animation environment, lightening, etc.
+/// Each controller is unique for each widget.
+class Playx3dSceneController {
+  int id;
+  late MethodChannel _channel;
+
+  static const String _channelName = "io.sourcya.playx.3d.scene.channel";
+
+  Playx3dSceneController({required this.id}) {
+    _channel = MethodChannel('${_channelName}_$id');
+  }
+
+  /// Updates the current 3d scene view with the new [scene], [model], and [shapes].
+  /// Returns true if the scene was updated successfully.
+  Future<Result<bool>> updatePlayx3dScene(
+      {Scene? scene, List<Model>? models, List<Shape>? shapes}) {
+    final data = _channel.invokeMethod<bool>(
+      _updatePlayx3dScene,
+      {
+        _updatePlayx3dSceneSceneKey: scene?.toJson(),
+        _updatePlayx3dSceneModelKey: models?.map((e) => e.toJson()).toList(),
+        _updatePlayx3dSceneShapesKey: shapes?.map((e) => e.toJson()).toList(),
+      },
+    );
+    return _handleError(data);
+  }
+}
+
+Future<Result<T>> _handleError<T>(Future<T?> data) async {
+  try {
+    final result = await data;
+    return Result.success(result);
+  } on PlatformException catch (err) {
+    return Result.error(err.message);
+  } catch (err) {
+    return Result.error("Something went wrong");
+  }
+}
+
+const String _updatePlayx3dScene = "UPDATE_PLAYX_3D_SCENE";
+const String _updatePlayx3dSceneSceneKey = "UPDATE_PLAYX_3D_SCENE_SCENE_KEY";
+const String _updatePlayx3dSceneModelKey = "UPDATE_PLAYX_3D_SCENE_MODEL_KEY";
+const String _updatePlayx3dSceneShapesKey = "UPDATE_PLAYX_3D_SCENE_SHAPES_KEY";
+
+
+class Playx3dSceneView extends StatefulWidget {
   /// Model to be rendered.
   /// provide details about the model to be rendered.
   /// like asset path, url, animation, etc.
@@ -61,7 +99,7 @@ class Playx3dScene extends StatefulWidget {
   /// it might claim gestures that are recognized by any of the recognizers on this list.
   /// as the [ListView] will handle vertical drags gestures.
   ///
-  /// To get the [Playx3dScene] to claim the vertical drag gestures we can pass a vertical drag
+  /// To get the [Playx3dSceneView] to claim the vertical drag gestures we can pass a vertical drag
   /// gesture recognizer factory in [gestureRecognizers] e.g:
   ///
   /// ```dart
@@ -85,7 +123,7 @@ class Playx3dScene extends StatefulWidget {
   /// were not claimed by any other gesture recognizer.
   final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
 
-  const Playx3dScene(
+  const Playx3dSceneView(
       {super.key,
       this.models,
       this.scene,
@@ -100,7 +138,7 @@ class Playx3dScene extends StatefulWidget {
   }
 }
 
-class PlayxModelViewerState extends State<Playx3dScene> {
+class PlayxModelViewerState extends State<Playx3dSceneView> {
   final Map<String, dynamic> _creationParams = <String, dynamic>{};
   final Completer<Playx3dSceneController> _controller =
       Completer<Playx3dSceneController>();
@@ -148,12 +186,12 @@ class PlayxModelViewerState extends State<Playx3dScene> {
   }
 
   @override
-  void didUpdateWidget(Playx3dScene oldWidget) {
+  void didUpdateWidget(Playx3dSceneView oldWidget) {
     super.didUpdateWidget(oldWidget);
     _updateWidget(oldWidget);
   }
 
-  void _updateWidget(Playx3dScene? oldWidget) {
+  void _updateWidget(Playx3dSceneView? oldWidget) {
     _setupCreationParams();
     if (!listEquals(oldWidget?.models, widget.models) ||
         oldWidget?.scene != widget.scene ||

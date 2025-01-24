@@ -1,12 +1,12 @@
-import 'package:playx_3d_scene/src/models/model/animation.dart';
-import 'package:playx_3d_scene/src/models/model/glb_model.dart';
-import 'package:playx_3d_scene/src/models/model/gltf_model.dart';
-import 'package:playx_3d_scene/src/models/scene/geometry/position.dart';
-import 'package:playx_3d_scene/src/models/scene/geometry/size.dart';
-import 'package:playx_3d_scene/src/models/scene/geometry/rotation.dart';
+import './animation.dart';
+import './glb_model.dart';
+import './gltf_model.dart';
 import 'package:playx_3d_scene/src/models/scene/geometry/collidable.dart';
+import 'package:playx_3d_scene/src/models/scene/geometry/vectors.dart';
 
-import '../scene/geometry/collidable.dart';
+export './animation.dart';
+export './glb_model.dart';
+export './gltf_model.dart';
   
 /// represents base object of the 3d model to be rendered.
 ///
@@ -39,43 +39,44 @@ abstract class Model {
   /// Scale Factor of the model.
   /// Should be greater than 0.
   /// Defaults to 1.
-  PlayxSize? scale;
+  Vector3? scale;
 
   /// Do we have a collidable for this object (expecting to collide)
   /// For now this will create a box using the extents value
   Collidable? collidable;
 
-  ///Coordinate of center point position of the rendered model.
+  /// Coordinate of center point position of the rendered model.
   ///
   /// Defaults to ( x:0,y: 0,z: -4)
-  PlayxPosition? centerPosition;
+  Vector3? centerPosition;
 
-  ///Controls what animation should be played by the rendered model.
-  PlayxAnimation? animation;
+  /// Controls what animation should be played by the rendered model.
+  Animation? animation;
 
-    /// Quaternion rotation for the shape
-  PlayxRotation? rotation;
+  /// Quaternion rotation for the shape
+  Vector4? rotation;
 
-/// Variables for filament renderer upon shape creation
-bool receiveShadows;
+  /// Variables for filament renderer upon shape creation
+  bool receiveShadows;
 
-/// Variables for filament renderer upon shape creation
-bool castShadows;
+  /// Variables for filament renderer upon shape creation
+  bool castShadows;
 
-  Model(
-      {this.assetPath,
-      this.should_keep_asset_in_memory,
-        this.is_primary_to_instance_from,
-      this.url,
-      this.scale,
-      this.rotation,
-      this.collidable,
-      this.centerPosition,
-      this.animation,
-      this.global_guid,
-      required this.castShadows,
-      required this.receiveShadows,
-      this.name,});
+  Model({
+    this.assetPath,
+    this.should_keep_asset_in_memory,
+    this.is_primary_to_instance_from,
+    this.url,
+    this.scale,
+    this.rotation,
+    this.collidable,
+    this.centerPosition,
+    this.animation,
+    this.global_guid,
+    required this.castShadows,
+    required this.receiveShadows,
+    this.name,
+  });
 
   Map<String, dynamic> toJson() {
     if (this is GlbModel) {

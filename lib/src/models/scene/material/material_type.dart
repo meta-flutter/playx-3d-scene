@@ -3,59 +3,41 @@
 ///* https://google.github.io/filament/Materials.html
 enum MaterialType {
   /// Material value presented as color.
-  color,
+  color("COLOR"),
 
   /// Single boolean or Vector of 2 to 4 booleans
   ///used for material bool type, bool2,bool3,bool4 types
   /// Material value presented as bool.
-  bool,
+  bool("BOOL"),
 
   /// Material value presented as Vector of 2 to 4 booleans.
-  boolVector,
+  boolVector("BOOL_VECTOR"),
 
   /// Material value presented as float.
-  float,
+  float("FLOAT"),
 
   /// Material value presented as Vector of 2 to 4 booleans.
-  floatVector,
+  floatVector("FLOAT_VECTOR"),
 
   /// Material value presented as int.
-  int,
+  int("INT"),
 
   /// Material value presented as Vector of 2 to 4 booleans.
-  intVector,
+  intVector("INT_VECTOR"),
 
   /// Material value presented as 3x3 matrix.
-  mat3,
+  mat3("MAT3"),
 
   /// Material value presented as 4x4 matrix.
-  mat4,
+  mat4("MAT4"),
 
   /// Material value presented as texture.
-  texture;
+  texture("TEXTURE");
 
-  String toName() {
-    switch (this) {
-      case MaterialType.color:
-        return "COLOR";
-      case MaterialType.bool:
-        return "BOOL";
-      case MaterialType.boolVector:
-        return "BOOL_VECTOR";
-      case MaterialType.float:
-        return "FLOAT";
-      case MaterialType.floatVector:
-        return "FLOAT_VECTOR";
-      case MaterialType.int:
-        return "INT";
-      case MaterialType.intVector:
-        return "INT_VECTOR";
-      case MaterialType.mat3:
-        return "MAT3";
-      case MaterialType.mat4:
-        return "MAT4";
-      case MaterialType.texture:
-        return "TEXTURE";
-    }
-  }
+
+
+  final String value;
+  const MaterialType(this.value);
+
+  static MaterialType from(String value) => MaterialType.values.asNameMap()[value]!;
 }
