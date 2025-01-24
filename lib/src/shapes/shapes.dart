@@ -54,35 +54,36 @@ class Shape {
   /// Variables for filament renderer upon shape creation
   bool castShadows;
 
-  Shape(
-      {this.centerPosition,
-      this.normal,
-      this.material,
-      this.scale,
-      this.rotation,
-      this.collidable, 
-      this.global_guid,
-      this.name,
-      this.doubleSided = false,
-      this.cullingEnabled = true,
-      this.castShadows = false,
-      this.receiveShadows = false});
+  Shape({
+    this.centerPosition,
+    this.normal,
+    this.material,
+    this.scale,
+    this.rotation,
+    this.collidable, 
+    this.global_guid,
+    this.name,
+    this.doubleSided = false,
+    this.cullingEnabled = true,
+    this.castShadows = false,
+    this.receiveShadows = false,
+  });
 
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'global_guid' : global_guid,
-        'centerPosition': centerPosition?.toJson(),
-        'normal': normal?.toJson(),
-        'material': material?.toJson(),
-        'scale': scale?.toJson(),
-        'rotation': rotation?.toJson(),
-        'collidable': collidable?.toJson(),
-        'type': 0,
-        'doubleSided': doubleSided,
-        'cullingEnabled': cullingEnabled,
-        'receiveShadows': receiveShadows,
-        'castShadows': castShadows
-      };
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'name': name,
+    'global_guid' : global_guid,
+    'centerPosition': centerPosition?.toJson(),
+    'normal': normal?.toJson(),
+    'material': material?.toJson(),
+    'scale': scale?.toJson(),
+    'rotation': rotation?.toJson(),
+    'collidable': collidable?.toJson(),
+    'type': 0,
+    'doubleSided': doubleSided,
+    'cullingEnabled': cullingEnabled,
+    'receiveShadows': receiveShadows,
+    'castShadows': castShadows,
+  };
 
   @override
   String toString() {
@@ -90,13 +91,14 @@ class Shape {
   }
 
   @override
-  bool operator ==(Object other) {
+  bool operator ==(final Object other) {
     if (identical(this, other)) return true;
 
-    return other is Shape &&
-        other.centerPosition == centerPosition &&
-        other.normal == normal &&
-        other.material == material;
+    return
+      other is Shape &&
+      other.centerPosition == centerPosition &&
+      other.normal == normal &&
+      other.material == material;
   }
 
   @override

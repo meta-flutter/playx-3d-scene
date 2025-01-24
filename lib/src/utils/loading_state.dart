@@ -1,6 +1,6 @@
 import 'package:playx_3d_scene/src/model/model.dart';
 import 'package:playx_3d_scene/src/models/scene/scene.dart';
-import 'package:playx_3d_scene/src/models/shapes/shapes.dart';
+import 'package:playx_3d_scene/src/shapes/shapes.dart';
 
 /// Represents the state of a [Model]/[Scene]/[Shape] object
 enum LoadingState {

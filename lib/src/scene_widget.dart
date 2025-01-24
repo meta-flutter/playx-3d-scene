@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:playx_3d_scene/src/model/model.dart';
 import 'package:playx_3d_scene/src/models/scene/scene.dart';
-import 'package:playx_3d_scene/src/models/shapes/shapes.dart';
+import 'package:playx_3d_scene/src/shapes/shapes.dart';
 import 'package:playx_3d_scene/src/utils/result.dart';
 
 typedef Playx3dSceneCreatedCallback = void Function( Playx3dSceneController controller);
