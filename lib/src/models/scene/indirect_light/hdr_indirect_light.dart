@@ -3,19 +3,19 @@ import 'package:playx_3d_scene/src/models/scene/indirect_light/indirect_light.da
 /// An object that represents indirect light that is created from hdr file format.
 class HdrIndirectLight extends IndirectLight {
   /// creates a new indirect light from HDR file format from assets.
-  HdrIndirectLight.asset(String path, {super.intensity})
+  HdrIndirectLight.asset(final String path, {super.intensity})
       : super(assetPath: path);
 
   /// creates a new indirect light from HDR file format from url.
-  HdrIndirectLight.url(String url, {super.intensity}) : super(url: url);
+  HdrIndirectLight.url(final String url, {super.intensity}) : super(url: url);
 
   @override
-  Map<String, dynamic> toJson() => {
-        'assetPath': assetPath,
-        'url': url,
-        'intensity': intensity,
-        'lightType': 2
-      };
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'assetPath': assetPath,
+    'url': url,
+    'intensity': intensity,
+    'lightType': 2
+  };
 
   @override
   String toString() {
@@ -23,15 +23,13 @@ class HdrIndirectLight extends IndirectLight {
   }
 
   @override
-  bool operator ==(Object other) {
+  // ignore: hash_and_equals
+  bool operator ==(final Object other) {
     if (identical(this, other)) return true;
 
-    return other is HdrIndirectLight && super == other;
-  }
-
-  @override
-  int get hashCode {
-    final hash = super.hashCode;
-    return hash;
+    return
+      other is HdrIndirectLight &&
+      super == other
+    ;
   }
 }

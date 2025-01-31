@@ -42,11 +42,11 @@ abstract class IndirectLight {
     this.intensity,
   });
 
-  Map<String, dynamic> toJson() => {
-        'intensity': intensity,
-        'assetPath': assetPath,
-        'url': url,
-      };
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'intensity': intensity,
+    'assetPath': assetPath,
+    'url': url,
+  };
 
   @override
   String toString() {
@@ -54,13 +54,15 @@ abstract class IndirectLight {
   }
 
   @override
-  bool operator ==(Object other) {
+  bool operator ==(final Object other) {
     if (identical(this, other)) return true;
 
-    return other is IndirectLight &&
-        other.assetPath == assetPath &&
-        other.url == url &&
-        other.intensity == intensity;
+    return
+      other is IndirectLight &&
+      other.assetPath == assetPath &&
+      other.url == url &&
+      other.intensity == intensity
+    ;
   }
 
   @override

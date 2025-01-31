@@ -36,24 +36,25 @@ class DefaultIndirectLight extends IndirectLight {
   ///Specifies the rigid-body transformation to apply to the IBL.
   List<double>? rotation;
 
-  DefaultIndirectLight(
-      {super.intensity,
-      this.radianceBands,
-      this.radianceSh,
-      this.irradianceBands,
-      this.irradianceSh,
-      this.rotation});
+  DefaultIndirectLight({
+    super.intensity,
+    this.radianceBands,
+    this.radianceSh,
+    this.irradianceBands,
+    this.irradianceSh,
+    this.rotation,
+  });
 
   @override
-  Map<String, dynamic> toJson() => {
-        'intensity': intensity,
-        'radianceBands': radianceBands,
-        'radianceSh': radianceSh,
-        'irradianceBands': irradianceBands,
-        'irradianceSh': irradianceSh,
-        'rotation': rotation,
-        'lightType': 3
-      };
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'intensity': intensity,
+    'radianceBands': radianceBands,
+    'radianceSh': radianceSh,
+    'irradianceBands': irradianceBands,
+    'irradianceSh': irradianceSh,
+    'rotation': rotation,
+    'lightType': 3,
+  };
 
   @override
   String toString() {
@@ -61,25 +62,29 @@ class DefaultIndirectLight extends IndirectLight {
   }
 
   @override
-  bool operator ==(Object other) {
+  bool operator ==(final Object other) {
     if (identical(this, other)) return true;
 
-    return other is DefaultIndirectLight &&
-        other.radianceBands == radianceBands &&
-        other.radianceSh == radianceSh &&
-        other.irradianceBands == irradianceBands &&
-        other.irradianceSh == irradianceSh &&
-        other.rotation == rotation &&
-        super == other;
+    return
+      other is DefaultIndirectLight &&
+      other.radianceBands == radianceBands &&
+      other.radianceSh == radianceSh &&
+      other.irradianceBands == irradianceBands &&
+      other.irradianceSh == irradianceSh &&
+      other.rotation == rotation &&
+      super == other
+    ;
   }
 
   @override
   int get hashCode {
-    return radianceBands.hashCode ^
-        radianceSh.hashCode ^
-        irradianceBands.hashCode ^
-        irradianceSh.hashCode ^
-        rotation.hashCode ^
-        super.hashCode;
+    return
+      radianceBands.hashCode ^
+      radianceSh.hashCode ^
+      irradianceBands.hashCode ^
+      irradianceSh.hashCode ^
+      rotation.hashCode ^
+      super.hashCode
+    ;
   }
 }

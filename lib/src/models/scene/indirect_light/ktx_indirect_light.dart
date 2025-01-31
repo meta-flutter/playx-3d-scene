@@ -5,19 +5,19 @@ import 'package:playx_3d_scene/src/models/scene/indirect_light/indirect_light.da
 /// To extract indirect light from images, Use the cmgen tool to generate the indirect light data as ktx file format.
 class KtxIndirectLight extends IndirectLight {
   /// creates a new indirect light from ktx file format from assets.
-  KtxIndirectLight.asset(String path, {super.intensity})
+  KtxIndirectLight.asset(final String path, {super.intensity})
       : super(assetPath: path);
 
   /// creates a new indirect light from ktx file format from url.
-  KtxIndirectLight.url(String url, {super.intensity}) : super(url: url);
+  KtxIndirectLight.url(final String url, {super.intensity}) : super(url: url);
 
   @override
-  Map<String, dynamic> toJson() => {
-        'assetPath': assetPath,
-        'url': url,
-        'intensity': intensity,
-        'lightType': 1
-      };
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'assetPath': assetPath,
+    'url': url,
+    'intensity': intensity,
+    'lightType': 1,
+  };
 
   @override
   String toString() {
@@ -25,15 +25,13 @@ class KtxIndirectLight extends IndirectLight {
   }
 
   @override
-  bool operator ==(Object other) {
+  // ignore: hash_and_equals
+  bool operator ==(final Object other) {
     if (identical(this, other)) return true;
 
-    return other is KtxIndirectLight && super == other;
-  }
-
-  @override
-  int get hashCode {
-    final hash = super.hashCode;
-    return hash;
+    return
+      other is KtxIndirectLight &&
+      super == other
+    ;
   }
 }
