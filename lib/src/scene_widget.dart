@@ -10,23 +10,23 @@ import 'package:playx_3d_scene/src/models/scene/scene.dart';
 import 'package:playx_3d_scene/src/shapes/shapes.dart';
 import 'package:playx_3d_scene/src/utils/result.dart';
 
-typedef Playx3dSceneCreatedCallback = void Function( Playx3dSceneController controller);
+typedef SceneCreatedCallback = void Function( SceneController controller);
 const String _channelName = "io.sourcya.playx.3d.scene.channel";
 const String _viewType = "${_channelName}_3d_scene";
 
 
-/// An object which helps facilitate communication between the [Playx3dSceneView] Widget
+/// An object which helps facilitate communication between the [SceneView] Widget
 /// and android side model viewer based on Filament.
 /// 
 /// It provides utility methods to update the viewer, change the animation environment, lightening, etc.
 /// Each controller is unique for each widget.
-class Playx3dSceneController {
+class SceneController {
   int id;
   late MethodChannel _channel;
 
   static const String _channelName = "io.sourcya.playx.3d.scene.channel";
 
-  Playx3dSceneController({required this.id}) {
+  SceneController({required this.id}) {
     _channel = MethodChannel('${_channelName}_$id');
   }
 
@@ -63,7 +63,7 @@ const String _updatePlayx3dSceneModelKey = "UPDATE_PLAYX_3D_SCENE_MODEL_KEY";
 const String _updatePlayx3dSceneShapesKey = "UPDATE_PLAYX_3D_SCENE_SHAPES_KEY";
 
 
-class Playx3dSceneView extends StatefulWidget {
+class SceneView extends StatefulWidget {
   /// Model to be rendered.
   /// provide details about the model to be rendered.
   /// like asset path, url, animation, etc.
@@ -86,12 +86,12 @@ class Playx3dSceneView extends StatefulWidget {
   /// [Plane]
   final List<Shape>? shapes;
 
-  /// onCreated callback provides an object of [Playx3dSceneController] when the native view is created.
+  /// onCreated callback provides an object of [SceneController] when the native view is created.
   /// This controller provides utility methods to update the viewer, change the animation environment, lightening, etc.
   /// The onCreated callback is called once when the native view is created and provide unique controller to each widget.
   /// See also:
-  /// [Playx3dSceneController]
-  final Playx3dSceneCreatedCallback? onCreated;
+  /// [SceneController]
+  final SceneCreatedCallback? onCreated;
 
   /// Which gestures should be consumed by the view.
   ///
@@ -99,7 +99,7 @@ class Playx3dSceneView extends StatefulWidget {
   /// it might claim gestures that are recognized by any of the recognizers on this list.
   /// as the [ListView] will handle vertical drags gestures.
   ///
-  /// To get the [Playx3dSceneView] to claim the vertical drag gestures we can pass a vertical drag
+  /// To get the [SceneView] to claim the vertical drag gestures we can pass a vertical drag
   /// gesture recognizer factory in [gestureRecognizers] e.g:
   ///
   /// ```dart
@@ -123,7 +123,7 @@ class Playx3dSceneView extends StatefulWidget {
   /// were not claimed by any other gesture recognizer.
   final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
 
-  const Playx3dSceneView(
+  const SceneView(
       {super.key,
       this.models,
       this.scene,
@@ -138,10 +138,10 @@ class Playx3dSceneView extends StatefulWidget {
   }
 }
 
-class PlayxModelViewerState extends State<Playx3dSceneView> {
+class PlayxModelViewerState extends State<SceneView> {
   final Map<String, dynamic> _creationParams = <String, dynamic>{};
-  final Completer<Playx3dSceneController> _controller =
-      Completer<Playx3dSceneController>();
+  final Completer<SceneController> _controller =
+      Completer<SceneController>();
 
   PlayxModelViewerState();
 
@@ -177,7 +177,7 @@ class PlayxModelViewerState extends State<Playx3dSceneView> {
   }
 
   void _onPlatformViewCreated(int id) {
-    final controller = Playx3dSceneController(id: id);
+    final controller = SceneController(id: id);
 
     _controller.complete(controller);
     if (widget.onCreated != null) {
@@ -186,12 +186,12 @@ class PlayxModelViewerState extends State<Playx3dSceneView> {
   }
 
   @override
-  void didUpdateWidget(Playx3dSceneView oldWidget) {
+  void didUpdateWidget(SceneView oldWidget) {
     super.didUpdateWidget(oldWidget);
     _updateWidget(oldWidget);
   }
 
-  void _updateWidget(Playx3dSceneView? oldWidget) {
+  void _updateWidget(SceneView? oldWidget) {
     _setupCreationParams();
     if (!listEquals(oldWidget?.models, widget.models) ||
         oldWidget?.scene != widget.scene ||
