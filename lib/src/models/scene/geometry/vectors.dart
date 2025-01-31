@@ -11,12 +11,13 @@ typedef Rotation = Vector4;
 class Vector3 {
   double x, y, z;
 
-  Vector3({this.x = 0, this.y = 0, this.z = 0});
+  Vector3(this.x, this.y, this.z);
+  Vector3.only({this.x = 0, this.y = 0, this.z = 0});
 
-  Vector3.x(final double x) : this(x: x);
-  Vector3.y(final double y) : this(y: y);
-  Vector3.z(final double z) : this(z: z);
-  Vector3.all(final double value) : this(
+  Vector3.x(final double x) : this.only(x: x);
+  Vector3.y(final double y) : this.only(y: y);
+  Vector3.z(final double z) : this.only(z: z);
+  Vector3.all(final double value) : this.only(
     x: value, y: value, z: value
   );
 
