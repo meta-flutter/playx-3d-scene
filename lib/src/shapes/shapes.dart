@@ -27,7 +27,7 @@ class Shape {
   Vector3? normal;
 
   /// material to be used for the shape.
-  PlayxMaterial? material;
+  Material? material;
 
   /// Quaternion rotation for the shape
   Vector4? rotation;
