@@ -84,15 +84,15 @@ void crissCross(double deltaTime, double speed, FilamentViewApi filamentView) {
     }
 
     // Compute new position using lerp
-    light.originX = lerp(light.startX, light.oppositeX, light.t);
-    light.originZ = lerp(light.startZ, light.oppositeZ, light.t);
+    light.origin.x = lerp(light.startX, light.oppositeX, light.t);
+    light.origin.z = lerp(light.startZ, light.oppositeZ, light.t);
 
     // Apply the new transform
     filamentView.changeLightTransformByGUID(
       light.guid,
-      light.originX,
-      light.originY,
-      light.originZ,
+      light.origin.x,
+      light.origin.y,
+      light.origin.z,
       0,
       -1,
       0,

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Animation;
 import 'package:playx_3d_scene/playx_3d_scene.dart';
 import 'package:uuid/uuid.dart';
 import 'material_helpers.dart';
@@ -19,11 +19,11 @@ const String foxAsset = "assets/models/Fox.glb";
 ////////////////////////////////////////////////////////////////////////
 GlbModel poGetModel(
     String szAsset,
-    PlayxPosition position,
-    PlayxSize scale,
-    PlayxRotation rotation,
+    Vector3 position,
+    Vector3 scale,
+    Vector4 rotation,
     Collidable? collidable,
-    PlayxAnimation? animationInfo,
+    Animation? animationInfo,
     bool bReceiveShadows,
     bool bCastShadows,
     String overrideGUID,
@@ -46,7 +46,7 @@ GlbModel poGetModel(
 
 ////////////////////////////////////////////////////////////////////////////////
 List<String> thingsWeCanChangeParamsOn = [];
-Shape poCreateCube(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
+Shape poCreateCube(Vector3 pos, Vector3 scale, Vector3 sizeExtents,
     Color? colorOveride) {
   String uniqueGuid = const Uuid().v4();
   // Just to show off changing material params during runtime.
@@ -69,7 +69,7 @@ Shape poCreateCube(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Shape poCreateSphere(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
+Shape poCreateSphere(Vector3 pos, Vector3 scale, Vector3 sizeExtents,
     int stacks, int slices, Color? colorOveride) {
   return Sphere(
       centerPosition: pos,
@@ -86,7 +86,7 @@ Shape poCreateSphere(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Shape poCreatePlane(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents) {
+Shape poCreatePlane(Vector3 pos, Vector3 scale, Vector3 sizeExtents) {
   return Plane(
       doubleSided: true,
       size: sizeExtents,
@@ -97,9 +97,9 @@ Shape poCreatePlane(PlayxPosition pos, PlayxSize scale, PlayxSize sizeExtents) {
       collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
 
       // facing UP
-      rotation: PlayxRotation(x: 0, y: .7071, z: .7071, w: 0),
+      rotation: Vector4(x: 0, y: .7071, z: .7071, w: 0),
       // identity
-      // rotation: PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      // rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
       material: poGetTexturedMaterial());
   //material: poGetLitMaterialWithRandomValues());
 }
@@ -111,8 +111,12 @@ List<Shape> poCreateLineGrid() {
   for (double i = -countExtents; i <= countExtents; i += 2) {
     for (int j = 0; j < 1; j++) {
       for (double k = -countExtents; k <= countExtents; k += 2) {
-        itemsToReturn.add(poCreateCube(PlayxPosition(x: i, y: 0, z: k),
-            PlayxSize(x: 1, y: 1, z: 1), PlayxSize(x: 1, y: 1, z: 1), null));
+        itemsToReturn.add(poCreateCube(
+          Vector3.only(x: i, y: 0, z: k),
+          Vector3.only(x: 1, y: 1, z: 1),
+          Vector3.only(x: 1, y: 1, z: 1),
+          null
+        ));
       }
     }
   }
@@ -126,29 +130,59 @@ List<Shape> poGetScenesShapes() {
 
   List<Shape> itemsToReturn = [];
 
-  itemsToReturn.add(poCreateCube(PlayxPosition(x: 3, y: 1, z: 3),
-      PlayxSize(x: 2, y: 2, z: 2), PlayxSize(x: 2, y: 2, z: 2), null));
+  itemsToReturn.add(poCreateCube(
+    Vector3.only(x: 3, y: 1, z: 3),
+    Vector3.only(x: 2, y: 2, z: 2),
+    Vector3.only(x: 2, y: 2, z: 2),
+    null,
+  ));
 
-  itemsToReturn.add(poCreateCube(PlayxPosition(x: 0, y: 1, z: 3),
-      PlayxSize(x: .1, y: 1, z: .1), PlayxSize(x: 1, y: 1, z: 1), null));
+  itemsToReturn.add(poCreateCube(
+    Vector3.only(x: 0, y: 1, z: 3),
+    Vector3.only(x: .1, y: 1, z: .1),
+    Vector3.only(x: 1, y: 1, z: 1), 
+    null,
+  ));
 
-  itemsToReturn.add(poCreateCube(PlayxPosition(x: -3, y: 1, z: 3),
-      PlayxSize(x: .5, y: .5, z: .5), PlayxSize(x: 1, y: 1, z: 1), null));
+  itemsToReturn.add(poCreateCube(
+    Vector3.only(x: -3, y: 1, z: 3),
+    Vector3.only(x: .5, y: .5, z: .5),
+    Vector3.only(x: 1, y: 1, z: 1),
+    null,
+  ));
 
-  itemsToReturn.add(poCreateSphere(PlayxPosition(x: 3, y: 1, z: -3),
-      PlayxSize(x: 1, y: 1, z: 1), PlayxSize(x: 1, y: 1, z: 1), 11, 5, null));
+  itemsToReturn.add(poCreateSphere(
+    Vector3.only(x: 3, y: 1, z: -3),
+    Vector3.only(x: 1, y: 1, z: 1),
+    Vector3.only(x: 1, y: 1, z: 1),
+    11, 5, null,
+  ));
 
-  itemsToReturn.add(poCreateSphere(PlayxPosition(x: 0, y: 1, z: -3),
-      PlayxSize(x: 1, y: 1, z: 1), PlayxSize(x: 1, y: 1, z: 1), 20, 20, null));
+  itemsToReturn.add(poCreateSphere(
+    Vector3.only(x: 0, y: 1, z: -3),
+    Vector3.only(x: 1, y: 1, z: 1),
+    Vector3.only(x: 1, y: 1, z: 1),
+    20, 20, null,
+  ));
 
-  itemsToReturn.add(poCreateSphere(PlayxPosition(x: -3, y: 1, z: -3),
-      PlayxSize(x: 1, y: .5, z: 1), PlayxSize(x: 1, y: 1, z: 1), 20, 20, null));
+  itemsToReturn.add(poCreateSphere(
+    Vector3.only(x: -3, y: 1, z: -3),
+    Vector3.only(x: 1, y: .5, z: 1),
+    Vector3.only(x: 1, y: 1, z: 1),
+    20, 20, null,
+  ));
 
-  itemsToReturn.add(poCreatePlane(PlayxPosition(x: -5, y: 1, z: 0),
-      PlayxSize(x: 1, y: 1, z: 1), PlayxSize(x: 2, y: 1, z: 2)));
+  itemsToReturn.add(poCreatePlane(
+    Vector3.only(x: -5, y: 1, z: 0),
+    Vector3.only(x: 1, y: 1, z: 1),
+    Vector3.only(x: 2, y: 1, z: 2),
+  ));
 
-  itemsToReturn.add(poCreatePlane(PlayxPosition(x: 5, y: 1, z: 0),
-      PlayxSize(x: 4, y: 1, z: 4), PlayxSize(x: 4, y: 1, z: 4)));
+  itemsToReturn.add(poCreatePlane(
+    Vector3.only(x: 5, y: 1, z: 0),
+    Vector3.only(x: 4, y: 1, z: 4),
+    Vector3.only(x: 4, y: 1, z: 4)
+  ));
 
   return itemsToReturn;
 }
@@ -156,18 +190,17 @@ List<Shape> poGetScenesShapes() {
 ////////////////////////////////////////////////////////////////////////////////
 class MovingDemoLight {
   String guid;
-  double originX, originY, originZ;
-  double directionX, directionY, directionZ;
+  Vector3 origin;
+  Vector3 direction;
 
   String phase = "moving"; // 'toCenter' or 'toOpposite'
   double startX = 0, startZ = 0;
   double oppositeX = 0, oppositeZ = 0;
   double t = 0;
 
-  MovingDemoLight(this.guid, this.originX, this.originY, this.originZ,
-      this.directionX, this.directionY, this.directionZ) {
-    startX = originX;
-    startZ = originZ;
+  MovingDemoLight(this.guid, this.origin,this.direction) {
+    startX = origin.x;
+    startZ = origin.z;
 
     // Compute opposite positions using the formula
     oppositeX = -startX;
@@ -176,7 +209,7 @@ class MovingDemoLight {
 
   @override
   String toString() {
-    return 'Light(guid: $guid, origin: ($originX, $originY, $originZ), direction: ($directionX, $directionY, $directionZ))';
+    return 'Light(guid: $guid, origin: $origin, direction: $direction)';
   }
 }
 
@@ -197,7 +230,7 @@ List<Light> poGetSceneLightsList() {
   String guid = const Uuid().v4();
 
   lightsWeCanChangeParamsOn
-      .add(MovingDemoLight(guid, -15.0, 5.0, -15.0, 0.0, yDirection, 0.0));
+      .add(MovingDemoLight(guid, Position(-15.0, 5.0, -15.0), Direction(0.0, yDirection, 0.0)));
 
   itemsToReturn.add(Light(
       global_guid: guid,
@@ -210,14 +243,14 @@ List<Light> poGetSceneLightsList() {
       spotLightConeInner: spotLightConeInnter,
       spotLightConeOuter: spotLightConeOuter,
       falloffRadius: fallOffRadius,
-      position: PlayxPosition(x: -15, y: 5, z: -15),
+      position: Vector3.only(x: -15, y: 5, z: -15),
       // should be a unit vector
-      direction: PlayxDirection(x: 0, y: yDirection, z: 0)));
+      direction: Vector3.only(x: 0, y: yDirection, z: 0)));
 
   guid = const Uuid().v4();
 
   lightsWeCanChangeParamsOn
-      .add(MovingDemoLight(guid, 15.0, 5.0, 15.0, 0.0, yDirection, 0.0));
+      .add(MovingDemoLight(guid, Position(15.0, 5.0, 15.0), Direction(0.0, yDirection, 0.0)));
 
   itemsToReturn.add(Light(
       global_guid: guid,
@@ -230,14 +263,14 @@ List<Light> poGetSceneLightsList() {
       spotLightConeInner: spotLightConeInnter,
       spotLightConeOuter: spotLightConeOuter,
       falloffRadius: fallOffRadius,
-      position: PlayxPosition(x: 15, y: 5, z: 15),
+      position: Vector3.only(x: 15, y: 5, z: 15),
       // should be a unit vector
-      direction: PlayxDirection(x: 0, y: yDirection, z: 0)));
+      direction: Vector3.only(x: 0, y: yDirection, z: 0)));
 
   guid = const Uuid().v4();
 
   lightsWeCanChangeParamsOn
-      .add(MovingDemoLight(guid, -15.0, 5.0, 15.0, 0.0, yDirection, 0.0));
+      .add(MovingDemoLight(guid, Position(-15.0, 5.0, 15.0), Direction(0.0, yDirection, 0.0)));
 
   itemsToReturn.add(Light(
       global_guid: guid,
@@ -250,14 +283,14 @@ List<Light> poGetSceneLightsList() {
       spotLightConeInner: spotLightConeInnter,
       spotLightConeOuter: spotLightConeOuter,
       falloffRadius: fallOffRadius,
-      position: PlayxPosition(x: -15, y: 5, z: 15),
+      position: Vector3.only(x: -15, y: 5, z: 15),
       // should be a unit vector
-      direction: PlayxDirection(x: 0, y: yDirection, z: 0)));
+      direction: Vector3.only(x: 0, y: yDirection, z: 0)));
 
   guid = const Uuid().v4();
 
   lightsWeCanChangeParamsOn
-      .add(MovingDemoLight(guid, 15.0, 5.0, -15.0, 0.0, yDirection, 0.0));
+      .add(MovingDemoLight(guid, Position(15.0, 5.0, -15.0), Direction(0.0, yDirection, 0.0)));
 
   itemsToReturn.add(Light(
       global_guid: guid,
@@ -270,9 +303,9 @@ List<Light> poGetSceneLightsList() {
       spotLightConeInner: spotLightConeInnter,
       spotLightConeOuter: spotLightConeOuter,
       falloffRadius: fallOffRadius,
-      position: PlayxPosition(x: 15, y: 5, z: -15),
+      position: Vector3.only(x: 15, y: 5, z: -15),
       // should be a unit vector
-      direction: PlayxDirection(x: 0, y: yDirection, z: 0)));
+      direction: Vector3.only(x: 0, y: yDirection, z: 0)));
 
   return itemsToReturn;
 }
@@ -289,9 +322,9 @@ List<Model> poGetModelList() {
   // 'primary object'
   itemsToReturn.add(poGetModel(
       sequoiaAsset,
-      PlayxPosition(x: 0, y: 0, z: 0),
-      PlayxSize(x: 1, y: 1, z: 1),
-      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      Vector3.only(x: 0, y: 0, z: 0),
+      Vector3.only(x: 1, y: 1, z: 1),
+      Vector4(x: 0, y: 0, z: 0, w: 1),
       null,
       null,
       true,
@@ -302,9 +335,9 @@ List<Model> poGetModelList() {
 
   itemsToReturn.add(poGetModel(
       sequoiaAsset,
-      PlayxPosition(x: 0, y: 0, z: 0),
-      PlayxSize(x: 1, y: 1, z: 1),
-      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      Vector3.only(x: 0, y: 0, z: 0),
+      Vector3.only(x: 1, y: 1, z: 1),
+      Vector4(x: 0, y: 0, z: 0, w: 1),
       Collidable(isStatic: false, shouldMatchAttachedObject: true),
       null,
       true,
@@ -315,9 +348,9 @@ List<Model> poGetModelList() {
 
   itemsToReturn.add(poGetModel(
       garageAsset,
-      PlayxPosition(x: 0, y: 0, z: -16),
-      PlayxSize(x: 1, y: 1, z: 1),
-      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      Vector3.only(x: 0, y: 0, z: -16),
+      Vector3.only(x: 1, y: 1, z: 1),
+      Vector4(x: 0, y: 0, z: 0, w: 1),
       null,
       null,
       false,
@@ -328,11 +361,11 @@ List<Model> poGetModelList() {
 
   itemsToReturn.add(poGetModel(
       foxAsset,
-      PlayxPosition(x: 0, y: 0, z: 0),
-      PlayxSize(x: 1, y: 1, z: 1),
-      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      Vector3.only(x: 0, y: 0, z: 0),
+      Vector3.only(x: 1, y: 1, z: 1),
+      Vector4(x: 0, y: 0, z: 0, w: 1),
       null,
-      PlayxAnimation.byIndex(0, autoPlay: true),
+      Animation.byIndex(0, autoPlay: true),
       true,
       true,
       const Uuid().v4(),
@@ -341,11 +374,11 @@ List<Model> poGetModelList() {
 
   itemsToReturn.add(poGetModel(
       foxAsset,
-      PlayxPosition(x: 1, y: 0, z: 4),
-      PlayxSize(x: 0.04, y: 0.04, z: 0.04),
-      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      Vector3.only(x: 1, y: 0, z: 4),
+      Vector3.only(x: 0.04, y: 0.04, z: 0.04),
+      Vector4(x: 0, y: 0, z: 0, w: 1),
       null,
-      PlayxAnimation.byIndex(0, autoPlay: true),
+      Animation.byIndex(0, autoPlay: true),
       true,
       true,
       const Uuid().v4(),
@@ -354,11 +387,11 @@ List<Model> poGetModelList() {
 
   itemsToReturn.add(poGetModel(
       foxAsset,
-      PlayxPosition(x: -1, y: 0, z: 4),
-      PlayxSize(x: 0.04, y: 0.04, z: 0.04),
-      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      Vector3.only(x: -1, y: 0, z: 4),
+      Vector3.only(x: 0.04, y: 0.04, z: 0.04),
+      Vector4(x: 0, y: 0, z: 0, w: 1),
       null,
-      PlayxAnimation.byIndex(1, autoPlay: true, notifyOfAnimationEvents: true),
+      Animation.byIndex(1, autoPlay: true, notifyOfAnimationEvents: true),
       true,
       true,
       const Uuid().v4(),
@@ -369,9 +402,9 @@ List<Model> poGetModelList() {
   for (int i = 0; i < 10; i++) {
     itemsToReturn.add(poGetModel(
         sequoiaAsset,
-        PlayxPosition(x: -40, y: 0, z: i * 5 - 25),
-        PlayxSize(x: 1, y: 1, z: 1),
-        PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+        Vector3.only(x: -40, y: 0, z: i * 5 - 25),
+        Vector3.only(x: 1, y: 1, z: 1),
+        Vector4(x: 0, y: 0, z: 0, w: 1),
         null,
         null,
         true,
@@ -383,9 +416,9 @@ List<Model> poGetModelList() {
 
   itemsToReturn.add(poGetModel(
       roadAsset,
-      PlayxPosition(x: -40, y: 0, z: 0),
-      PlayxSize(x: .4, y: .1, z: .2),
-      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      Vector3.only(x: -40, y: 0, z: 0),
+      Vector3.only(x: .4, y: .1, z: .2),
+      Vector4(x: 0, y: 0, z: 0, w: 1),
       null,
       null,
       true,
@@ -399,9 +432,9 @@ List<Model> poGetModelList() {
 
   itemsToReturn.add(poGetModel(
       radarConeAsset,
-      PlayxPosition(x: -42.1, y: 1, z: 0),
-      PlayxSize(x: 4, y: 1, z: 3),
-      PlayxRotation(x: 0, y: 0, z: 0, w: 1),
+      Vector3.only(x: -42.1, y: 1, z: 0),
+      Vector3.only(x: 4, y: 1, z: 3),
+      Vector4(x: 0, y: 0, z: 0, w: 1),
       null,
       null,
       false,
@@ -412,9 +445,9 @@ List<Model> poGetModelList() {
 
   itemsToReturn.add(poGetModel(
       radarSegmentAsset,
-      PlayxPosition(x: 0, y: 0, z: 0),
-      PlayxSize(x: 1, y: 1, z: 1),
-      PlayxRotation(x: 0.0, y: 0, z: 0, w: 1),
+      Vector3.only(x: 0, y: 0, z: 0),
+      Vector3.only(x: 1, y: 1, z: 1),
+      Vector4(x: 0.0, y: 0, z: 0, w: 1),
       null,
       null,
       true,
@@ -428,9 +461,9 @@ List<Model> poGetModelList() {
 
     itemsToReturn.add(poGetModel(
         radarSegmentAsset,
-        PlayxPosition(x: -42.2, y: 0, z: 0),
-        PlayxSize(x: 0, y: 0, z: 0),
-        PlayxRotation(x: 0.7071, y: 0, z: 0.7071, w: 0),
+        Vector3.only(x: -42.2, y: 0, z: 0),
+        Vector3.only(x: 0, y: 0, z: 0),
+        Vector4(x: 0.7071, y: 0, z: 0.7071, w: 0),
         null,
         null,
         true,
@@ -483,7 +516,7 @@ Light poGetDefaultPointLight(Color directLightColor, double intensity) {
       spotLightConeInner: 1,
       spotLightConeOuter: 10,
       falloffRadius: 300.1, // what base is this in? meters?
-      position: PlayxPosition(x: 0, y: 5, z: 1),
+      position: Vector3.only(x: 0, y: 5, z: 1),
       // should be a unit vector
-      direction: PlayxDirection(x: 0, y: 1, z: 0));
+      direction: Vector3.only(x: 0, y: 1, z: 0));
 }

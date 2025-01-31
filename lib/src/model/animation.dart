@@ -41,7 +41,7 @@ class Animation {
 
      @override
      String toString() =>
-         'PlayxAnimation(index: $index, autoPlay: $autoPlay, loop: $loop, resetToTPoseOnReset: $resetToTPoseOnReset, playbackSpeed: $playbackSpeed, notifyOfAnimationEvents: $notifyOfAnimationEvents)';
+         'Animation(index: $index, autoPlay: $autoPlay, loop: $loop, resetToTPoseOnReset: $resetToTPoseOnReset, playbackSpeed: $playbackSpeed, notifyOfAnimationEvents: $notifyOfAnimationEvents)';
 
      @override
      bool operator ==(Object other) {

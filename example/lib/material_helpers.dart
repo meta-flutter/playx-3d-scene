@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Material, Texture;
 import 'package:playx_3d_scene/playx_3d_scene.dart';
 import 'dart:math';
 import 'utils.dart';
@@ -7,8 +7,8 @@ const String litMat = "assets/materials/lit.filamat";
 const String texturedMat = "assets/materials/textured_pbr.filamat";
 
 ////////////////////////////////////////////////////////////////////////
-PlayxMaterial poGetLitMaterial(Color? colorOveride) {
-  return PlayxMaterial.asset(
+Material poGetLitMaterial(Color? colorOveride) {
+  return Material.asset(
     litMat,
     //usually the material file contains values for these properties,
     //but if we want to customize it we can like that.
@@ -25,10 +25,10 @@ PlayxMaterial poGetLitMaterial(Color? colorOveride) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-PlayxMaterial poGetLitMaterialWithRandomValues() {
+Material poGetLitMaterialWithRandomValues() {
   Random random = Random();
 
-  return PlayxMaterial.asset(
+  return Material.asset(
     litMat,
     //usually the material file contains values for these properties,
     //but if we want to customize it we can like that.
@@ -50,29 +50,29 @@ MaterialParameter poGetRandomColorMaterialParam() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-PlayxMaterial poGetTexturedMaterial() {
-  return PlayxMaterial.asset(texturedMat, parameters: [
+Material poGetTexturedMaterial() {
+  return Material.asset(texturedMat, parameters: [
     MaterialParameter.texture(
-      value: PlayxTexture.asset(
+      value: Texture.asset(
         "assets/materials/texture/floor_basecolor.png",
         type: TextureType.color,
-        sampler: PlayxTextureSampler(anisotropy: 8),
+        sampler: TextureSampler(anisotropy: 8),
       ),
       name: "baseColor",
     ),
     MaterialParameter.texture(
-      value: PlayxTexture.asset(
+      value: Texture.asset(
         "assets/materials/texture/floor_normal.png",
         type: TextureType.normal,
-        sampler: PlayxTextureSampler(anisotropy: 8),
+        sampler: TextureSampler(anisotropy: 8),
       ),
       name: "normal",
     ),
     MaterialParameter.texture(
-      value: PlayxTexture.asset(
+      value: Texture.asset(
         "assets/materials/texture/floor_ao_roughness_metallic.png",
         type: TextureType.data,
-        sampler: PlayxTextureSampler(anisotropy: 8),
+        sampler: TextureSampler(anisotropy: 8),
       ),
       name: "aoRoughnessMetallic",
     ),
