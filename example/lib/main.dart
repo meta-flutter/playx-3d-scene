@@ -27,8 +27,7 @@ void main() {
   runZonedGuarded<Future<void>>(() async {
     runApp(const MyApp());
   }, (Object error, StackTrace stack) {
-    stdout.write('runZonedGuarded error caught error: $error');
-    stdout.write('runZonedGuarded error caught stack: $stack');
+    stdout.write('runZonedGuarded error caught error: $error\n$stack');
   });
 }
 
@@ -48,7 +47,7 @@ class _MyAppState extends State<MyApp> {
   final CollisionEventChannel _collisionEventChannel = CollisionEventChannel();
   final FrameEventChannel _frameEventChannel = FrameEventChannel();
 
-  late Playx3dSceneController poController;
+  late SceneController poController;
 
   // Point light controls
   Color _directLightColor = Colors.white;
@@ -72,7 +71,7 @@ class _MyAppState extends State<MyApp> {
 
   // ------------------------------------------------------------------------
   //  field to store the scene widget so it's created only once
-  late final Playx3dScene _sceneWidget;
+  late final SceneView _sceneWidget;
   // ------------------------------------------------------------------------
 
   ////////////////////////////////////////////////////////////////////////
@@ -411,18 +410,18 @@ class _MyAppState extends State<MyApp> {
             sensitivity: 150,
           ),
 
-          /*orbitHomePosition: PlayxPosition(x: -40, y: 5, z: 0),
-          targetPosition: PlayxPosition(x: -50.0, y: 0.0, z: 0.0),
+          /*orbitHomePosition: Position.only(x: -40, y: 5, z: 0),
+          targetPosition: Position.only(x: -50.0, y: 0.0, z: 0.0),
           // This is used as your extents when orbiting around an object
           // when the camera is set to inertiaAndGestures
-          flightStartPosition: PlayxPosition(x: -25.0, y: 15.0, z: 0),
+          flightStartPosition: Position.only(x: -25.0, y: 15.0, z: 0),
 */
-          orbitHomePosition: PlayxPosition(x: 0, y: 3.0, z: 0),
-          targetPosition: PlayxPosition(x: 0.0, y: 0.0, z: 0.0),
+          orbitHomePosition: Position.only(x: 0, y: 3.0, z: 0),
+          targetPosition: Position.only(x: 0.0, y: 0.0, z: 0.0),
           // This is used as your extents when orbiting around an object
           // when the camera is set to inertiaAndGestures
-          flightStartPosition: PlayxPosition(x: 8.0, y: 3.0, z: 8.0),
-          upVector: PlayxPosition(x: 0.0, y: 1.0, z: 0.0),
+          flightStartPosition: Position.only(x: 8.0, y: 3.0, z: 8.0),
+          upVector: Position.only(x: 0.0, y: 1.0, z: 0.0),
           // how much ongoing rotation velocity effects, default 0.05
           inertia_rotationSpeed: 0.05,
           // 0-1 how much of a flick distance / delta gets multiplied, default 0.2
@@ -439,12 +438,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  Playx3dScene poGetPlayx3dScene() {
-    return Playx3dScene(
+  SceneView poGetPlayx3dScene() {
+    return SceneView(
       models: poGetModelList(),
       scene: poGetScene(),
       shapes: poGetScenesShapes(),
-      onCreated: (Playx3dSceneController controller) async {
+      onCreated: (SceneController controller) async {
         logToStdOut('poGetPlayx3dScene onCreated');
 
         poController = controller;

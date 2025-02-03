@@ -91,7 +91,7 @@ Basic usage to create 3d model from glb file with skybox and indirect lighting f
 ```dart  
  Playx3dScene(
     model: GlbModel.asset("assets/models/Fox.glb",
-      animation: PlayxAnimation.byIndex(0, autoPlay: true),
+      animation: Animation.byIndex(0, autoPlay: true),
     ),
     scene: Scene(
       skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
@@ -124,9 +124,9 @@ To load GLB model file from assets we can use :
 Playx3dScene(  
    model: GlbModel.asset(    
       "assets/models/Fox.glb",  // load glb from assets path  
-       animation: PlayxAnimation.byIndex(0, autoPlay: true),  //controls animation   
+       animation: Animation.byIndex(0, autoPlay: true),  //controls animation   
        fallback: GlbModel.asset("assets/models/Fox.glb"),  // fallback model if error happened  
-       centerPosition: PlayxPosition(x: 0, y: 0, z: -4),  //center position of model   
+       centerPosition: Vector3(x: 0, y: 0, z: -4),  //center position of model   
        scale: 1.0,  // scale of model defaults to 1  
   ),  
 ),  
@@ -137,9 +137,9 @@ Playx3dScene(
    model: GlbModel.url(    
     // load glb from direct url of glb file.  
     "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Fox/glTF-Binary/Fox.glb",   
-     animation: PlayxAnimation.byName("walk", autoPlay: true),   //controls animation   
+     animation: Animation.byName("walk", autoPlay: true),   //controls animation   
      fallback: GlbModel.asset("assets/models/Fox.glb"), // fallback model if error happened   
-     centerPosition: PlayxPosition(x: 0, y: 0, z: -4), //center position of model    
+     centerPosition: Vector3(x: 0, y: 0, z: -4), //center position of model    
      scale: 1.0,   // scale of model defaults to 1  
    ),  
 ),  
@@ -155,9 +155,9 @@ Playx3dScene(
         model: GltfModel.asset(    
             "assets/models/BusterDrone.gltf",  /// path of the gltf file in assets  
             prefix: "assets/models/",  ///prefix for gltf images  
-            animation: PlayxAnimation.byIndex(0, autoPlay: true),  //controls animation   
+            animation: Animation.byIndex(0, autoPlay: true),  //controls animation   
             fallback: GlbModel.asset("assets/models/Fox.glb"),  // fallback model if error happened   
-            centerPosition: PlayxPosition(x: 0, y: 0, z: -4),  //center position of model    
+            centerPosition: Vector3(x: 0, y: 0, z: -4),  //center position of model    
             scale: 1.0,   // scale of model defaults to 1  
         ),  
     ),  
@@ -338,7 +338,7 @@ scene: Scene(
       type: LightType.directional,    
       colorTemperature: 6500.0,    
       intensity: 100000.0,    
-      direction: PlayxDirection(x: 0, y: -1, z: 0),    
+      direction: Vector3(x: 0, y: -1, z: 0),    
       castShadows: true,    
      ),    
   ),  
@@ -360,12 +360,12 @@ scene:  Scene(
            sensitivity: 150,    
            ),    
         //Sets the world-space position of interest, which defaults to (x:0,y:0,z:-4).  
-        targetPosition: PlayxPosition(x: 0.0, y: 0.0, z: -4.0),   
+        targetPosition: Vector3(x: 0.0, y: 0.0, z: -4.0),   
         // Sets The initial eye position in world space for ORBIT mode.    
         //This defaults to (x:0,y:0,z:1).  
-        orbitHomePosition: PlayxPosition(x: 0.0, y: 1.0, z: 1.0),   
+        orbitHomePosition: Vector3(x: 0.0, y: 1.0, z: 1.0),   
         //The orientation for the home position, which defaults to (x:0,y:1,z:0).  
-        upVector: PlayxPosition(x: 0.0, y: 1.0, z: 0.0),    
+        upVector: Vector3(x: 0.0, y: 1.0, z: 0.0),    
      ),    
 ),  
 ```  
@@ -386,7 +386,7 @@ scene:Scene(
          // determine whether the ground plane should be drawn below the model or not.   
          //if not provided we must provide center position of the ground.  
         isBelowModel: true,   
-        normal: PlayxDirection.y(1.0),  //direction of the shape rotation in the world space  
+        normal: Vector3.y(1.0),  //direction of the shape rotation in the world space  
         material: PlayxMaterial.asset(  // material of the ground  
            "assets/materials/textured_pbr.filamat",    
            parameters: [    
@@ -432,7 +432,7 @@ Here is an example of how to create sphere and cube:
               Cube(  
                   id: 1, // id of the shape used to update the shapes  
                   length: .5, // length of the cube  
-                  centerPosition: PlayxPosition(  
+                  centerPosition: Vector3(  
                       x: -1, y: 0, z: -4), // center position of the cube  
                   material: PlayxMaterial.asset("assets/materials/lit.filamat",  //material of the cube  
                       parameters: [  
@@ -444,7 +444,7 @@ Here is an example of how to create sphere and cube:
                 ),  
                 Sphere(      //creates a sphere  
                   id: 2,   // id of the shape used to update the shapes  
-                  centerPosition: PlayxPosition(x: 1, y: 0, z: -4),   //center position of the sphere  
+                  centerPosition: Vector3(x: 1, y: 0, z: -4),   //center position of the sphere  
                   radius: .5,      //radius of the sphere   
                   material: PlayxMaterial.asset(  // material of the sphere  
                     "assets/materials/textured_pbr.filamat",  
