@@ -93,24 +93,24 @@ class _MyAppState extends State<MyApp> {
 
     for (int attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        logToStdOut('Checking native readiness, attempt $attempt...');
+        print('Checking native readiness, attempt $attempt...');
         final bool nativeReady = await _nativeReadiness.isNativeReady();
 
         if (nativeReady) {
-          logToStdOut('Native is ready. Proceeding...');
+          print('Native is ready. Proceeding...');
           startListeningForEvents();
           return;
         } else {
-          logToStdOut('Native is not ready. Retrying...');
+          print('Native is not ready. Retrying...');
         }
       } catch (e) {
-        logToStdOut('Error checking readiness: $e');
+        print('Error checking readiness: $e');
       }
 
       await Future.delayed(retryInterval);
     }
 
-    logToStdOut(
+    print(
         'Failed to confirm native readiness after $maxRetries attempts.');
   }
 
@@ -119,29 +119,23 @@ class _MyAppState extends State<MyApp> {
     _nativeReadiness.readinessStream.listen(
       (event) {
         if (event == "ready") {
-          logToStdOut('Received ready event from native side.');
+          print('Received ready event from native side.');
           setState(() {
-            logToStdOut('Creating Event Channels');
+            print('Creating Event Channels');
             _animEventChannel.initEventChannel();
             _collisionEventChannel.initEventChannel();
             _frameEventChannel.initEventChannel();
-            logToStdOut('Event Channels created.');
+            print('Event Channels created.');
             isReady = true;
           });
         }
       },
       onError: (error) {
-        logToStdOut('Error listening for readiness events: $error');
+        print('Error listening for readiness events: $error');
       },
     );
   }
-
-  ////////////////////////////////////////////////////////////////////////
-  void logToStdOut(String strOut) {
-    DateTime now = DateTime.now();
-    stdout.write('DART : $strOut: $now\n');
-  }
-
+  
   ////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
@@ -444,14 +438,14 @@ class _MyAppState extends State<MyApp> {
       scene: poGetScene(),
       shapes: poGetScenesShapes(),
       onCreated: (SceneController controller) async {
-        logToStdOut('poGetPlayx3dScene onCreated');
+        print('poGetPlayx3dScene onCreated');
 
         poController = controller;
 
         _frameEventChannel.setController(filamentViewApi);
         _collisionEventChannel.setController(filamentViewApi);
 
-        logToStdOut('poGetPlayx3dScene onCreated completed');
+        print('poGetPlayx3dScene onCreated completed');
       },
     );
   }
