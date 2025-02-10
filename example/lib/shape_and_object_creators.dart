@@ -30,8 +30,8 @@ GlbModel poGetModel(
     bool bKeepInMemory,
     bool bWhenInstanceableIsPrimary) {
   return GlbModel.asset(szAsset,
-      should_keep_asset_in_memory: bKeepInMemory,
-      is_primary_to_instance_from: bWhenInstanceableIsPrimary,
+      keepInMemory: bKeepInMemory,
+      isInstancePrimary: bWhenInstanceableIsPrimary,
       animation: animationInfo,
       collidable: collidable,
       centerPosition: position,
@@ -41,7 +41,7 @@ GlbModel poGetModel(
       receiveShadows: bReceiveShadows,
       castShadows: bCastShadows,
       // ignore: prefer_const_constructors
-      global_guid: overrideGUID);
+      guid: overrideGUID);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -365,7 +365,7 @@ List<Model> poGetModelList() {
       Vector3.only(x: 1, y: 1, z: 1),
       Vector4(x: 0, y: 0, z: 0, w: 1),
       null,
-      Animation.byIndex(0, autoPlay: true),
+      null,
       true,
       true,
       const Uuid().v4(),
@@ -508,7 +508,7 @@ Light poGetDefaultPointLight(Color directLightColor, double intensity) {
   return Light(
       global_guid: centerPointLightGUID,
       type: LightType.point,
-      colorTemperature: 36500,
+      // colorTemperature: 36500,
       color: directLightColor,
       intensity: intensity,
       castShadows: true,

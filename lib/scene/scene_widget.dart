@@ -42,18 +42,7 @@ class SceneController {
         _updatePlayx3dSceneShapesKey: shapes?.map((e) => e.toJson()).toList(),
       },
     );
-    return _handleError(data);
-  }
-}
-
-Future<Result<T>> _handleError<T>(Future<T?> data) async {
-  try {
-    final result = await data;
-    return Result.success(result);
-  } on PlatformException catch (err) {
-    return Result.error(err.message);
-  } catch (err) {
-    return Result.error("Something went wrong");
+    return handleError(data);
   }
 }
 
