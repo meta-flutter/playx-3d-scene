@@ -16,7 +16,8 @@ const String roadAsset = "assets/models/road_segment.glb";
 const String foxAsset = "assets/models/Fox.glb";
 //const String dmgHelmAsset = "assets/models/DamagedHelmet.glb";
 
-////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): redudant, remove
+@Deprecated("Use GlbModel.asset instead")
 GlbModel poGetModel(
     String szAsset,
     Vector3 position,
@@ -45,7 +46,12 @@ GlbModel poGetModel(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): investigate and remove
+@Deprecated("Will be removed")
 List<String> thingsWeCanChangeParamsOn = [];
+
+// TODO(kerberjg): refactor as `Cube.default`
+@Deprecated("Will be removed")
 Shape poCreateCube(Vector3 pos, Vector3 scale, Vector3 sizeExtents,
     Color? colorOveride) {
   String uniqueGuid = const Uuid().v4();
@@ -69,6 +75,8 @@ Shape poCreateCube(Vector3 pos, Vector3 scale, Vector3 sizeExtents,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): refactor as `Sphere.default`
+@Deprecated("Will be removed")
 Shape poCreateSphere(Vector3 pos, Vector3 scale, Vector3 sizeExtents,
     int stacks, int slices, Color? colorOveride) {
   return Sphere(
@@ -86,6 +94,8 @@ Shape poCreateSphere(Vector3 pos, Vector3 scale, Vector3 sizeExtents,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): refactor as `Plane.default`
+@Deprecated("Will be removed")
 Shape poCreatePlane(Vector3 pos, Vector3 scale, Vector3 sizeExtents) {
   return Plane(
       doubleSided: true,
@@ -105,6 +115,7 @@ Shape poCreatePlane(Vector3 pos, Vector3 scale, Vector3 sizeExtents) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): investigate
 List<Shape> poCreateLineGrid() {
   List<Shape> itemsToReturn = [];
   double countExtents = 6;
@@ -125,6 +136,8 @@ List<Shape> poCreateLineGrid() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): remove! Shapes will become components on scene entities, and this will go to init
+@Deprecated("Will be removed")
 List<Shape> poGetScenesShapes() {
   //return poCreateLineGrid();
 
@@ -188,6 +201,8 @@ List<Shape> poGetScenesShapes() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): refactor as an Entity
+@Deprecated("Will be removed")
 class MovingDemoLight {
   String guid;
   Vector3 origin;
@@ -212,9 +227,13 @@ class MovingDemoLight {
     return 'Light(guid: $guid, origin: $origin, direction: $direction)';
   }
 }
-
 List<MovingDemoLight> lightsWeCanChangeParamsOn = [];
-String centerPointLightGUID = const Uuid().v4();
+
+// NOTE: this is a good example of how to keep track of entities (as 'consts') so they can be referenced later
+final String centerPointLightGUID = const Uuid().v4();
+
+// TODO(kerberjg): this should be initialized as components on scene entities
+@Deprecated("Will be removed")
 List<Light> poGetSceneLightsList() {
   List<Light> itemsToReturn = [];
 
@@ -311,10 +330,14 @@ List<Light> poGetSceneLightsList() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): these go to scene file
+@Deprecated("move to scene file")
 List<String> radarConePieceGUID = [];
+@Deprecated("move to scene file")
 List<String> radarSegmentPiecesGUIDS = [];
 
 List<Model> poGetModelList() {
+@Deprecated("move to scene file")
   List<Model> itemsToReturn = [];
 
   // scene 0
@@ -479,6 +502,7 @@ List<Model> poGetModelList() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): refactor as `DefaultIndirectLight.default`
 DefaultIndirectLight poGetDefaultIndirectLight() {
   return DefaultIndirectLight(
       intensity: 1000000, // indirect light intensity.
@@ -497,13 +521,11 @@ DefaultIndirectLight poGetDefaultIndirectLight() {
       );
 }
 
-////////////////////////////////////////////////////////////////////////////////
 // Note point lights seem to only value intensity at a high
 // range 30000000, for a 3 meter diameter of a circle, not caring about
 // falloffradius
 //
-// Note for Spot lights you must specify a direction != 0,0,0
-////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): refactor as `Light.default`
 Light poGetDefaultPointLight(Color directLightColor, double intensity) {
   return Light(
       global_guid: centerPointLightGUID,

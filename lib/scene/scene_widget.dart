@@ -18,7 +18,7 @@ const String _viewType = "${_channelName}_3d_scene";
 /// An object which helps facilitate communication between the [SceneView] Widget
 /// and android side model viewer based on Filament.
 /// 
-/// It provides utility methods to update the viewer, change the animation environment, lightening, etc.
+/// It provides utility methods to update the viewer, change the animation environment, lighting, etc.
 /// Each controller is unique for each widget.
 class SceneController {
   int id;
@@ -32,8 +32,13 @@ class SceneController {
 
   /// Updates the current 3d scene view with the new [scene], [model], and [shapes].
   /// Returns true if the scene was updated successfully.
-  Future<Result<bool>> updatePlayx3dScene(
-      {Scene? scene, List<Model>? models, List<Shape>? shapes}) {
+  Future<Result<bool>> updatePlayx3dScene({
+    final Scene? scene,
+    final List<Model>? models,
+    final List<Shape>? shapes
+  }) async {
+
+    
     final data = _channel.invokeMethod<bool>(
       _updatePlayx3dScene,
       {
@@ -42,6 +47,7 @@ class SceneController {
         _updatePlayx3dSceneShapesKey: shapes?.map((e) => e.toJson()).toList(),
       },
     );
+
     return handleError(data);
   }
 }

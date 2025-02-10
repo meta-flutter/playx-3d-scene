@@ -16,6 +16,8 @@
 
 import 'package:pigeon/pigeon.dart';
 
+// TODO(kerberjg): refactor to use int guids instead of strings
+
 @ConfigurePigeon(PigeonOptions(
   dartOut: 'generated/src/dart/messages.g.dart',
   dartTestOut: 'generated/src/dart/test/test_api.g.dart',
@@ -41,6 +43,7 @@ abstract class FilamentViewApi {
   void toggleDebugCollidableViewsInScene(bool value);
 
   /// Change the camera mode by name.
+  // TODO(kerberjg): refactor to use an enum instead of string
   void changeCameraMode(String mode);
 
   void changeCameraOrbitHomePosition(double x, double y, double z);
