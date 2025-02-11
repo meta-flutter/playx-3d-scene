@@ -336,6 +336,5 @@ Light poGetDefaultPointLight(Color directLightColor, double intensity) {
       spotLightConeOuter: 10,
       falloffRadius: 300.1, // what base is this in? meters?
       position: Vector3.only(x: 0, y: 5, z: 1),
-      // should be a unit vector
       direction: Vector3.only(x: 0, y: 1, z: 0));
 }

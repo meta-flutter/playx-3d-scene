@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:my_fox_example/scenes/playground_scene.dart';
 import 'package:my_fox_example/scenes/radar_scene.dart';
 import 'package:my_fox_example/scenes/scene_view.dart';
+import 'package:my_fox_example/scenes/settings_scene.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
 import 'dart:async';
 import 'dart:io';
@@ -52,18 +53,6 @@ class _MyAppState extends State<MyApp> {
 
   late SceneController poController;
 
-  // Point light controls
-  Color _directLightColor = Colors.white;
-  double _directIntensity = 300000000;
-  final double _minIntensity = 500000;
-  final double _maxIntensity = 300000000;
-
-  // Camera controls
-  double _cameraRotation = 0;
-  bool _autoRotate = false;
-  bool _toggleShapes = true;
-  bool _toggleCollidableVisuals = true;
-
   final NativeReadiness _nativeReadiness = NativeReadiness();
   bool isReady = false;
 
@@ -73,7 +62,6 @@ class _MyAppState extends State<MyApp> {
   /// field to store the scene widget so it's created only once
   late final SceneView _filamentViewWidget;
 
-  int _currentScene = 0;
   /// Scene state/overlay widget
   StatefulSceneView? _sceneView;
 
@@ -100,10 +88,13 @@ class _MyAppState extends State<MyApp> {
         frameController: _frameEventChannel, 
         collisionController: _collisionEventChannel,
       ),
+      2 => SettingsSceneView(
+        filament: filamentViewApi,
+        frameController: _frameEventChannel, 
+        collisionController: _collisionEventChannel,
+      ),
       _ => throw UnsupportedError("nothiiiing")
     };
-
-    _currentScene = sceneId;
   }
 
   Future<void> initializeReadiness() async {
@@ -173,18 +164,32 @@ class _MyAppState extends State<MyApp> {
             Positioned(
               top: 24,
               right: 24,
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    // Toggle between scene 0 and scene 1
-                    _setScene((_currentScene + 1) % 2);
-                  });
-                },
-                child: Text(
-                  _currentScene == 0
-                      ? 'Show Radar Scene'
-                      : 'Show Original Scene',
+              // Show menu with list of scenes with MenuAnchor and a FilledButton in builder
+              child: MenuAnchor(
+                builder: (BuildContext context, MenuController controller, Widget? child) => FilledButton(
+                  onPressed: () {
+                    if(controller.isOpen) {
+                      controller.close();
+                    } else {
+                      controller.open();
+                    }
+                  },
+                  child: const Text('Scenes'),
                 ),
+                menuChildren: [
+                  MenuItemButton(
+                    child: const Text('Playground'),
+                    onPressed: () => setState(() =>_setScene(0)),
+                  ),
+                  MenuItemButton(
+                    child: const Text('Radar'),
+                    onPressed: () => setState(() =>_setScene(1)),
+                  ),
+                  MenuItemButton(
+                    child: const Text('Settings'),
+                    onPressed: () => setState(() =>_setScene(2)),
+                  ),
+                ],
               ),
             ),
           ],

@@ -20,14 +20,52 @@ class Vector3 {
   Vector3.y(final double y) : this.only(y: y);
   Vector3.z(final double z) : this.only(z: z);
   Vector3.all(final double value) : this.only(
-    x: value, y: value, z: value
+    x: value, y: value, z: value,
   );
 
-  Map<String, dynamic> toJson() => {
-        'x': x,
-        'y': y,
-        'z': z,
-      };
+  /// Square magnitude of the vector
+  double get sqrMagnitude => x * x + y * y + z * z;
+  /// Magnitude of the vector
+  /// NOTE: This is a slow operation, use [sqrMagnitude] if you only need to compare magnitudes or check if it's equal to 0 or 1
+  double get magnitude => Math.sqrt(sqrMagnitude);
+
+  /// Whether the vector is a zero vector
+  bool get isZero => sqrMagnitude == 0;
+  /// Whether the vector is a one vector
+  bool get isOne => sqrMagnitude == 1;
+
+
+  /// Returns a normalized copy of the vector
+  /// 
+  /// See: [Vector3.normalized]
+  Vector3 normalized() {
+    final double mag = magnitude;
+    if (mag == 0) return this;
+    return Vector3(x / mag, y / mag, z / mag);
+  }
+
+  /// Normalizes this vector and returns it (no copy)
+  ///
+  /// See: [Vector3.normalized]
+  Vector3 normalize() {
+    final double mag = magnitude;
+
+    // Skip if it's already normalized or zero
+    if (mag == 0 || mag == 1) return this;
+
+    x /= mag;
+    y /= mag;
+    z /= mag;
+    
+    return this;
+  }
+
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'x': x,
+    'y': y,
+    'z': z,
+  };
 
   @override
   String toString() => 'Vector3(x: $x, y: $y, z: $z)';
@@ -63,12 +101,12 @@ class Vector4 {
     x: value, y: value, z: value, w: value,
   );
 
-  Map<String, dynamic> toJson() => {
-        'x': x,
-        'y': y,
-        'z': z,
-        'w': w,
-      };
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'x': x,
+    'y': y,
+    'z': z,
+    'w': w,
+  };
 
   @override
   String toString() => 'Vector4(x: $x, y: $y, z: $z. w" $w)';
