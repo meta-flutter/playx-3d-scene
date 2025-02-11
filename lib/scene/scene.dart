@@ -4,6 +4,7 @@ import 'package:playx_3d_scene/scene/light/light.dart';
 import 'package:playx_3d_scene/scene/skybox/skybox.dart';
 
 /// An object that represents the scene to  be rendered with information about light, skybox and more.
+// TODO(kerberjg): separate into Scene(entities, camera) and SceneLighting(skybox, indirectLight)
 class Scene {
   Skybox? skybox;
   IndirectLight? indirectLight;

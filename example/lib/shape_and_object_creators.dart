@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart' hide Animation;
+import 'package:my_fox_example/assets.dart';
+import 'package:my_fox_example/scenes/playground_scene.dart';
+import 'package:my_fox_example/scenes/radar_scene.dart';
+import 'package:my_fox_example/scenes/settings_scene.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
 import 'package:uuid/uuid.dart';
 import 'material_helpers.dart';
 
-const String sequoiaAsset = "assets/models/sequoia_ngp.glb";
-const String garageAsset = "assets/models/garagescene.glb";
 
-const String radarConeAsset = "assets/models/radar_cone.glb";
-const String radarSegmentAsset = "assets/models/half_torus.glb";
-//const String radarSegmentAsset = "assets/models/half_torus_parent_mat.glb";
-//const String radarSegmentAsset = "assets/models/2-Candle.glb";
-const String roadAsset = "assets/models/road_segment.glb";
-
-// fox has animation
-const String foxAsset = "assets/models/Fox.glb";
-//const String dmgHelmAsset = "assets/models/DamagedHelmet.glb";
-
-////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): redudant, remove
+@Deprecated("Use GlbModel.asset instead")
 GlbModel poGetModel(
     String szAsset,
     Vector3 position,
@@ -30,8 +23,8 @@ GlbModel poGetModel(
     bool bKeepInMemory,
     bool bWhenInstanceableIsPrimary) {
   return GlbModel.asset(szAsset,
-      should_keep_asset_in_memory: bKeepInMemory,
-      is_primary_to_instance_from: bWhenInstanceableIsPrimary,
+      keepInMemory: bKeepInMemory,
+      isInstancePrimary: bWhenInstanceableIsPrimary,
       animation: animationInfo,
       collidable: collidable,
       centerPosition: position,
@@ -41,11 +34,16 @@ GlbModel poGetModel(
       receiveShadows: bReceiveShadows,
       castShadows: bCastShadows,
       // ignore: prefer_const_constructors
-      global_guid: overrideGUID);
+      guid: overrideGUID);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): investigate and remove
+@Deprecated("Will be removed")
 List<String> thingsWeCanChangeParamsOn = [];
+
+// TODO(kerberjg): refactor as `Cube.default`
+@Deprecated("Will be removed")
 Shape poCreateCube(Vector3 pos, Vector3 scale, Vector3 sizeExtents,
     Color? colorOveride) {
   String uniqueGuid = const Uuid().v4();
@@ -69,6 +67,8 @@ Shape poCreateCube(Vector3 pos, Vector3 scale, Vector3 sizeExtents,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): refactor as `Sphere.default`
+@Deprecated("Will be removed")
 Shape poCreateSphere(Vector3 pos, Vector3 scale, Vector3 sizeExtents,
     int stacks, int slices, Color? colorOveride) {
   return Sphere(
@@ -86,6 +86,8 @@ Shape poCreateSphere(Vector3 pos, Vector3 scale, Vector3 sizeExtents,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): refactor as `Plane.default`
+@Deprecated("Will be removed")
 Shape poCreatePlane(Vector3 pos, Vector3 scale, Vector3 sizeExtents) {
   return Plane(
       doubleSided: true,
@@ -105,6 +107,7 @@ Shape poCreatePlane(Vector3 pos, Vector3 scale, Vector3 sizeExtents) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): investigate
 List<Shape> poCreateLineGrid() {
   List<Shape> itemsToReturn = [];
   double countExtents = 6;
@@ -125,69 +128,23 @@ List<Shape> poCreateLineGrid() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): remove! Shapes will become components on scene entities, and this will go to init
+@Deprecated("Will be removed")
 List<Shape> poGetScenesShapes() {
   //return poCreateLineGrid();
 
   List<Shape> itemsToReturn = [];
 
-  itemsToReturn.add(poCreateCube(
-    Vector3.only(x: 3, y: 1, z: 3),
-    Vector3.only(x: 2, y: 2, z: 2),
-    Vector3.only(x: 2, y: 2, z: 2),
-    null,
-  ));
+  itemsToReturn.addAll(PlaygroundSceneView.getSceneShapes());
 
-  itemsToReturn.add(poCreateCube(
-    Vector3.only(x: 0, y: 1, z: 3),
-    Vector3.only(x: .1, y: 1, z: .1),
-    Vector3.only(x: 1, y: 1, z: 1), 
-    null,
-  ));
-
-  itemsToReturn.add(poCreateCube(
-    Vector3.only(x: -3, y: 1, z: 3),
-    Vector3.only(x: .5, y: .5, z: .5),
-    Vector3.only(x: 1, y: 1, z: 1),
-    null,
-  ));
-
-  itemsToReturn.add(poCreateSphere(
-    Vector3.only(x: 3, y: 1, z: -3),
-    Vector3.only(x: 1, y: 1, z: 1),
-    Vector3.only(x: 1, y: 1, z: 1),
-    11, 5, null,
-  ));
-
-  itemsToReturn.add(poCreateSphere(
-    Vector3.only(x: 0, y: 1, z: -3),
-    Vector3.only(x: 1, y: 1, z: 1),
-    Vector3.only(x: 1, y: 1, z: 1),
-    20, 20, null,
-  ));
-
-  itemsToReturn.add(poCreateSphere(
-    Vector3.only(x: -3, y: 1, z: -3),
-    Vector3.only(x: 1, y: .5, z: 1),
-    Vector3.only(x: 1, y: 1, z: 1),
-    20, 20, null,
-  ));
-
-  itemsToReturn.add(poCreatePlane(
-    Vector3.only(x: -5, y: 1, z: 0),
-    Vector3.only(x: 1, y: 1, z: 1),
-    Vector3.only(x: 2, y: 1, z: 2),
-  ));
-
-  itemsToReturn.add(poCreatePlane(
-    Vector3.only(x: 5, y: 1, z: 0),
-    Vector3.only(x: 4, y: 1, z: 4),
-    Vector3.only(x: 4, y: 1, z: 4)
-  ));
+  // TODO: add other scenes if needed
 
   return itemsToReturn;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): refactor as an Entity
+@Deprecated("Will be removed")
 class MovingDemoLight {
   String guid;
   Vector3 origin;
@@ -212,9 +169,13 @@ class MovingDemoLight {
     return 'Light(guid: $guid, origin: $origin, direction: $direction)';
   }
 }
-
 List<MovingDemoLight> lightsWeCanChangeParamsOn = [];
-String centerPointLightGUID = const Uuid().v4();
+
+// NOTE: this is a good example of how to keep track of entities (as 'consts') so they can be referenced later
+final String centerPointLightGUID = const Uuid().v4();
+
+// TODO(kerberjg): this should be initialized as components on scene entities
+@Deprecated("Will be removed")
 List<Light> poGetSceneLightsList() {
   List<Light> itemsToReturn = [];
 
@@ -311,174 +272,34 @@ List<Light> poGetSceneLightsList() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): these go to scene file
+@Deprecated("move to scene file")
 List<String> radarConePieceGUID = [];
-List<String> radarSegmentPiecesGUIDS = [];
 
 List<Model> poGetModelList() {
+@Deprecated("move to scene file")
   List<Model> itemsToReturn = [];
 
+
+  // 'primary objects'
+  itemsToReturn.addAll(getBaseModels());
+
+
   // scene 0
-
-  // 'primary object'
-  itemsToReturn.add(poGetModel(
-      sequoiaAsset,
-      Vector3.only(x: 0, y: 0, z: 0),
-      Vector3.only(x: 1, y: 1, z: 1),
-      Vector4(x: 0, y: 0, z: 0, w: 1),
-      null,
-      null,
-      true,
-      true,
-      const Uuid().v4(),
-      true,
-      true));
-
-  itemsToReturn.add(poGetModel(
-      sequoiaAsset,
-      Vector3.only(x: 0, y: 0, z: 0),
-      Vector3.only(x: 1, y: 1, z: 1),
-      Vector4(x: 0, y: 0, z: 0, w: 1),
-      Collidable(isStatic: false, shouldMatchAttachedObject: true),
-      null,
-      true,
-      true,
-      const Uuid().v4(),
-      true,
-      false));
-
-  itemsToReturn.add(poGetModel(
-      garageAsset,
-      Vector3.only(x: 0, y: 0, z: -16),
-      Vector3.only(x: 1, y: 1, z: 1),
-      Vector4(x: 0, y: 0, z: 0, w: 1),
-      null,
-      null,
-      false,
-      true,
-      const Uuid().v4(),
-      false,
-      false));
-
-  itemsToReturn.add(poGetModel(
-      foxAsset,
-      Vector3.only(x: 0, y: 0, z: 0),
-      Vector3.only(x: 1, y: 1, z: 1),
-      Vector4(x: 0, y: 0, z: 0, w: 1),
-      null,
-      Animation.byIndex(0, autoPlay: true),
-      true,
-      true,
-      const Uuid().v4(),
-      true,
-      true));
-
-  itemsToReturn.add(poGetModel(
-      foxAsset,
-      Vector3.only(x: 1, y: 0, z: 4),
-      Vector3.only(x: 0.04, y: 0.04, z: 0.04),
-      Vector4(x: 0, y: 0, z: 0, w: 1),
-      null,
-      Animation.byIndex(0, autoPlay: true),
-      true,
-      true,
-      const Uuid().v4(),
-      true,
-      false));
-
-  itemsToReturn.add(poGetModel(
-      foxAsset,
-      Vector3.only(x: -1, y: 0, z: 4),
-      Vector3.only(x: 0.04, y: 0.04, z: 0.04),
-      Vector4(x: 0, y: 0, z: 0, w: 1),
-      null,
-      Animation.byIndex(1, autoPlay: true, notifyOfAnimationEvents: true),
-      true,
-      true,
-      const Uuid().v4(),
-      true,
-      false));
+  itemsToReturn.addAll(PlaygroundSceneView.getSceneModels());
 
   // scene 1
-  for (int i = 0; i < 10; i++) {
-    itemsToReturn.add(poGetModel(
-        sequoiaAsset,
-        Vector3.only(x: -40, y: 0, z: i * 5 - 25),
-        Vector3.only(x: 1, y: 1, z: 1),
-        Vector4(x: 0, y: 0, z: 0, w: 1),
-        null,
-        null,
-        true,
-        true,
-        const Uuid().v4(),
-        true,
-        false));
-  }
+  itemsToReturn.addAll(RadarSceneView.getSceneModels());
 
-  itemsToReturn.add(poGetModel(
-      roadAsset,
-      Vector3.only(x: -40, y: 0, z: 0),
-      Vector3.only(x: .4, y: .1, z: .2),
-      Vector4(x: 0, y: 0, z: 0, w: 1),
-      null,
-      null,
-      true,
-      false,
-      const Uuid().v4(),
-      false,
-      false));
+  // scene 2
+  itemsToReturn.addAll(SettingsSceneView.getSceneModels());
 
-  String guid = const Uuid().v4();
-  radarConePieceGUID.add(guid);
-
-  itemsToReturn.add(poGetModel(
-      radarConeAsset,
-      Vector3.only(x: -42.1, y: 1, z: 0),
-      Vector3.only(x: 4, y: 1, z: 3),
-      Vector4(x: 0, y: 0, z: 0, w: 1),
-      null,
-      null,
-      false,
-      false,
-      guid,
-      false,
-      false));
-
-  itemsToReturn.add(poGetModel(
-      radarSegmentAsset,
-      Vector3.only(x: 0, y: 0, z: 0),
-      Vector3.only(x: 1, y: 1, z: 1),
-      Vector4(x: 0.0, y: 0, z: 0, w: 1),
-      null,
-      null,
-      true,
-      true,
-      const Uuid().v4(),
-      true,
-      true));
-
-  for (int i = 0; i < 20; i++) {
-    String guidForSegment = const Uuid().v4();
-
-    itemsToReturn.add(poGetModel(
-        radarSegmentAsset,
-        Vector3.only(x: -42.2, y: 0, z: 0),
-        Vector3.only(x: 0, y: 0, z: 0),
-        Vector4(x: 0.7071, y: 0, z: 0.7071, w: 0),
-        null,
-        null,
-        true,
-        true,
-        guidForSegment,
-        true,
-        false));
-
-    radarSegmentPiecesGUIDS.add(guidForSegment);
-  }
 
   return itemsToReturn;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): refactor as `DefaultIndirectLight.default`
 DefaultIndirectLight poGetDefaultIndirectLight() {
   return DefaultIndirectLight(
       intensity: 1000000, // indirect light intensity.
@@ -497,18 +318,16 @@ DefaultIndirectLight poGetDefaultIndirectLight() {
       );
 }
 
-////////////////////////////////////////////////////////////////////////////////
 // Note point lights seem to only value intensity at a high
 // range 30000000, for a 3 meter diameter of a circle, not caring about
 // falloffradius
 //
-// Note for Spot lights you must specify a direction != 0,0,0
-////////////////////////////////////////////////////////////////////////////////
+// TODO(kerberjg): refactor as `Light.default`
 Light poGetDefaultPointLight(Color directLightColor, double intensity) {
   return Light(
       global_guid: centerPointLightGUID,
       type: LightType.point,
-      colorTemperature: 36500,
+      // colorTemperature: 36500,
       color: directLightColor,
       intensity: intensity,
       castShadows: true,
@@ -517,6 +336,5 @@ Light poGetDefaultPointLight(Color directLightColor, double intensity) {
       spotLightConeOuter: 10,
       falloffRadius: 300.1, // what base is this in? meters?
       position: Vector3.only(x: 0, y: 5, z: 1),
-      // should be a unit vector
       direction: Vector3.only(x: 0, y: 1, z: 0));
 }

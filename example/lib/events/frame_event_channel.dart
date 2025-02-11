@@ -1,8 +1,14 @@
 import 'package:flutter/services.dart';
+import 'package:my_fox_example/scenes/scene_view.dart';
 import 'dart:io';
 import '../utils.dart';
 import '../gameplay.dart';
 import '../messages.g.dart';
+
+typedef UpdateFunction = void Function(FilamentViewApi api, double elapsedFrameTime);
+typedef TriggerEventFunction = void Function(String eventName);
+
+void noopUpdate(FilamentViewApi api, double elapsedFrameTime) {}
 
 class FrameEventChannel {
   static const EventChannel _eventChannel =
@@ -14,6 +20,13 @@ class FrameEventChannel {
 
   void setController(FilamentViewApi api) {
     filamentViewApi = api;
+  }
+
+  StatefulSceneViewState? sceneState;
+
+  /// Removes all listeners relative to a specific scene
+  void resetScene() {
+    sceneState = null;
   }
 
   // Frames from Native to here, currently run in order of
@@ -36,7 +49,7 @@ class FrameEventChannel {
             // Log extracted values
             if (method == 'preRenderFrame') {
               vRunLightLoops(filamentViewApi);
-              vUpdateGameplay(filamentViewApi, 0.016);
+              sceneState?.onUpdateFrame(filamentViewApi, 0.016);
             }
           }
         },
