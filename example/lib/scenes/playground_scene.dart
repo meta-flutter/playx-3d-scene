@@ -61,6 +61,7 @@ class PlaygroundSceneView extends StatefulSceneView {
       animation: null,
       receiveShadows: true,
       castShadows: true,
+      name: sequoiaAsset,
       guid: objectGuids['car']!.v4(),
       keepInMemory: true,
       isInstancePrimary: false,

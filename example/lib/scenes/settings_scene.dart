@@ -4,9 +4,11 @@ import 'dart:math';
 import 'package:flutter/material.dart' hide Material;
 import 'package:my_fox_example/assets.dart';
 import 'package:my_fox_example/demo_widgets.dart';
+import 'package:my_fox_example/main.dart';
 import 'package:my_fox_example/material_helpers.dart';
 import 'package:my_fox_example/messages.g.dart';
 import 'package:my_fox_example/scenes/scene_view.dart';
+import 'package:my_fox_example/shape_and_object_creators.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
 import 'package:uuid/uuid.dart';
 
@@ -24,23 +26,78 @@ class SettingsSceneView extends StatefulSceneView {
   @override
   _SettingsSceneViewState createState() => _SettingsSceneViewState();
 
+  static final Vector3 carOrigin = Vector3.only(x: 72, y: 0, z: 68);
+
   static final Map<String, String> objectGuids = {
     'car': uuid.v4(),
+    'floor': uuid.v4(),
+    'cube': uuid.v4(),
+    'wallCube': uuid.v4(),
+    'wiper1': uuid.v4(),
+    'wiper2': uuid.v4(),
+    'light1': uuid.v4(),
+    'light2': uuid.v4(),
+    'l_light_B1': uuid.v4(),
+    'l_light_B2': uuid.v4(),
+    'l_light_F1': uuid.v4(),
+    'l_light_F2': uuid.v4(),
+    //turning lights, front and back
+    'l_light_tB1': uuid.v4(),
+    'l_light_tB2': uuid.v4(),
+    'l_light_tF1': uuid.v4(),
+    'l_light_tF2': uuid.v4(),
   };
 
   static List<Model> getSceneModels() {
     final List<Model> models = [];
 
+
     models.add(GlbModel.asset(
       sequoiaAsset,
-      centerPosition: Vector3.only(x: 72, y: 0, z: 68),
-      scale: Vector3.only(x: 1, y: 1, z: 1),
+      centerPosition: carOrigin,
+      scale: Vector3.all(1),
       rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
       collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
       animation: null,
       receiveShadows: true,
       castShadows: true,
+      name: sequoiaAsset,
       guid: objectGuids['car']!,
+      keepInMemory: true,
+      isInstancePrimary: false,
+    ));
+
+    final Vector3 lightOffset = Vector3.only(x: -2.5, y: 1, z: -0.9);
+
+    // use 'radar_cone' asset for lights
+    models.add(GlbModel.asset(
+      radarConeAsset,
+      centerPosition: carOrigin + lightOffset - Vector3.only(z: lightOffset.z * 2),
+      scale: lightSize,
+      rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
+      collidable: null,
+      animation: null,
+      receiveShadows: false,
+      castShadows: false,
+      name: radarConeAsset,
+      guid: objectGuids['light1']!,
+      keepInMemory: true,
+      isInstancePrimary: false,
+    ));
+
+
+    models.add(GlbModel.asset(
+      radarConeAsset,
+      // centerPosition: Vector3.only(z: lightOffset.z * 10),
+      centerPosition: carOrigin + lightOffset - Vector3.only(z: lightOffset.z * 0),
+      scale: lightSize,
+      rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
+      collidable: null,
+      animation: null,
+      receiveShadows: false,
+      castShadows: false,
+      name: radarConeAsset,
+      guid: objectGuids['light2']!,
       keepInMemory: true,
       isInstancePrimary: false,
     ));
@@ -48,8 +105,56 @@ class SettingsSceneView extends StatefulSceneView {
     return models;
   }
 
+  static final Vector3 wiperSize = Vector3.only(x: 0.05, y: 0.75, z: 0.05);
+  static final Vector3 lightSize = Vector3.only(x: 0.2, y: 0.2, z: 0.2);
+
   static List<Shape> getSceneShapes() {
     final List<Shape> shapes = [];
+
+    // shapes.add(poCreateCube(
+    //   Vector3.only(x: 72, y: 4, z: 68),
+    //   Vector3.only(x: 2, y: 2, z: 2),
+    //   Vector3.only(x: 2, y: 2, z: 2),
+    //   null,
+    //   objectGuids['cube']!,
+    // ));
+
+    // Floor (use cube as floor)
+    // shapes.add(poCreateCube(
+    //   Vector3.only(x: 72, y: -1, z: 68),
+    //   Vector3.only(x: 100, y: 1, z: 100),
+    //   Vector3.only(x: 100, y: 1, z: 100),
+    //   null,
+    //   objectGuids['floor']!,
+    // ));
+
+    // Wall (use cube as wall)
+    // shapes.add(poCreateCube(
+    //   Vector3.only(x: 64, y: 0, z: 68),
+    //   Vector3.only(x: 2, y: 2, z: 2),
+    //   Vector3.only(x: 2, y: 2, z: 2),
+    //   null,
+    //   objectGuids['wallCube']!,
+    // ));
+
+    // use cube as wipers
+    Vector3 wiperOffset = Vector3.only(x: -1.3, y: 1.45, z: -0.45);
+
+    shapes.add(poCreateCube(
+      Vector3.only(x: 72, y: 0, z: 68) + wiperOffset,
+      wiperSize,
+      wiperSize,
+      null,
+      objectGuids['wiper1']!,
+    ));
+
+    shapes.add(poCreateCube(
+      Vector3.only(x: 72, y: 0, z: 68) + wiperOffset - Vector3.only(z: wiperOffset.z * 2),
+      wiperSize,
+      wiperSize,
+      null,
+      objectGuids['wiper2']!,
+    ));
 
     return shapes;
   }
@@ -68,7 +173,7 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
   @override
   void onCreate() {
     widget.filament.changeCameraOrbitHomePosition(64,4,64);
-    widget.filament.changeCameraTargetPosition(72,0,68);
+    widget.filament.changeCameraTargetPosition(72,1,68);
     widget.filament.changeCameraFlightStartPosition(64, 4, 68);
 
     _animationController = BottomSheet.createAnimationController(
@@ -76,9 +181,194 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
     );
   }
 
+  double _timer = 0;
+  final ValueNotifier<bool> _showWipers = ValueNotifier<bool>(true);
+  final ValueNotifier<double> _wiperSpeed = ValueNotifier<double>(8);
+
+  final ValueNotifier<bool> _showLights = ValueNotifier<bool>(true);
+  final ValueNotifier<double> _lightLength = ValueNotifier<double>(1);
+  final ValueNotifier<double> _lightWidth = ValueNotifier<double>(1);
+  final ValueNotifier<double> _lightAngleX = ValueNotifier<double>(0);
+  final ValueNotifier<double> _lightAngleY = ValueNotifier<double>(0);
+  final ValueNotifier<double> _lightIntensity = ValueNotifier<double>(1);
+
+  final ValueNotifier<bool> _activateTurningLights = ValueNotifier<bool>(false);
+
   @override
   void onUpdateFrame(FilamentViewApi filament, double dt) {
+    _timer += dt;
 
+    // Wipers
+    final double wiperSpeed = _wiperSpeed.value;
+    final double wiperAngle = sin(_timer * wiperSpeed) * 0.66;
+    final Vector4 wiperRotation = Vector4.fromEulerAngles(wiperAngle, 0, -0.8);
+    filament.changeRotationByGUID(
+      SettingsSceneView.objectGuids['wiper1']!,
+      wiperRotation.x,
+      wiperRotation.y,
+      wiperRotation.z,
+      wiperRotation.w,
+    );
+    filament.changeRotationByGUID(
+      SettingsSceneView.objectGuids['wiper2']!,
+      wiperRotation.x,
+      wiperRotation.y,
+      wiperRotation.z,
+      wiperRotation.w,
+    );
+
+    // show/hide wipers
+    filament.changeScaleByGUID(
+      SettingsSceneView.objectGuids['wiper1']!,
+      SettingsSceneView.wiperSize.x * (_showWipers.value ? 1 : 0),
+      SettingsSceneView.wiperSize.y * (_showWipers.value ? 1 : 0),
+      SettingsSceneView.wiperSize.z * (_showWipers.value ? 1 : 0),
+    );
+    filament.changeScaleByGUID(
+      SettingsSceneView.objectGuids['wiper2']!,
+      SettingsSceneView.wiperSize.x * (_showWipers.value ? 1 : 0),
+      SettingsSceneView.wiperSize.y * (_showWipers.value ? 1 : 0),
+      SettingsSceneView.wiperSize.z * (_showWipers.value ? 1 : 0),
+    );
+
+    // Lights
+    Vector3 lightScale = SettingsSceneView.lightSize * Vector3(
+      _lightLength.value,
+      1,
+      _lightWidth.value,
+    ) * Vector3.all(
+      _showLights.value ? 1 : 0,
+    );
+
+    filament.changeScaleByGUID(
+      SettingsSceneView.objectGuids['light1']!,
+      lightScale.x,
+      lightScale.y,
+      lightScale.z,
+    );
+    filament.changeScaleByGUID(
+      SettingsSceneView.objectGuids['light2']!,
+      lightScale.x,
+      lightScale.y,
+      lightScale.z,
+    );
+    Vector4 lightRotation = Vector4.fromEulerAngles(0, _lightAngleX.value, _lightAngleY.value);
+    filament.changeRotationByGUID(
+      SettingsSceneView.objectGuids['light1']!,
+      lightRotation.x,
+      lightRotation.y,
+      lightRotation.z,
+      lightRotation.w,
+    );
+    filament.changeRotationByGUID(
+      SettingsSceneView.objectGuids['light2']!,
+      lightRotation.x,
+      lightRotation.y,
+      lightRotation.z,
+      lightRotation.w,
+    );
+
+    // show/hide lights
+    if(_showLights.value) {
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_B1']!,
+        Colors.red.toHex(),
+        (5000000 * _lightIntensity.value).round(),
+      );
+
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_B2']!,
+        Colors.red.toHex(),
+        (5000000 * _lightIntensity.value).round(),
+      );
+
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_F1']!,
+        Colors.yellow.toHex(),
+        (5000000 * _lightIntensity.value).round()
+      );
+
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_F2']!,
+        Colors.yellow.toHex(),
+        (5000000 * _lightIntensity.value).round()
+      );
+    } else {
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_B1']!,
+        Colors.black.toHex(),
+        0,
+      );
+
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_B2']!,
+        Colors.black.toHex(),
+        0,
+      );
+
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_F1']!,
+        Colors.black.toHex(),
+        0,
+      );
+
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_F2']!,
+        Colors.black.toHex(),
+        0,
+      );
+    }
+
+    // blink turning lights
+    if((_timer * 2).floor() % 2 == 1 && _activateTurningLights.value == true) {
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_tB1']!,
+        Colors.orange.toHex(),
+        (5000000 * _lightIntensity.value).round(),
+      );
+
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_tB2']!,
+        Colors.orange.toHex(),
+        (5000000 * _lightIntensity.value).round(),
+      );
+
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_tF1']!,
+        Colors.orange.toHex(),
+        (5000000 * _lightIntensity.value).round(),
+      );
+
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_tF2']!,
+        Colors.orange.toHex(),
+        (5000000 * _lightIntensity.value).round(),
+      );
+    } else {
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_tB1']!,
+        Colors.black.toHex(),
+        0,
+      );
+
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_tB2']!,
+        Colors.black.toHex(),
+        0,
+      );
+
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_tF1']!,
+        Colors.black.toHex(),
+        0,
+      );
+
+      filament.changeLightColorByGUID(
+        SettingsSceneView.objectGuids['l_light_tF2']!,
+        Colors.black.toHex(),
+        0,
+      );
+    }
   }
 
   @override
@@ -102,14 +392,15 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
   ValueNotifier<double> _setting2 = ValueNotifier<double>(0.5);
   ValueNotifier<double> _setting3 = ValueNotifier<double>(0.5);
 
+  ValueNotifier<int> _menuSelected = ValueNotifier<int>(0);
+
   @override
   Widget build(BuildContext context) {
     _screenHeight = MediaQuery.of(context).size.height;
 
     // If settings hidden, show large invisible button to show settings
     if(!_showSettings) {
-      widget.filament.changeCameraMode("AUTO_ORBIT");
-    } else {
+      // TODO(kerberjg): add viewport adjustment to filament view
       widget.filament.changeCameraMode("INERTIA_AND_GESTURES");
     }
 
@@ -149,9 +440,9 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
     return Container(
         height: _screenHeight,
         width: 320,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.66),
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(16),
             topRight: Radius.circular(16),
           ),
@@ -189,63 +480,49 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
               // Row 2: settings (3 sliders)
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    // Slider 1: Ambient light
-                    Text("Color"),
-                    ListenableBuilder(
-                      listenable: _setting1,
-                      builder: (BuildContext context, Widget? child) => Slider(
-                        min: 0,
-                        max: 1,
-                        value: _setting1.value,
-                        onChanged: (double value) {
-                          _setting1.value = value;
-                          _onSettingChanged();
+                child: ListenableBuilder(
+                  listenable: _menuSelected,
+                  builder:(context, child) => switch(_menuSelected.value) {
+                    0 => child!,
+                    1 => _buildMaterialSettings(context),
+                    2 => _buildLightSettings(context),
+                    3 => _buildWiperSettings(context),
+                    _ => Text("Unknown menu item"),
+                  },
+
+                  // Menu selector (buttons with icon and text)
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    spacing: 12,
+                    children: <Widget>[
+                      // Material settings
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          _menuSelected.value = 1;
                         },
-                      )
-                    ),
-                    // Slider 2: Direct light
-                    Text("Roughness"),
-                    ListenableBuilder(
-                      listenable: _setting2,
-                      builder: (BuildContext context, Widget? child) => Slider(
-                        min: 0,
-                        max: 1,
-                        value: _setting2.value,
-                        onChanged: (double value) {
-                          _setting2.value = value;
-                          _onSettingChanged();
+                        icon: const Icon(Icons.color_lens),
+                        label: const Text('Material'),
+                      ),
+                      // Light settings
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          _menuSelected.value = 2;
                         },
-                      )
-                    ),
-                    // Slider 3: Indirect light
-                    Text("Metallic"),
-                    ListenableBuilder(
-                      listenable: _setting3,
-                      builder: (BuildContext context, Widget? child) => Slider(
-                        min: 0,
-                        max: 1,
-                        value: _setting3.value,
-                        onChanged: (double value) {
-                          _setting3.value = value;
-                          _onSettingChanged();
+                        icon: const Icon(Icons.lightbulb),
+                        label: const Text('Light'),
+                      ),
+                      // Wiper settings
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          _menuSelected.value = 3;
                         },
-                      )
-                    ),
-                    // Button: Randomize
-                    ElevatedButton(
-                      onPressed: () {
-                        _setting1.value = random.nextDouble();
-                        _setting2.value = random.nextDouble();
-                        _setting3.value = random.nextDouble();
-                        _onSettingChanged();
-                      },
-                      child: const Text('Randomize'),
-                    ),
-                  ],
-                ),
+                        icon: const Icon(Icons.settings),
+                        label: const Text('Wiper'),
+                      ),
+                    ],
+                  ),
+
+                )
               ),
             ],
         ),
@@ -280,4 +557,226 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
     );
     widget.filament.changeMaterialDefinition(_customizedMaterial.toJson(), SettingsSceneView.objectGuids['car']!);
   }
+
+  Widget _buildMaterialSettings(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      // back button
+      IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          _menuSelected.value = 0;
+        },
+      ),
+      SizedBox(height: 16),
+      // Slider 1: Ambient light
+      Text("Color"),
+      ListenableBuilder(
+        listenable: _setting1,
+        builder: (BuildContext context, Widget? child) => Slider(
+          min: 0,
+          max: 1,
+          value: _setting1.value,
+          onChanged: (double value) {
+            _setting1.value = value;
+            _onSettingChanged();
+          },
+        )
+      ),
+      // Slider 2: Direct light
+      Text("Roughness"),
+      ListenableBuilder(
+        listenable: _setting2,
+        builder: (BuildContext context, Widget? child) => Slider(
+          min: 0,
+          max: 1,
+          value: _setting2.value,
+          onChanged: (double value) {
+            _setting2.value = value;
+            _onSettingChanged();
+          },
+        )
+      ),
+      // Slider 3: Indirect light
+      Text("Metallic"),
+      ListenableBuilder(
+        listenable: _setting3,
+        builder: (BuildContext context, Widget? child) => Slider(
+          min: 0,
+          max: 1,
+          value: _setting3.value,
+          onChanged: (double value) {
+            _setting3.value = value;
+            _onSettingChanged();
+          },
+        )
+      ),
+      // Button: Randomize
+      ElevatedButton(
+        onPressed: () {
+          _setting1.value = random.nextDouble();
+          _setting2.value = random.nextDouble();
+          _setting3.value = random.nextDouble();
+          _onSettingChanged();
+        },
+        child: const Text('Randomize'),
+      ),
+    ],
+  );
+
+
+  // Wiper settings
+  Widget _buildWiperSettings(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      // back button
+      IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          _menuSelected.value = 0;
+        },
+      ),
+      SizedBox(height: 16),
+      // Switch 1: Show wipers
+      Row(
+        children: <Widget>[
+          Text("Show wipers"),
+          ListenableBuilder(
+            listenable: _showWipers,
+            builder: (BuildContext context, Widget? child) => Switch(
+              value: _showWipers.value,
+              onChanged: (bool value) {
+                _showWipers.value = value;
+              },
+            ),
+          ),
+        ],
+      ),
+      // Slider 1: Wiper speed
+      Text("Wiper speed"),
+      ListenableBuilder(
+        listenable: _wiperSpeed,
+        builder: (BuildContext context, Widget? child) => Slider(
+          min: 0,
+          max: 20,
+          value: _wiperSpeed.value,
+          onChanged: (double value) {
+            _wiperSpeed.value = value;
+          },
+        )
+      ),
+    ],
+  );
+
+  // Light settings
+  Widget _buildLightSettings(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      // back button
+      IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          _menuSelected.value = 0;
+        },
+      ),
+      SizedBox(height: 16),
+      // Switch 1: Show lights
+      Row(
+        children: <Widget>[
+          Text("Show lights"),
+          ListenableBuilder(
+            listenable: _showLights,
+            builder: (BuildContext context, Widget? child) => Switch(
+              value: _showLights.value,
+              onChanged: (bool value) {
+                _showLights.value = value;
+              },
+            ),
+          ),
+        ],
+      ),
+      // Switch 2: Activate turning lights
+      Row(
+        children: <Widget>[
+          Text("Activate turning lights"),
+          ListenableBuilder(
+            listenable: _activateTurningLights,
+            builder: (BuildContext context, Widget? child) => Switch(
+              value: _activateTurningLights.value,
+              onChanged: (bool value) {
+                _activateTurningLights.value = value;
+              },
+            ),
+          ),
+        ],
+      ),
+      // Slider 1: Light length
+      Text("Light length"),
+      ListenableBuilder(
+        listenable: _lightLength,
+        builder: (BuildContext context, Widget? child) => Slider(
+          min: 0.1,
+          max: 5,
+          value: _lightLength.value,
+          onChanged: (double value) {
+            _lightLength.value = value;
+          },
+        )
+      ),
+      // Slider 2: Light width
+      Text("Light width"),
+      ListenableBuilder(
+        listenable: _lightWidth,
+        builder: (BuildContext context, Widget? child) => Slider(
+          min: 0.1,
+          max: 5,
+          value: _lightWidth.value,
+          onChanged: (double value) {
+            _lightWidth.value = value;
+          },
+        )
+      ),
+      // Slider 3: Light angle X
+      Text("Light turning"),
+      ListenableBuilder(
+        listenable: _lightAngleX,
+        builder: (BuildContext context, Widget? child) => Slider(
+          min: -pi / 4,
+          max: pi / 4,
+          value: _lightAngleX.value,
+          onChanged: (double value) {
+            _lightAngleX.value = value;
+          },
+        )
+      ),
+      // Slider 4: Light angle Y
+      Text("Light height"),
+      ListenableBuilder(
+        listenable: _lightAngleY,
+        builder: (BuildContext context, Widget? child) => Slider(
+          min: -pi / 4,
+          max: pi / 4,
+          value: _lightAngleY.value,
+          onChanged: (double value) {
+            _lightAngleY.value = value;
+          },
+        )
+      ),
+      // Slider 5: Light intensity
+      Text("Light intensity"),
+      ListenableBuilder(
+        listenable: _lightIntensity,
+        builder: (BuildContext context, Widget? child) => Slider(
+          min: 0,
+          max: 2,
+          value: _lightIntensity.value,
+          onChanged: (double value) {
+            _lightIntensity.value = value;
+          },
+        )
+      ),
+
+    ],
+  );
+
 }

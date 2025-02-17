@@ -60,6 +60,10 @@ class Vector3 {
     return this;
   }
 
+  Vector3 operator +(final Vector3 other) => Vector3(x + other.x, y + other.y, z + other.z);
+  Vector3 operator -(final Vector3 other) => Vector3(x - other.x, y - other.y, z - other.z);
+  Vector3 operator *(final Vector3 other) => Vector3(x * other.x, y * other.y, z * other.z);
+  Vector3 operator /(final Vector3 other) => Vector3(x / other.x, y / other.y, z / other.z);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
     'x': x,
@@ -100,6 +104,29 @@ class Vector4 {
   Vector4.all(final double value) : this(
     x: value, y: value, z: value, w: value,
   );
+
+  /// constructor; Quaternion from euler angles
+  static Vector4 fromEulerAngles(double xx, double yy, double zz) {
+    final double halfX = xx / 2;
+    final double halfY = yy / 2;
+    final double halfZ = zz / 2;
+
+    final double cosX = Math.cos(halfX);
+    final double cosY = Math.cos(halfY);
+    final double cosZ = Math.cos(halfZ);
+
+    final double sinX = Math.sin(halfX);
+    final double sinY = Math.sin(halfY);
+    final double sinZ = Math.sin(halfZ);
+
+    double x, y, z, w;
+    x = sinX * cosY * cosZ + cosX * sinY * sinZ;
+    y = cosX * sinY * cosZ - sinX * cosY * sinZ;
+    z = cosX * cosY * sinZ - sinX * sinY * cosZ;
+    w = cosX * cosY * cosZ + sinX * sinY * sinZ;
+
+    return Vector4(x: x, y: y, z: z, w: w);
+  }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
     'x': x,

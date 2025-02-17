@@ -29,6 +29,7 @@ List<Model> getBaseModels() {
     animation: null,
     receiveShadows: true,
     castShadows: true,
+    name: sequoiaAsset,
     guid: const Uuid().v4(),
     keepInMemory: true,
     isInstancePrimary: true,
@@ -49,6 +50,22 @@ List<Model> getBaseModels() {
     isInstancePrimary: true,
   ));
 
+  // Radar cone
+  models.add(GlbModel.asset(
+    radarConeAsset,
+    centerPosition: Vector3.only(x: 0, y: 0, z: 0),
+    scale: Vector3.only(x: 1, y: 1, z: 1),
+    rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
+    collidable: null,
+    animation: null,
+    receiveShadows: false,
+    castShadows: false,
+    name: radarConeAsset,
+    guid: const Uuid().v4(),
+    keepInMemory: true,
+    isInstancePrimary: true,
+  ));
+
   // Radar segment
   models.add(GlbModel.asset(
     radarSegmentAsset,
@@ -59,6 +76,7 @@ List<Model> getBaseModels() {
     animation: null,
     receiveShadows: true,
     castShadows: true,
+    name: radarSegmentAsset,
     guid: const Uuid().v4(),
     keepInMemory: true,
     isInstancePrimary: true,

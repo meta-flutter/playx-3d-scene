@@ -44,9 +44,8 @@ List<String> thingsWeCanChangeParamsOn = [];
 
 // TODO(kerberjg): refactor as `Cube.default`
 @Deprecated("Will be removed")
-Shape poCreateCube(Vector3 pos, Vector3 scale, Vector3 sizeExtents,
-    Color? colorOveride) {
-  String uniqueGuid = const Uuid().v4();
+Shape poCreateCube(Vector3 pos, Vector3 scale, Vector3 sizeExtents, Color? colorOveride, [ String? guid ]) {
+  String uniqueGuid = guid ?? const Uuid().v4();
   // Just to show off changing material params during runtime.
   thingsWeCanChangeParamsOn.add(uniqueGuid);
 
@@ -136,6 +135,8 @@ List<Shape> poGetScenesShapes() {
   List<Shape> itemsToReturn = [];
 
   itemsToReturn.addAll(PlaygroundSceneView.getSceneShapes());
+  itemsToReturn.addAll(RadarSceneView.getSceneShapes());
+  itemsToReturn.addAll(SettingsSceneView.getSceneShapes());
 
   // TODO: add other scenes if needed
 
@@ -267,6 +268,118 @@ List<Light> poGetSceneLightsList() {
       position: Vector3.only(x: 15, y: 5, z: -15),
       // should be a unit vector
       direction: Vector3.only(x: 0, y: yDirection, z: 0)));
+
+  Vector3 taillightOffset = Vector3.only(
+      x: 2.5,
+      y: 1.2,
+      z: 0.85,
+    );
+
+  // settings scene
+  guid = const Uuid().v4();
+  itemsToReturn.add(Light(
+    global_guid: SettingsSceneView.objectGuids['l_light_B1']!,
+    type: LightType.point,
+    color: Colors.red,
+    intensity: 100000000 * 0.05,
+    falloffRadius: 2,
+    castShadows: false,
+    castLight: true,
+    position: SettingsSceneView.carOrigin + taillightOffset,
+  ));
+
+  guid = const Uuid().v4();
+  itemsToReturn.add(Light(
+    global_guid: SettingsSceneView.objectGuids['l_light_B2']!,
+    type: LightType.point,
+    color: Colors.red,
+    intensity: 100000000 * 0.05,
+    falloffRadius: 2,
+    castShadows: false,
+    castLight: true,
+    position: SettingsSceneView.carOrigin + taillightOffset + Vector3.only(z: taillightOffset.z * -2),
+  ));
+
+  Vector3 frontlightOffset = Vector3.only(
+      x: -2.5,
+      y: 1,
+      z: 0.85,
+    );
+
+  guid = const Uuid().v4();
+  itemsToReturn.add(Light(
+    global_guid: SettingsSceneView.objectGuids['l_light_F1']!,
+    type: LightType.point,
+    color: Colors.yellow,
+    intensity: 100000000 * 0.05,
+    falloffRadius: 2,
+    castShadows: false,
+    castLight: true,
+    position: SettingsSceneView.carOrigin + frontlightOffset,
+  ));
+
+
+  guid = const Uuid().v4();
+  itemsToReturn.add(Light(
+    global_guid: SettingsSceneView.objectGuids['l_light_F2']!,
+    type: LightType.point,
+    color: Colors.yellow,
+    intensity: 100000000 * 0.05,
+    falloffRadius: 2,
+    castShadows: false,
+    castLight: true,
+    position: SettingsSceneView.carOrigin + frontlightOffset + Vector3.only(z: frontlightOffset.z * -2),
+  ));
+
+  // tunrning lights
+  guid = const Uuid().v4();
+  itemsToReturn.add(Light(
+    global_guid: SettingsSceneView.objectGuids['l_light_tB1']!,
+    type: LightType.point,
+    color: Colors.orange,
+    intensity: 100000000 * 0.05,
+    falloffRadius: 2,
+    castShadows: false,
+    castLight: true,
+    position: SettingsSceneView.carOrigin + taillightOffset,
+  ));
+
+  guid = const Uuid().v4();
+  itemsToReturn.add(Light(
+    global_guid: SettingsSceneView.objectGuids['l_light_tB2']!,
+    type: LightType.point,
+    color: Colors.orange,
+    intensity: 100000000 * 0.05,
+    falloffRadius: 2,
+    castShadows: false,
+    castLight: true,
+    position: SettingsSceneView.carOrigin + taillightOffset + Vector3.only(z: taillightOffset.z * -2),
+  ));
+
+  guid = const Uuid().v4();
+  itemsToReturn.add(Light(
+    global_guid: SettingsSceneView.objectGuids['l_light_tF1']!,
+    type: LightType.point,
+    color: Colors.orange,
+    intensity: 100000000 * 0.05,
+    falloffRadius: 2,
+    castShadows: false,
+    castLight: true,
+    position: SettingsSceneView.carOrigin + frontlightOffset,
+  ));
+
+  guid = const Uuid().v4();
+  itemsToReturn.add(Light(
+    global_guid: SettingsSceneView.objectGuids['l_light_tF2']!,
+    type: LightType.point,
+    color: Colors.orange,
+    intensity: 100000000 * 0.05,
+    falloffRadius: 2,
+    castShadows: false,
+    castLight: true,
+    position: SettingsSceneView.carOrigin + frontlightOffset + Vector3.only(z: frontlightOffset.z * -2),
+  ));
+
 
   return itemsToReturn;
 }
