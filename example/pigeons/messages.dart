@@ -38,6 +38,12 @@ abstract class FilamentViewApi {
 
   /// Toggle shapes visibility in the scene.
   void toggleShapesInScene(bool value);
+  /// Set shape's transform by GUID.
+  void setShapeTransform(String guid, {
+    double posx = 0, double posy = 0, double posz = 0,
+    double rotx = 0, double roty = 0, double rotz = 0, double rotw = 1,
+    double sclx = 1, double scly = 1, double sclz = 1,
+  });
 
   /// Toggle debug collidable visuals in the scene.
   void toggleDebugCollidableViewsInScene(bool value);
