@@ -19,6 +19,7 @@ class RadarSceneView extends StatefulSceneView {
     required super.filament,
     required super.frameController,
     required super.collisionController,
+    required super.readinessController,
   }) : super();
 
   @override

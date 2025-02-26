@@ -21,6 +21,7 @@ class SettingsSceneView extends StatefulSceneView {
     required super.filament,
     required super.frameController,
     required super.collisionController,
+    required super.readinessController,
   });
 
   @override
@@ -401,6 +402,8 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
     // If settings hidden, show large invisible button to show settings
     if(!_showSettings) {
       // TODO(kerberjg): add viewport adjustment to filament view
+      widget.filament.changeCameraMode("AUTO_ORBIT");
+    } else {
       widget.filament.changeCameraMode("INERTIA_AND_GESTURES");
     }
 

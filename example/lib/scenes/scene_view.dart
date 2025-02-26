@@ -3,18 +3,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:my_fox_example/events/collision_event_channel.dart';
 import 'package:my_fox_example/events/frame_event_channel.dart';
+import 'package:my_fox_example/events/native_readiness.dart';
 import 'package:my_fox_example/messages.g.dart';
 
 abstract class StatefulSceneView extends StatefulWidget {
   final FilamentViewApi filament;
   final FrameEventChannel frameController;
   final CollisionEventChannel collisionController;
+  final NativeReadiness readinessController;
 
   StatefulSceneView({
     super.key,
     required this.filament,
     required this.frameController,
     required this.collisionController,
+    required this.readinessController,
   }) : super();
 }
 
@@ -24,8 +27,8 @@ abstract class StatefulSceneViewState<T extends StatefulSceneView> extends State
 
   @override @nonVirtual
   void initState() {
-    widget.frameController.sceneState = this;
-    this.onCreate();
+    widget.frameController.addCallback(this.onUpdateFrame);
+    widget.readinessController.addCallback(this.onCreate);
     super.initState();
   }
 
@@ -41,10 +44,7 @@ abstract class StatefulSceneViewState<T extends StatefulSceneView> extends State
   @override @nonVirtual
   void dispose() {
     this.onDestroy();
-    if (widget.frameController.sceneState == this) {
-      widget.frameController.resetScene();
-    }
-
+    widget.frameController.removeCallback(this.onUpdateFrame);
     super.dispose();
   }
 }

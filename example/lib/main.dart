@@ -82,16 +82,19 @@ class _MyAppState extends State<MyApp> {
         filament: filamentViewApi,
         frameController: _frameEventChannel, 
         collisionController: _collisionEventChannel,
+        readinessController: _nativeReadiness,
       ),
       1 => RadarSceneView(
         filament: filamentViewApi,
         frameController: _frameEventChannel, 
         collisionController: _collisionEventChannel,
+        readinessController: _nativeReadiness,
       ),
       2 => SettingsSceneView(
         filament: filamentViewApi,
         frameController: _frameEventChannel, 
         collisionController: _collisionEventChannel,
+        readinessController: _nativeReadiness,
       ),
       _ => throw UnsupportedError("nothiiiing")
     };
