@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart' hide Material;
 import 'package:my_fox_example/assets.dart';
 import 'package:my_fox_example/demo_widgets.dart';
+import 'package:my_fox_example/events/collision_event_channel.dart';
 import 'package:my_fox_example/main.dart';
 import 'package:my_fox_example/material_helpers.dart';
 import 'package:my_fox_example/messages.g.dart';
@@ -47,6 +48,10 @@ class SettingsSceneView extends StatefulSceneView {
     'cube': uuid.v4(),
     'wiper1': uuid.v4(),
     'wiper2': uuid.v4(),
+    's_wheel_F1': uuid.v4(),
+    's_wheel_F2': uuid.v4(),
+    's_wheel_B1': uuid.v4(),
+    's_wheel_B2': uuid.v4(),
     'light1': uuid.v4(),
     'light2': uuid.v4(),
     'l_light_B1': uuid.v4(),
@@ -248,6 +253,17 @@ class SettingsSceneView extends StatefulSceneView {
   static final Vector3 wiperSize = Vector3.only(x: 0.05, y: 0.75, z: 0.05);
   static final Vector3 lightSize = Vector3.only(x: 0.2, y: 0.2, z: 0.2);
 
+  static final Vector3 wheelOffset = Vector3.only(x: 1.75, y: 0.5, z: 0.9);
+  static final double wheelBackOffset = 0.4;
+  static final Vector3 wheelSize = Vector3(0.5, 0.5, 0.2);
+  static final int wheelSegments = 8;
+  static final Map<String, Vector3> wheelPositions = {
+    's_wheel_F1': carOrigin + Vector3.only(x: -wheelOffset.x,                   y: wheelOffset.y, z: wheelOffset.z),
+    's_wheel_F2': carOrigin + Vector3.only(x: -wheelOffset.x,                   y: wheelOffset.y, z: -wheelOffset.z),
+    's_wheel_B1': carOrigin + Vector3.only(x: wheelOffset.x - wheelBackOffset,  y: wheelOffset.y, z: wheelOffset.z),
+    's_wheel_B2': carOrigin + Vector3.only(x: wheelOffset.x - wheelBackOffset,  y: wheelOffset.y, z: -wheelOffset.z),
+  };
+
   static List<Shape> getSceneShapes() {
     final List<Shape> shapes = [];
 
@@ -308,6 +324,18 @@ class SettingsSceneView extends StatefulSceneView {
       objectGuids['wiper2']!,
     ));
 
+    // Use spheres as wheels
+    for(final entry in wheelPositions.entries) {
+      shapes.add(poCreateSphere(
+        entry.value,
+        wheelSize,
+        wheelSize,
+        wheelSegments, wheelSegments,
+        null,
+        objectGuids[entry.key]!,
+      ));
+    }
+
     return shapes;
   }
 
@@ -324,13 +352,38 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
    */
   @override
   void onCreate() {
-    widget.filament.changeCameraOrbitHomePosition(64,4,64);
-    widget.filament.changeCameraTargetPosition(72,1,68);
-    widget.filament.changeCameraFlightStartPosition(64, 4, 68);
+    _resetCamera();
 
     _animationController = BottomSheet.createAnimationController(
       this,
     );
+
+    // Set up listeners for wheel clicks
+    widget.collisionController.addListener(_onObjectTouch);
+    // Set tire meshes to invisible
+    for(String name in SettingsSceneView.wheelPositions.keys) {
+      widget.filament.turnOffVisualForEntity(SettingsSceneView.objectGuids[name]!);
+    }
+  }
+
+  void _resetCamera({ bool autoOrbit = false}) {
+    if(autoOrbit) {
+      widget.filament.changeCameraMode("AUTO_ORBIT");
+    } else {
+      widget.filament.changeCameraMode("INERTIA_AND_GESTURES");
+    }
+
+
+    widget.filament.changeCameraOrbitHomePosition(64,4,64);
+    widget.filament.changeCameraTargetPosition(72,1,68);
+    widget.filament.changeCameraFlightStartPosition(64, 4, 64);
+
+
+  }
+
+  void _onObjectTouch(CollisionEvent event) {
+    print("Scene received touch!");
+    onTriggerEvent("touchObject", event);
   }
 
   double _timer = 0;
@@ -523,14 +576,89 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
     }
   }
 
+  static const double _wheelCameraDistanceZ = 1;
+  static const double _wheelCameraDistanceY = 0;
+  static final Map<String, Vector3> _wheelCameraPositions = SettingsSceneView.wheelPositions.map((key, value) => MapEntry(
+    key,
+    value
+      + Vector3.only(y: _wheelCameraDistanceY)
+      + (
+        value.z > 0
+          ? Vector3.only(x: _wheelCameraDistanceZ)
+          : Vector3.only(x: -_wheelCameraDistanceZ)
+        )
+  ));
+
   @override
   void onTriggerEvent(final String eventName, [ final dynamic? eventData ]) {
+    if(eventName != "touchObject") return;
 
+    final CollisionEvent event = eventData as CollisionEvent;
+    final String guid = event.results[0].guid;
+
+    print('Touched object with guid: ${guid}');
+
+    // If touched any of the wheels...
+    if(
+      guid == SettingsSceneView.objectGuids['s_wheel_F1'] ||
+      guid == SettingsSceneView.objectGuids['s_wheel_F2'] ||
+      guid == SettingsSceneView.objectGuids['s_wheel_B1'] ||
+      guid == SettingsSceneView.objectGuids['s_wheel_B2']
+    ) {
+      final String name = SettingsSceneView.objectGuids.entries.firstWhere((entry) => entry.value == guid).key;
+      print('Touched wheel ${name}');
+
+      // Change camera position to wheel
+      _cameraFocusOnTire(name);
+
+      // Set menu setting
+      _menuSelected.value = 4;
+
+      // Increase tire pressure
+      _tirePressures[name]!.value = (_tirePressures[name]!.value + 0.025).clamp(0, 1);
+    }
+  }
+
+  void _cameraFocusOnTire(String name) {
+    final Vector3 cameraLookAt = SettingsSceneView.wheelPositions[name]!;
+    final Vector3 cameraLookFrom = _wheelCameraPositions[name]!;
+
+
+    widget.filament.changeCameraFlightStartPosition(
+      cameraLookFrom.x,
+      cameraLookFrom.y,
+      cameraLookFrom.z,
+    );
+
+    // widget.filament.changeCameraOrbitHomePosition(
+    //   cameraLookFrom.x,
+    //   cameraLookFrom.y,
+    //   cameraLookFrom.z,
+    // );
+
+    widget.filament.changeCameraTargetPosition(
+      cameraLookAt.x,
+      cameraLookAt.y,
+      cameraLookAt.z,
+    );
+
+
+    // If last character is 1, it's left - set camera angle
+    if(name.endsWith('1')) {  
+      widget.filament.setCameraRotation(pi * 0.5);
+    } else {
+      widget.filament.setCameraRotation(pi * -0.5);
+    }
+
+    print("Set camera to tire ${name}, look from ${cameraLookFrom} at ${cameraLookAt}");
+
+
+    // widget.filament.resetInertiaCameraToDefaultValues();
   }
 
   @override
   void onDestroy() {
-
+    widget.collisionController.removeListener(_onObjectTouch);
   }
 
   /*
@@ -553,9 +681,9 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
     // If settings hidden, show large invisible button to show settings
     if(!_showSettings) {
       // TODO(kerberjg): add viewport adjustment to filament view
-      widget.filament.changeCameraMode("AUTO_ORBIT");
+      _resetCamera(autoOrbit: true);
     } else {
-      widget.filament.changeCameraMode("INERTIA_AND_GESTURES");
+      _resetCamera(autoOrbit: false);
     }
 
     return Stack(
@@ -641,6 +769,7 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
                     1 => _buildMaterialSettings(context),
                     2 => _buildLightSettings(context),
                     3 => _buildWiperSettings(context),
+                    4 => _buildTireSettings(context),
                     _ => Text("Unknown menu item"),
                   },
 
@@ -672,6 +801,14 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
                         },
                         icon: const Icon(Icons.settings),
                         label: const Text('Wiper'),
+                      ),
+                      // Tire settings
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          _menuSelected.value = 4;
+                        },
+                        icon: const Icon(Icons.car_repair),
+                        label: const Text('Tire'),
                       ),
                     ],
                   ),
@@ -719,6 +856,7 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
       IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: () {
+          _resetCamera();
           _menuSelected.value = 0;
         },
       ),
@@ -787,6 +925,7 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
       IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: () {
+          _resetCamera();
           _menuSelected.value = 0;
         },
       ),
@@ -830,6 +969,7 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
       IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: () {
+          _resetCamera();
           _menuSelected.value = 0;
         },
       ),
@@ -930,6 +1070,56 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
         )
       ),
 
+    ],
+  );
+
+  final Map<String, ValueNotifier<double>> _tirePressures = {
+    's_wheel_F1': ValueNotifier<double>(0.5),
+    's_wheel_F2': ValueNotifier<double>(0.5),
+    's_wheel_B1': ValueNotifier<double>(0.5),
+    's_wheel_B2': ValueNotifier<double>(0.5),
+  };
+
+  static const Map<String, String> _tireNames = {
+    's_wheel_F1': 'Front-left',
+    's_wheel_F2': 'Front-right',
+    's_wheel_B1': 'Back-left',
+    's_wheel_B2': 'Back-right',
+  };
+
+  Widget _buildTireSettings(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      // back button
+      IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          _resetCamera();
+          _menuSelected.value = 0;
+        },
+      ),
+      SizedBox(height: 16),
+      
+      // All tire pressure sliders
+      for(final entry in _tirePressures.entries) ...[
+        Text(_tireNames[entry.key]!),
+        ListenableBuilder(
+          listenable: entry.value,
+          builder: (BuildContext context, Widget? child) => Slider(
+            min: 0,
+            max: 1,
+            value: entry.value.value,
+            onChangeStart: (double value) {
+              // focus camera on tire
+              _cameraFocusOnTire(entry.key);
+            },
+            onChanged: (double value) {
+              // set value
+              entry.value.value = value;
+            },
+          )
+        ),
+      ],
     ],
   );
 
