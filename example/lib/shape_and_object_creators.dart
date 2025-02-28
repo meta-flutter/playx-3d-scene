@@ -69,19 +69,21 @@ Shape poCreateCube(Vector3 pos, Vector3 scale, Vector3 sizeExtents, Color? color
 // TODO(kerberjg): refactor as `Sphere.default`
 @Deprecated("Will be removed")
 Shape poCreateSphere(Vector3 pos, Vector3 scale, Vector3 sizeExtents,
-    int stacks, int slices, Color? colorOveride) {
+    int stacks, int slices, Color? colorOveride, [ String? guid ]) {
   return Sphere(
-      centerPosition: pos,
-      material: poGetTexturedMaterial(),
-      //material: poGetLitMaterial(null),
-      stacks: stacks,
-      collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
-      slices: slices,
-      cullingEnabled: false,
-      castShadows: true,
-      receiveShadows: true,
-      scale: scale,
-      size: sizeExtents);
+    centerPosition: pos,
+    material: poGetTexturedMaterial(),
+    //material: poGetLitMaterial(null),
+    stacks: stacks,
+    collidable: Collidable(isStatic: false, shouldMatchAttachedObject: true),
+    slices: slices,
+    cullingEnabled: false,
+    castShadows: true,
+    receiveShadows: true,
+    scale: scale,
+    size: sizeExtents,
+    global_guid: guid
+  );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
