@@ -524,7 +524,7 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
   }
 
   @override
-  void onTriggerEvent(String eventName) {
+  void onTriggerEvent(final String eventName, [ final dynamic? eventData ]) {
 
   }
 

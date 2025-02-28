@@ -36,7 +36,7 @@ abstract class StatefulSceneViewState<T extends StatefulSceneView> extends State
   void onUpdateFrame(FilamentViewApi filament, double dt);
 
   /// Called when an event by a given name is triggered
-  void onTriggerEvent(String eventName);
+  void onTriggerEvent(String eventName, [ dynamic? eventData ]);
 
   /// Called when the scene is unmounted - supercedes [State.dispose]
   void onDestroy();

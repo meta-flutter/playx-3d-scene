@@ -167,7 +167,7 @@ class _RadarSceneViewState extends StatefulSceneViewState<RadarSceneView> {
   void onDestroy() {}
 
   @override
-  void onTriggerEvent(final String eventName) {
+  void onTriggerEvent(final String eventName, [final dynamic? eventData]) {
     switch(eventName) {
       case "doOneWaveSegment":
         vDoOneWaveSegment(widget.filament);

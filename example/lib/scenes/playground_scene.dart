@@ -200,7 +200,7 @@ class _PlaygroundSceneViewState extends StatefulSceneViewState {
   void onDestroy() {}
 
   @override
-  void onTriggerEvent(final String eventName) {}
+  void onTriggerEvent(final String eventName, [ final dynamic? eventData ]) {}
 
   @override
   void onUpdateFrame(FilamentViewApi filament, double dt) {
