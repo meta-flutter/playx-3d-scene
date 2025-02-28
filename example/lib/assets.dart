@@ -5,6 +5,8 @@ import 'package:uuid/uuid.dart';
 const String sequoiaAsset = "assets/models/sequoia_ngp.glb";
 const String garageAsset = "assets/models/garagescene.glb";
 
+const String checkerboardFloor = "assets/models/checkerboard_v2.glb";
+
 const String radarConeAsset = "assets/models/radar_cone.glb";
 const String radarSegmentAsset = "assets/models/half_torus.glb";
 //const String radarSegmentAsset = "assets/models/half_torus_parent_mat.glb";
@@ -81,6 +83,22 @@ List<Model> getBaseModels() {
     keepInMemory: true,
     isInstancePrimary: true,
   ));
+
+  // Floor
+  models.add(GlbModel.asset(
+      checkerboardFloor,
+      centerPosition: Vector3.only(x: 0, y: -0.1, z: 0),
+      scale: Vector3.all(1),
+      rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
+      collidable: null,
+      animation: null,
+      receiveShadows: true,
+      castShadows: false,
+      name: checkerboardFloor,
+      guid: const Uuid().v4(),
+      keepInMemory: true,
+      isInstancePrimary: true,
+    ));
 
   return models;
 }

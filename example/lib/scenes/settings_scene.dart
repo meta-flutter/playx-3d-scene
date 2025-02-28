@@ -31,9 +31,20 @@ class SettingsSceneView extends StatefulSceneView {
 
   static final Map<String, String> objectGuids = {
     'car': uuid.v4(),
-    'floor': uuid.v4(),
+    'floor1': uuid.v4(),
+    'floor2': uuid.v4(),
+    'floor3': uuid.v4(),
+    'floor4': uuid.v4(),
+    'floor5': uuid.v4(),
+    'floor6': uuid.v4(),
+    'floor7': uuid.v4(),
+    'floor8': uuid.v4(),
+    'floor9': uuid.v4(),
+    'wall1': uuid.v4(),
+    'wall2': uuid.v4(),
+    'wall3': uuid.v4(),
+    'wall4': uuid.v4(),
     'cube': uuid.v4(),
-    'wallCube': uuid.v4(),
     'wiper1': uuid.v4(),
     'wiper2': uuid.v4(),
     'light1': uuid.v4(),
@@ -103,6 +114,134 @@ class SettingsSceneView extends StatefulSceneView {
       isInstancePrimary: false,
     ));
 
+    // 16x16 floor, 3x3 tiles
+    models.add(GlbModel.asset(
+      checkerboardFloor,
+      centerPosition: carOrigin - Vector3.only(x: 0, y: 0, z: 0),
+      scale: Vector3.all(1),
+      rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
+      collidable: null,
+      animation: null,
+      receiveShadows: true,
+      castShadows: false,
+      name: "${checkerboardFloor}_1",
+      guid: objectGuids['floor1']!,
+      keepInMemory: true,
+      isInstancePrimary: false,
+    ));
+    models.add(GlbModel.asset(
+      checkerboardFloor,
+      centerPosition: carOrigin - Vector3.only(x: -16, y: 0, z: 16),
+      scale: Vector3.all(1),
+      rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
+      collidable: null,
+      animation: null,
+      receiveShadows: true,
+      castShadows: false,
+      name: "${checkerboardFloor}_2",
+      guid: objectGuids['floor2']!,
+      keepInMemory: true,
+      isInstancePrimary: false,
+    ));
+    models.add(GlbModel.asset(
+      checkerboardFloor,
+      centerPosition: carOrigin - Vector3.only(x: -16, y: 0, z: 0),
+      scale: Vector3.all(1),
+      rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
+      collidable: null,
+      animation: null,
+      receiveShadows: true,
+      castShadows: false,
+      name: "${checkerboardFloor}_3",
+      guid: objectGuids['floor3']!,
+      keepInMemory: true,
+      isInstancePrimary: false,
+    ));
+    models.add(GlbModel.asset(
+      checkerboardFloor,
+      centerPosition: carOrigin - Vector3.only(x: -16, y: 0, z: -16),
+      scale: Vector3.all(1),
+      rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
+      collidable: null,
+      animation: null,
+      receiveShadows: true,
+      castShadows: false,
+      name: "${checkerboardFloor}_4",
+      guid: objectGuids['floor4']!,
+      keepInMemory: true,
+      isInstancePrimary: false,
+    ));
+    models.add(GlbModel.asset(
+      checkerboardFloor,
+      centerPosition: carOrigin - Vector3.only(x: 0, y: 0, z: -16),
+      scale: Vector3.all(1),
+      rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
+      collidable: null,
+      animation: null,
+      receiveShadows: true,
+      castShadows: false,
+      name: "${checkerboardFloor}_5",
+      guid: objectGuids['floor5']!,
+      keepInMemory: true,
+      isInstancePrimary: false,
+    ));
+    models.add(GlbModel.asset(
+      checkerboardFloor,
+      centerPosition: carOrigin - Vector3.only(x: 16, y: 0, z: -16),
+      scale: Vector3.all(1),
+      rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
+      collidable: null,
+      animation: null,
+      receiveShadows: true,
+      castShadows: false,
+      name: "${checkerboardFloor}_6",
+      guid: objectGuids['floor6']!,
+      keepInMemory: true,
+      isInstancePrimary: false,
+    ));
+    models.add(GlbModel.asset(
+      checkerboardFloor,
+      centerPosition: carOrigin - Vector3.only(x: 16, y: 0, z: 0),
+      scale: Vector3.all(1),
+      rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
+      collidable: null,
+      animation: null,
+      receiveShadows: true,
+      castShadows: false,
+      name: "${checkerboardFloor}_7",
+      guid: objectGuids['floor7']!,
+      keepInMemory: true,
+      isInstancePrimary: false,
+    ));
+    models.add(GlbModel.asset(
+      checkerboardFloor,
+      centerPosition: carOrigin - Vector3.only(x: 16, y: 0, z: 16),
+      scale: Vector3.all(1),
+      rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
+      collidable: null,
+      animation: null,
+      receiveShadows: true,
+      castShadows: false,
+      name: "${checkerboardFloor}_8",
+      guid: objectGuids['floor8']!,
+      keepInMemory: true,
+      isInstancePrimary: false,
+    ));
+    models.add(GlbModel.asset(
+      checkerboardFloor,
+      centerPosition: carOrigin - Vector3.only(x: 0, y: 0, z: 16),
+      scale: Vector3.all(1),
+      rotation: Vector4(x: 0, y: 0, z: 0, w: 1),
+      collidable: null,
+      animation: null,
+      receiveShadows: true,
+      castShadows: false,
+      name: "${checkerboardFloor}_9",
+      guid: objectGuids['floor9']!,
+      keepInMemory: true,
+      isInstancePrimary: false,
+    ));
+
     return models;
   }
 
@@ -120,22 +259,34 @@ class SettingsSceneView extends StatefulSceneView {
     //   objectGuids['cube']!,
     // ));
 
-    // Floor (use cube as floor)
+    // Wall (use cube as wall), floor is 48x48 
     // shapes.add(poCreateCube(
-    //   Vector3.only(x: 72, y: -1, z: 68),
-    //   Vector3.only(x: 100, y: 1, z: 100),
-    //   Vector3.only(x: 100, y: 1, z: 100),
+    //   carOrigin - Vector3.only(x: 0, y: -8 + 0.1, z: 24),
+    //   Vector3.only(x: 48, y: 16, z: 0.1),
+    //   Vector3.only(x: 48, y: 16, z: 0.1),
     //   null,
-    //   objectGuids['floor']!,
+    //   objectGuids['wall1']!,
     // ));
-
-    // Wall (use cube as wall)
     // shapes.add(poCreateCube(
-    //   Vector3.only(x: 64, y: 0, z: 68),
-    //   Vector3.only(x: 2, y: 2, z: 2),
-    //   Vector3.only(x: 2, y: 2, z: 2),
+    //   carOrigin - Vector3.only(x: 0, y: -8 + 0.1, z: -24),
+    //   Vector3.only(x: 48, y: 16, z: 0.1),
+    //   Vector3.only(x: 48, y: 16, z: 0.1),
     //   null,
-    //   objectGuids['wallCube']!,
+    //   objectGuids['wall2']!,
+    // ));
+    // shapes.add(poCreateCube(
+    //   carOrigin - Vector3.only(x: 24, y: -8 + 0.1, z: 0),
+    //   Vector3.only(x: 0.1, y: 16, z: 48),
+    //   Vector3.only(x: 0.1, y: 16, z: 48),
+    //   null,
+    //   objectGuids['wall3']!,
+    // ));
+    // shapes.add(poCreateCube(
+    //   carOrigin - Vector3.only(x: -24, y: -8 + 0.1, z: -0),
+    //   Vector3.only(x: 0.1, y: 16, z: 48),
+    //   Vector3.only(x: 0.1, y: 16, z: 48),
+    //   null,
+    //   objectGuids['wall4']!,
     // ));
 
     // use cube as wipers
