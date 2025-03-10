@@ -106,7 +106,13 @@ class Vector4 {
   );
 
   /// constructor; Quaternion from euler angles
-  static Vector4 fromEulerAngles(double xx, double yy, double zz) {
+  static Vector4 fromEulerAngles(double xx, double yy, double zz, { bool useDegrees = false }) {
+    if (useDegrees) {
+      xx = xx * Math.pi / 180;
+      yy = yy * Math.pi / 180;
+      zz = zz * Math.pi / 180;
+    }
+
     final double halfX = xx / 2;
     final double halfY = yy / 2;
     final double halfZ = zz / 2;

@@ -5,7 +5,9 @@ import 'package:uuid/uuid.dart';
 const String sequoiaAsset = "assets/models/sequoia_ngp.glb";
 const String garageAsset = "assets/models/garagescene.glb";
 
-const String checkerboardFloor = "assets/models/checkerboard_v2.glb";
+const String checkerboardFloor = "assets/models/cb_floor.glb";
+const String bounceBall = "assets/models/bounce_ball.glb";
+const String donut = "assets/models/donut.glb";
 
 const String radarConeAsset = "assets/models/radar_cone.glb";
 const String radarSegmentAsset = "assets/models/half_torus.glb";

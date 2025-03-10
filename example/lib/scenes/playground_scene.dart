@@ -194,6 +194,8 @@ class _PlaygroundSceneViewState extends StatefulSceneViewState {
     widget.filament.changeCameraOrbitHomePosition(8, 3, 0);
     widget.filament.changeCameraTargetPosition(0, 0, 0);
     widget.filament.changeCameraFlightStartPosition(8, 3, 8);
+
+    // widget.filament.setFogOptions(kFogDisabled.toJson());
   }
 
   @override

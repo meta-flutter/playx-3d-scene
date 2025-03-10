@@ -30,12 +30,17 @@ import 'package:pigeon/pigeon.dart';
 ))
 @HostApi()
 abstract class FilamentViewApi {
+  /*
+   *  Materials
+   */
   /// Change material parameters for the given entity.
   void changeMaterialParameter(Map<String?, Object?> params, String guid);
-
   /// Change material definition for the given entity.
   void changeMaterialDefinition(Map<String?, Object?> params, String guid);
 
+  /*
+   *  Shapes
+   */
   /// Toggle shapes visibility in the scene.
   void toggleShapesInScene(bool value);
   /// Set shape's transform by GUID.
@@ -45,32 +50,41 @@ abstract class FilamentViewApi {
     double sclx = 1, double scly = 1, double sclz = 1,
   });
 
-  /// Toggle debug collidable visuals in the scene.
-  void toggleDebugCollidableViewsInScene(bool value);
+  /*
+   * Rendering
+   */
+  /// Cycle between view quality settings presets.
+  void changeViewQualitySettings();
+  /// Set fog options
+  void setFogOptions(Map<String?, Object?> options);
 
+  /*
+   *  Camera
+   */
   /// Change the camera mode by name.
   // TODO(kerberjg): refactor to use an enum instead of string
   void changeCameraMode(String mode);
-
   void changeCameraOrbitHomePosition(double x, double y, double z);
   void changeCameraTargetPosition(double x, double y, double z);
   void changeCameraFlightStartPosition(double x, double y, double z);
-
-  /// Reset inertia camera to default values.
+  /// (For `INERTIA_AND_GESTURES` mode) Reset inertia camera to default values.
   void resetInertiaCameraToDefaultValues();
-
-  /// Change view quality settings.
-  void changeViewQualitySettings();
-
   /// Set camera rotation by a float value.
   void setCameraRotation(double value);
 
-  // Light
+  /*
+   *  Lights
+  */
+  /// Set a light's color and intensity by GUID.
+  void changeLightColorByGUID(String guid, String color, int intensity);
+  /// Set a light's transform by GUID. Deprecated.
+  @Deprecated('Use changeTranslationByGUID and changeRotationByGUID instead')
   void changeLightTransformByGUID(String guid, double posx, double posy,
       double posz, double dirx, double diry, double dirz);
-  void changeLightColorByGUID(String guid, String color, int intensity);
 
-  // Animation
+  /*
+   *  Animations
+   */
   void enqueueAnimation(String guid, int animationIndex);
   void clearAnimationQueue(String guid);
   void playAnimation(String guid, int animationIndex);
@@ -79,7 +93,11 @@ abstract class FilamentViewApi {
   void resumeAnimation(String guid);
   void setAnimationLooping(String guid, bool looping);
 
-  // Collision
+  /*
+   * Collision
+   */
+  /// Perform a raycast query.
+  /// The result will be sent back to the client via the collision_info event channel.
   void requestCollisionCheckFromRay(
       String queryID,
       double originX,
@@ -89,18 +107,24 @@ abstract class FilamentViewApi {
       double directionY,
       double directionZ,
       double length);
+  /// Disable raycast checks for the given entity.
+  /// NOTE: this will not hide the collider debug visual.
+  void turnOffCollisionChecksForEntity(String guid);
+  /// Enable raycast checks for the given entity.
+  /// NOTE: this will not show the collider debug visual.
+  void turnOnCollisionChecksForEntity(String guid);
+  /// Enable/disable debug collidable visuals in the scene.
+  void toggleDebugCollidableViewsInScene(bool value);
 
-  // transform
+  /*
+   *  Transform
+   */
   void changeScaleByGUID(String guid, double x, double y, double z);
   void changeTranslationByGUID(String guid, double x, double y, double z);
   void changeRotationByGUID(
       String guid, double x, double y, double z, double w);
 
-  // runtime visual / collision on/offs
+  // runtime visual
   void turnOffVisualForEntity(String guid);
   void turnOnVisualForEntity(String guid);
-  // These won't change the visual of the collision data showing in viewport
-  // (purposefully)
-  void turnOffCollisionChecksForEntity(String guid);
-  void turnOnCollisionChecksForEntity(String guid);
 }
