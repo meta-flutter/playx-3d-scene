@@ -56,7 +56,7 @@ abstract class FilamentViewApi {
   /// Cycle between view quality settings presets.
   void changeViewQualitySettings();
   /// Set fog options
-  void setFogOptions(Map<String?, Object?> options);
+  void setFogOptions(bool enable);
 
   /*
    *  Camera

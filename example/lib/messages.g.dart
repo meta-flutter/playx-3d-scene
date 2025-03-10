@@ -191,7 +191,7 @@ class FilamentViewApi {
   }
 
   /// Set fog options
-  Future<void> setFogOptions(Map<String?, Object?> options) async {
+  Future<void> setFogOptions(bool enable) async {
     final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.setFogOptions$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
@@ -199,7 +199,7 @@ class FilamentViewApi {
       binaryMessenger: pigeonVar_binaryMessenger,
     );
     final List<Object?>? pigeonVar_replyList =
-        await pigeonVar_channel.send(<Object?>[options]) as List<Object?>?;
+        await pigeonVar_channel.send(<Object?>[enable]) as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {

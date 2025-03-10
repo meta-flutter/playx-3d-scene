@@ -415,9 +415,7 @@ class _SettingsSceneViewState extends StatefulSceneViewState<SettingsSceneView> 
     widget.filament.changeCameraFlightStartPosition(64, 3, 64);
 
     // fog
-    widget.filament.setFogOptions(const FogOptions(
-      enabled: true,
-    ).toJson());
+    widget.filament.setFogOptions(true);
   }
 
   void _onObjectTouch(CollisionEvent event) {

@@ -23,7 +23,7 @@ import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../messages.g.dart';
+import '../../../../lib/messages.g.dart';
 
 
 class _PigeonCodec extends StandardMessageCodec {
