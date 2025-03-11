@@ -62,6 +62,10 @@ double lerp(double start, double end, double t) {
   return start + (end - start) * t;
 }
 
+double clamp(double value, double min, double max) {
+  return value.clamp(min, max);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 void crissCross(double deltaTime, double speed, FilamentViewApi filamentView) {
   for (var light in lightsWeCanChangeParamsOn) {

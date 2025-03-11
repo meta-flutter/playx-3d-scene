@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'dart:io';
@@ -5,6 +6,66 @@ import 'dart:math' as math;
 import '../shape_and_object_creators.dart';
 import '../material_helpers.dart';
 import '../messages.g.dart';
+
+@immutable class CollisionEvent {
+  final List<CollisionEventHitResult> results;
+  final String source;
+  final int type;
+
+  const CollisionEvent(this.results, this.source, this.type);
+  // TODO(kerberjg): make sure `results` is immutable
+
+  // //Received event: {collision_event_hit_count: 1, collision_event_hit_result_0: {guid: 73bcc636-16b2-41d0-813e-f4d95f52d67a, hitPosition: [-1.4180145263671875, 1.1819745302200317, -0.35870814323425293], name: assets/models/sequoia_ngp.glb}, collision_event_source: vOnTouch, collision_event_type: 1}
+  static CollisionEvent fromJson(Map<String, dynamic> json) {
+    print(json);
+
+    final int resultCount = json['collision_event_hit_count'];
+    final List<CollisionEventHitResult> results = <CollisionEventHitResult>[];
+
+    for(int i = 0; i < resultCount; i++) {
+      final Map<String, dynamic> hitResult = Map<String, dynamic>.from(json['collision_event_hit_result_$i']);
+      final String guild = hitResult['guid'];
+      final List<dynamic> hitPosition = hitResult['hitPosition'];
+      final String name = hitResult['name'];
+
+      results.add(CollisionEventHitResult(
+        guild,
+        Vector3(
+          hitPosition[0].toDouble(),
+          hitPosition[1].toDouble(),
+          hitPosition[2].toDouble()
+        ),
+        name
+      ));
+    }
+
+    return CollisionEvent(
+      results,
+      json['collision_event_source'],
+      json['collision_event_type']
+    );
+  }
+
+  @override
+  String toString() {
+    return 'CollisionEvent{results: $results, source: $source, type: $type}';
+  }
+}
+
+@immutable class CollisionEventHitResult {
+  final String guid;
+  final Vector3 hitPosition;
+  final String name;
+
+  const CollisionEventHitResult(this.guid, this.hitPosition, this.name);
+
+  @override
+  String toString() {
+    return 'CollisionEventHitResult{guid: $guid, hitPosition: $hitPosition, name: $name}';
+  }
+}
+
+typedef CollisionEventHandler = void Function(CollisionEvent event);
 
 class CollisionEventChannel {
   static const EventChannel _eventChannel =
@@ -57,9 +118,11 @@ class CollisionEventChannel {
           //Received event: {collision_event_hit_count: 1, collision_event_hit_result_0: {guid: 73bcc636-16b2-41d0-813e-f4d95f52d67a, hitPosition: [-1.4180145263671875, 1.1819745302200317, -0.35870814323425293], name: assets/models/sequoia_ngp.glb}, collision_event_source: vOnTouch, collision_event_type: 1}
 
           if (event.containsKey("collision_event_hit_result_0")) {
-            Map<String, dynamic> hitResult = Map<String, dynamic>.from(
-                event["collision_event_hit_result_0"]);
+            Map<String, dynamic> hitResult = Map<String, dynamic>.from(event["collision_event_hit_result_0"]);
             String guid = hitResult["guid"];
+
+            // Example: Change the material of the object that was touched
+            // TODO: remove
             if (thingsWeCanChangeParamsOn.contains(guid)) {
               Map<String, dynamic> ourJson =
                   poGetRandomColorMaterialParam().toJson();
@@ -71,22 +134,10 @@ class CollisionEventChannel {
               filamentViewApi.changeMaterialDefinition(ourJson, guid);
             }
 
-            // These are here & comment out to show additional functionality
-            // you can do.
-
-            // checke, works. only can do once. (since it turns it off)
-            // filamentViewApi.turnOffCollisionChecksForEntity(guid); // turnOnCollisionChecksForEntity
-            // filamentViewApi.turnOffVisualForEntity(guid); // turnOnVisualForEntity
-
-            //filamentViewApi.changeTranslationByGUID(guid, randomInRange(-5, 5),
-            //    randomInRange(0, 2), randomInRange(-5, 5));
-
-            //final quat = randomQuaternion();
-            //filamentViewApi.changeRotationByGUID(
-            //    guid, quat.x, quat.y, quat.z, quat.w);
-
-            //filamentViewApi.changeScaleByGUID(guid, randomInRange(0.4, 1.5),
-            //    randomInRange(0.4, 1.5), randomInRange(0.4, 1.5));
+            // Emit event
+            final CollisionEvent collisionEvent = CollisionEvent.fromJson(Map<String, dynamic>.from(event));
+            print(collisionEvent);
+            _emitEvent(collisionEvent);
           }
         },
         onError: (error) {
@@ -108,5 +159,29 @@ class CollisionEventChannel {
         stdout.write('Unexpected Error: $e\nStack Trace:\n$stackTrace\n');
       }
     }
+  }
+
+  /*
+   *  Event handling
+   */
+
+  final List<CollisionEventHandler> _listeners = <CollisionEventHandler>[];
+
+  void _emitEvent(CollisionEvent event) {
+    for (final CollisionEventHandler listener in _listeners) {
+      listener(event);
+    }
+  }
+
+  void addListener(CollisionEventHandler listener) {
+    _listeners.add(listener);
+  }
+
+  void removeListener(CollisionEventHandler listener) {
+    _listeners.remove(listener);
+  }
+
+  void clearListeners() {
+    _listeners.clear();
   }
 }

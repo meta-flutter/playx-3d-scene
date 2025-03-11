@@ -20,14 +20,56 @@ class Vector3 {
   Vector3.y(final double y) : this.only(y: y);
   Vector3.z(final double z) : this.only(z: z);
   Vector3.all(final double value) : this.only(
-    x: value, y: value, z: value
+    x: value, y: value, z: value,
   );
 
-  Map<String, dynamic> toJson() => {
-        'x': x,
-        'y': y,
-        'z': z,
-      };
+  /// Square magnitude of the vector
+  double get sqrMagnitude => x * x + y * y + z * z;
+  /// Magnitude of the vector
+  /// NOTE: This is a slow operation, use [sqrMagnitude] if you only need to compare magnitudes or check if it's equal to 0 or 1
+  double get magnitude => Math.sqrt(sqrMagnitude);
+
+  /// Whether the vector is a zero vector
+  bool get isZero => sqrMagnitude == 0;
+  /// Whether the vector is a one vector
+  bool get isOne => sqrMagnitude == 1;
+
+
+  /// Returns a normalized copy of the vector
+  /// 
+  /// See: [Vector3.normalized]
+  Vector3 normalized() {
+    final double mag = magnitude;
+    if (mag == 0) return this;
+    return Vector3(x / mag, y / mag, z / mag);
+  }
+
+  /// Normalizes this vector and returns it (no copy)
+  ///
+  /// See: [Vector3.normalized]
+  Vector3 normalize() {
+    final double mag = magnitude;
+
+    // Skip if it's already normalized or zero
+    if (mag == 0 || mag == 1) return this;
+
+    x /= mag;
+    y /= mag;
+    z /= mag;
+    
+    return this;
+  }
+
+  Vector3 operator +(final Vector3 other) => Vector3(x + other.x, y + other.y, z + other.z);
+  Vector3 operator -(final Vector3 other) => Vector3(x - other.x, y - other.y, z - other.z);
+  Vector3 operator *(final Vector3 other) => Vector3(x * other.x, y * other.y, z * other.z);
+  Vector3 operator /(final Vector3 other) => Vector3(x / other.x, y / other.y, z / other.z);
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'x': x,
+    'y': y,
+    'z': z,
+  };
 
   @override
   String toString() => 'Vector3(x: $x, y: $y, z: $z)';
@@ -63,12 +105,41 @@ class Vector4 {
     x: value, y: value, z: value, w: value,
   );
 
-  Map<String, dynamic> toJson() => {
-        'x': x,
-        'y': y,
-        'z': z,
-        'w': w,
-      };
+  /// constructor; Quaternion from euler angles
+  static Vector4 fromEulerAngles(double xx, double yy, double zz, { bool useDegrees = false }) {
+    if (useDegrees) {
+      xx = xx * Math.pi / 180;
+      yy = yy * Math.pi / 180;
+      zz = zz * Math.pi / 180;
+    }
+
+    final double halfX = xx / 2;
+    final double halfY = yy / 2;
+    final double halfZ = zz / 2;
+
+    final double cosX = Math.cos(halfX);
+    final double cosY = Math.cos(halfY);
+    final double cosZ = Math.cos(halfZ);
+
+    final double sinX = Math.sin(halfX);
+    final double sinY = Math.sin(halfY);
+    final double sinZ = Math.sin(halfZ);
+
+    double x, y, z, w;
+    x = sinX * cosY * cosZ + cosX * sinY * sinZ;
+    y = cosX * sinY * cosZ - sinX * cosY * sinZ;
+    z = cosX * cosY * sinZ - sinX * sinY * cosZ;
+    w = cosX * cosY * cosZ + sinX * sinY * sinZ;
+
+    return Vector4(x: x, y: y, z: z, w: w);
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'x': x,
+    'y': y,
+    'z': z,
+    'w': w,
+  };
 
   @override
   String toString() => 'Vector4(x: $x, y: $y, z: $z. w" $w)';

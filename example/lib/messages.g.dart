@@ -30,8 +30,7 @@ PlatformException _createConnectionError(String channelName) {
   );
 }
 
-List<Object?> wrapResponse(
-    {Object? result, PlatformException? error, bool empty = false}) {
+List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty = false}) {
   if (empty) {
     return <Object?>[];
   }
@@ -40,6 +39,7 @@ List<Object?> wrapResponse(
   }
   return <Object?>[error.code, error.message, error.details];
 }
+
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
@@ -66,11 +66,9 @@ class FilamentViewApi {
   /// Constructor for [FilamentViewApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  FilamentViewApi(
-      {BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
+  FilamentViewApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
       : pigeonVar_binaryMessenger = binaryMessenger,
-        pigeonVar_messageChannelSuffix =
-            messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
   final BinaryMessenger? pigeonVar_binaryMessenger;
 
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
@@ -78,12 +76,9 @@ class FilamentViewApi {
   final String pigeonVar_messageChannelSuffix;
 
   /// Change material parameters for the given entity.
-  Future<void> changeMaterialParameter(
-      Map<String?, Object?> params, String guid) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeMaterialParameter$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+  Future<void> changeMaterialParameter(Map<String?, Object?> params, String guid) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeMaterialParameter$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -104,12 +99,9 @@ class FilamentViewApi {
   }
 
   /// Change material definition for the given entity.
-  Future<void> changeMaterialDefinition(
-      Map<String?, Object?> params, String guid) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeMaterialDefinition$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+  Future<void> changeMaterialDefinition(Map<String?, Object?> params, String guid) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeMaterialDefinition$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -131,10 +123,8 @@ class FilamentViewApi {
 
   /// Toggle shapes visibility in the scene.
   Future<void> toggleShapesInScene(bool value) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.toggleShapesInScene$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.toggleShapesInScene$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -154,18 +144,62 @@ class FilamentViewApi {
     }
   }
 
-  /// Toggle debug collidable visuals in the scene.
-  Future<void> toggleDebugCollidableViewsInScene(bool value) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.toggleDebugCollidableViewsInScene$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+  /// Set shape's transform by GUID.
+  Future<void> setShapeTransform(String guid, {double posx = 0, double posy = 0, double posz = 0, double rotx = 0, double roty = 0, double rotz = 0, double rotw = 1, double sclx = 1, double scly = 1, double sclz = 1, }) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.setShapeTransform$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
     final List<Object?>? pigeonVar_replyList =
-        await pigeonVar_channel.send(<Object?>[value]) as List<Object?>?;
+        await pigeonVar_channel.send(<Object?>[guid, posx, posy, posz, rotx, roty, rotz, rotw, sclx, scly, sclz]) as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else {
+      return;
+    }
+  }
+
+  /// Cycle between view quality settings presets.
+  Future<void> changeViewQualitySettings() async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeViewQualitySettings$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(null) as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else {
+      return;
+    }
+  }
+
+  /// Set fog options
+  Future<void> setFogOptions(bool enable) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.setFogOptions$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(<Object?>[enable]) as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {
@@ -181,10 +215,8 @@ class FilamentViewApi {
 
   /// Change the camera mode by name.
   Future<void> changeCameraMode(String mode) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeCameraMode$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeCameraMode$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -204,12 +236,9 @@ class FilamentViewApi {
     }
   }
 
-  Future<void> changeCameraOrbitHomePosition(
-      double x, double y, double z) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeCameraOrbitHomePosition$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+  Future<void> changeCameraOrbitHomePosition(double x, double y, double z) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeCameraOrbitHomePosition$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -230,10 +259,8 @@ class FilamentViewApi {
   }
 
   Future<void> changeCameraTargetPosition(double x, double y, double z) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeCameraTargetPosition$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeCameraTargetPosition$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -253,12 +280,9 @@ class FilamentViewApi {
     }
   }
 
-  Future<void> changeCameraFlightStartPosition(
-      double x, double y, double z) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeCameraFlightStartPosition$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+  Future<void> changeCameraFlightStartPosition(double x, double y, double z) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeCameraFlightStartPosition$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -278,37 +302,10 @@ class FilamentViewApi {
     }
   }
 
-  /// Reset inertia camera to default values.
+  /// (For `INERTIA_AND_GESTURES` mode) Reset inertia camera to default values.
   Future<void> resetInertiaCameraToDefaultValues() async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.resetInertiaCameraToDefaultValues$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
-    final List<Object?>? pigeonVar_replyList =
-        await pigeonVar_channel.send(null) as List<Object?>?;
-    if (pigeonVar_replyList == null) {
-      throw _createConnectionError(pigeonVar_channelName);
-    } else if (pigeonVar_replyList.length > 1) {
-      throw PlatformException(
-        code: pigeonVar_replyList[0]! as String,
-        message: pigeonVar_replyList[1] as String?,
-        details: pigeonVar_replyList[2],
-      );
-    } else {
-      return;
-    }
-  }
-
-  /// Change view quality settings.
-  Future<void> changeViewQualitySettings() async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeViewQualitySettings$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.resetInertiaCameraToDefaultValues$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -330,10 +327,8 @@ class FilamentViewApi {
 
   /// Set camera rotation by a float value.
   Future<void> setCameraRotation(double value) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.setCameraRotation$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.setCameraRotation$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -353,19 +348,16 @@ class FilamentViewApi {
     }
   }
 
-  Future<void> changeLightTransformByGUID(String guid, double posx, double posy,
-      double posz, double dirx, double diry, double dirz) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeLightTransformByGUID$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+  /// Set a light's color and intensity by GUID.
+  Future<void> changeLightColorByGUID(String guid, String color, int intensity) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeLightColorByGUID$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final List<Object?>? pigeonVar_replyList = await pigeonVar_channel
-            .send(<Object?>[guid, posx, posy, posz, dirx, diry, dirz])
-        as List<Object?>?;
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(<Object?>[guid, color, intensity]) as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {
@@ -379,18 +371,16 @@ class FilamentViewApi {
     }
   }
 
-  Future<void> changeLightColorByGUID(
-      String guid, String color, int intensity) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeLightColorByGUID$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+  /// Set a light's transform by GUID. Deprecated.
+  Future<void> changeLightTransformByGUID(String guid, double posx, double posy, double posz, double dirx, double diry, double dirz) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeLightTransformByGUID$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final List<Object?>? pigeonVar_replyList = await pigeonVar_channel
-        .send(<Object?>[guid, color, intensity]) as List<Object?>?;
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(<Object?>[guid, posx, posy, posz, dirx, diry, dirz]) as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {
@@ -405,16 +395,14 @@ class FilamentViewApi {
   }
 
   Future<void> enqueueAnimation(String guid, int animationIndex) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.enqueueAnimation$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.enqueueAnimation$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final List<Object?>? pigeonVar_replyList = await pigeonVar_channel
-        .send(<Object?>[guid, animationIndex]) as List<Object?>?;
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(<Object?>[guid, animationIndex]) as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {
@@ -429,10 +417,8 @@ class FilamentViewApi {
   }
 
   Future<void> clearAnimationQueue(String guid) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.clearAnimationQueue$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.clearAnimationQueue$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -453,16 +439,14 @@ class FilamentViewApi {
   }
 
   Future<void> playAnimation(String guid, int animationIndex) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.playAnimation$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.playAnimation$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final List<Object?>? pigeonVar_replyList = await pigeonVar_channel
-        .send(<Object?>[guid, animationIndex]) as List<Object?>?;
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(<Object?>[guid, animationIndex]) as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {
@@ -477,10 +461,8 @@ class FilamentViewApi {
   }
 
   Future<void> changeAnimationSpeed(String guid, double speed) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeAnimationSpeed$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeAnimationSpeed$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -501,10 +483,8 @@ class FilamentViewApi {
   }
 
   Future<void> pauseAnimation(String guid) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.pauseAnimation$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.pauseAnimation$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -525,10 +505,8 @@ class FilamentViewApi {
   }
 
   Future<void> resumeAnimation(String guid) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.resumeAnimation$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.resumeAnimation$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -549,16 +527,14 @@ class FilamentViewApi {
   }
 
   Future<void> setAnimationLooping(String guid, bool looping) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.setAnimationLooping$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.setAnimationLooping$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final List<Object?>? pigeonVar_replyList = await pigeonVar_channel
-        .send(<Object?>[guid, looping]) as List<Object?>?;
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(<Object?>[guid, looping]) as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {
@@ -572,34 +548,17 @@ class FilamentViewApi {
     }
   }
 
-  Future<void> requestCollisionCheckFromRay(
-      String queryID,
-      double originX,
-      double originY,
-      double originZ,
-      double directionX,
-      double directionY,
-      double directionZ,
-      double length) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.requestCollisionCheckFromRay$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+  /// Perform a raycast query.
+  /// The result will be sent back to the client via the collision_info event channel.
+  Future<void> requestCollisionCheckFromRay(String queryID, double originX, double originY, double originZ, double directionX, double directionY, double directionZ, double length) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.requestCollisionCheckFromRay$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final List<Object?>? pigeonVar_replyList = await pigeonVar_channel
-        .send(<Object?>[
-      queryID,
-      originX,
-      originY,
-      originZ,
-      directionX,
-      directionY,
-      directionZ,
-      length
-    ]) as List<Object?>?;
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(<Object?>[queryID, originX, originY, originZ, directionX, directionY, directionZ, length]) as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {
@@ -613,18 +572,17 @@ class FilamentViewApi {
     }
   }
 
-  Future<void> changeScaleByGUID(
-      String guid, double x, double y, double z) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeScaleByGUID$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+  /// Disable raycast checks for the given entity.
+  /// NOTE: this will not hide the collider debug visual.
+  Future<void> turnOffCollisionChecksForEntity(String guid) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.turnOffCollisionChecksForEntity$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final List<Object?>? pigeonVar_replyList = await pigeonVar_channel
-        .send(<Object?>[guid, x, y, z]) as List<Object?>?;
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(<Object?>[guid]) as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {
@@ -638,18 +596,17 @@ class FilamentViewApi {
     }
   }
 
-  Future<void> changeTranslationByGUID(
-      String guid, double x, double y, double z) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeTranslationByGUID$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+  /// Enable raycast checks for the given entity.
+  /// NOTE: this will not show the collider debug visual.
+  Future<void> turnOnCollisionChecksForEntity(String guid) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.turnOnCollisionChecksForEntity$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final List<Object?>? pigeonVar_replyList = await pigeonVar_channel
-        .send(<Object?>[guid, x, y, z]) as List<Object?>?;
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(<Object?>[guid]) as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {
@@ -663,18 +620,82 @@ class FilamentViewApi {
     }
   }
 
-  Future<void> changeRotationByGUID(
-      String guid, double x, double y, double z, double w) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeRotationByGUID$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+  /// Enable/disable debug collidable visuals in the scene.
+  Future<void> toggleDebugCollidableViewsInScene(bool value) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.toggleDebugCollidableViewsInScene$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final List<Object?>? pigeonVar_replyList = await pigeonVar_channel
-        .send(<Object?>[guid, x, y, z, w]) as List<Object?>?;
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(<Object?>[value]) as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else {
+      return;
+    }
+  }
+
+  Future<void> changeScaleByGUID(String guid, double x, double y, double z) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeScaleByGUID$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(<Object?>[guid, x, y, z]) as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else {
+      return;
+    }
+  }
+
+  Future<void> changeTranslationByGUID(String guid, double x, double y, double z) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeTranslationByGUID$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(<Object?>[guid, x, y, z]) as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else {
+      return;
+    }
+  }
+
+  Future<void> changeRotationByGUID(String guid, double x, double y, double z, double w) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.changeRotationByGUID$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(<Object?>[guid, x, y, z, w]) as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {
@@ -689,10 +710,8 @@ class FilamentViewApi {
   }
 
   Future<void> turnOffVisualForEntity(String guid) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.turnOffVisualForEntity$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.turnOffVisualForEntity$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -713,58 +732,8 @@ class FilamentViewApi {
   }
 
   Future<void> turnOnVisualForEntity(String guid) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.turnOnVisualForEntity$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
-    final List<Object?>? pigeonVar_replyList =
-        await pigeonVar_channel.send(<Object?>[guid]) as List<Object?>?;
-    if (pigeonVar_replyList == null) {
-      throw _createConnectionError(pigeonVar_channelName);
-    } else if (pigeonVar_replyList.length > 1) {
-      throw PlatformException(
-        code: pigeonVar_replyList[0]! as String,
-        message: pigeonVar_replyList[1] as String?,
-        details: pigeonVar_replyList[2],
-      );
-    } else {
-      return;
-    }
-  }
-
-  Future<void> turnOffCollisionChecksForEntity(String guid) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.turnOffCollisionChecksForEntity$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
-    final List<Object?>? pigeonVar_replyList =
-        await pigeonVar_channel.send(<Object?>[guid]) as List<Object?>?;
-    if (pigeonVar_replyList == null) {
-      throw _createConnectionError(pigeonVar_channelName);
-    } else if (pigeonVar_replyList.length > 1) {
-      throw PlatformException(
-        code: pigeonVar_replyList[0]! as String,
-        message: pigeonVar_replyList[1] as String?,
-        details: pigeonVar_replyList[2],
-      );
-    } else {
-      return;
-    }
-  }
-
-  Future<void> turnOnCollisionChecksForEntity(String guid) async {
-    final String pigeonVar_channelName =
-        'dev.flutter.pigeon.my_fox_example.FilamentViewApi.turnOnCollisionChecksForEntity$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel =
-        BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.my_fox_example.FilamentViewApi.turnOnVisualForEntity$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,

@@ -18,12 +18,12 @@ abstract class Model {
 
   /// if this is true, we'll keep it in memory so other objects
   /// can use that memory and load from it, not incurring a disk load.
-  bool? should_keep_asset_in_memory;
+  bool? keepInMemory;
 
   /// all instances inherit the base transform so you might want a specific
   /// transform to inherit from.
   /// By default these DO NOT get added to the renderable scene!
-  bool? is_primary_to_instance_from;
+  bool? isInstancePrimary;
 
   /// Model url to load the model from url.
   String? url;
@@ -32,7 +32,7 @@ abstract class Model {
   String? name;
 
   /// used for communication back and forth from dart/native
-  String? global_guid;
+  String? guid;
 
   /// Scale Factor of the model.
   /// Should be greater than 0.
@@ -62,15 +62,15 @@ abstract class Model {
 
   Model({
     this.assetPath,
-    this.should_keep_asset_in_memory,
-    this.is_primary_to_instance_from,
+    this.keepInMemory,
+    this.isInstancePrimary,
     this.url,
     this.scale,
     this.rotation,
     this.collidable,
     this.centerPosition,
     this.animation,
-    this.global_guid,
+    this.guid,
     required this.castShadows,
     required this.receiveShadows,
     this.name,

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:my_fox_example/scenes/playground_scene.dart';
+import 'package:my_fox_example/scenes/radar_scene.dart';
+import 'package:my_fox_example/scenes/scene_view.dart';
+import 'package:my_fox_example/scenes/settings_scene.dart';
 import 'package:playx_3d_scene/playx_3d_scene.dart';
 import 'dart:async';
 import 'dart:io';
 import 'shape_and_object_creators.dart';
-import 'demo_user_interface.dart';
+import 'demo_widgets.dart';
 import 'events/animation_event_channel.dart';
 import 'events/frame_event_channel.dart';
 import 'events/collision_event_channel.dart';
@@ -49,68 +53,77 @@ class _MyAppState extends State<MyApp> {
 
   late SceneController poController;
 
-  // Point light controls
-  Color _directLightColor = Colors.white;
-  double _directIntensity = 300000000;
-  final double _minIntensity = 500000;
-  final double _maxIntensity = 300000000;
-
-  // Camera controls
-  double _cameraRotation = 0;
-  bool _autoRotate = false;
-  bool _toggleShapes = true;
-  bool _toggleCollidableVisuals = true;
-
   final NativeReadiness _nativeReadiness = NativeReadiness();
   bool isReady = false;
 
   final filamentViewApi = FilamentViewApi();
 
-  // 0 = original UI scene, 1 = alternate UI scene
-  int _currentScene = 0;
 
-  // ------------------------------------------------------------------------
-  //  field to store the scene widget so it's created only once
-  late final SceneView _sceneWidget;
-  // ------------------------------------------------------------------------
+  /// field to store the scene widget so it's created only once
+  late final SceneView _filamentViewWidget;
 
-  ////////////////////////////////////////////////////////////////////////
+  /// Scene state/overlay widget
+  StatefulSceneView? _sceneView;
+
   @override
   void initState() {
     super.initState();
 
-    // ------------------------------------------------------------------------
-    _sceneWidget = poGetPlayx3dScene();
-    // ------------------------------------------------------------------------
+    _filamentViewWidget = poGetPlayx3dScene();
+    _setScene(0);
 
     initializeReadiness();
   }
 
-  ////////////////////////////////////////////////////////////////////////
+  /// Call only from setState
+  void _setScene(int sceneId) {
+    _sceneView = switch(sceneId) {
+      0 => PlaygroundSceneView(
+        filament: filamentViewApi,
+        frameController: _frameEventChannel, 
+        collisionController: _collisionEventChannel,
+        readinessController: _nativeReadiness,
+      ),
+      1 => RadarSceneView(
+        filament: filamentViewApi,
+        frameController: _frameEventChannel, 
+        collisionController: _collisionEventChannel,
+        readinessController: _nativeReadiness,
+      ),
+      2 => SettingsSceneView(
+        filament: filamentViewApi,
+        frameController: _frameEventChannel, 
+        collisionController: _collisionEventChannel,
+        readinessController: _nativeReadiness,
+      ),
+      _ => throw UnsupportedError("nothiiiing")
+    };
+  }
+
   Future<void> initializeReadiness() async {
     const int maxRetries = 30;
     const Duration retryInterval = Duration(seconds: 1);
 
     for (int attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        logToStdOut('Checking native readiness, attempt $attempt...');
+        print('Checking native readiness, attempt $attempt...');
         final bool nativeReady = await _nativeReadiness.isNativeReady();
 
         if (nativeReady) {
-          logToStdOut('Native is ready. Proceeding...');
+          print('Native is ready. Proceeding...');
           startListeningForEvents();
           return;
         } else {
-          logToStdOut('Native is not ready. Retrying...');
+          print('Native is not ready. Retrying...');
         }
       } catch (e) {
-        logToStdOut('Error checking readiness: $e');
+        print('Error checking readiness: $e');
       }
 
       await Future.delayed(retryInterval);
     }
 
-    logToStdOut(
+    print(
         'Failed to confirm native readiness after $maxRetries attempts.');
   }
 
@@ -119,29 +132,23 @@ class _MyAppState extends State<MyApp> {
     _nativeReadiness.readinessStream.listen(
       (event) {
         if (event == "ready") {
-          logToStdOut('Received ready event from native side.');
+          print('Received ready event from native side.');
           setState(() {
-            logToStdOut('Creating Event Channels');
+            print('Creating Event Channels');
             _animEventChannel.initEventChannel();
             _collisionEventChannel.initEventChannel();
             _frameEventChannel.initEventChannel();
-            logToStdOut('Event Channels created.');
+            print('Event Channels created.');
             isReady = true;
           });
         }
       },
       onError: (error) {
-        logToStdOut('Error listening for readiness events: $error');
+        print('Error listening for readiness events: $error');
       },
     );
   }
-
-  ////////////////////////////////////////////////////////////////////////
-  void logToStdOut(String strOut) {
-    DateTime now = DateTime.now();
-    stdout.write('DART : $strOut: $now\n');
-  }
-
+  
   ////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
@@ -149,34 +156,44 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         backgroundColor: Colors.black.withOpacity(0.0),
         body: Stack(
+          fit: StackFit.expand,
           children: [
-            _sceneWidget,
+            _filamentViewWidget,
+
+
+            if(_sceneView != null) _sceneView!,
 
             // A button at the top-right to switch scenes
             Positioned(
-              top: 50,
-              right: 20,
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    // Toggle between scene 0 and scene 1
-                    _currentScene = (_currentScene + 1) % 2;
-                  });
-                },
-                child: Text(
-                  _currentScene == 0
-                      ? 'Show Radar Scene'
-                      : 'Show Original Scene',
+              top: 24,
+              right: 24,
+              // Show menu with list of scenes with MenuAnchor and a FilledButton in builder
+              child: MenuAnchor(
+                builder: (BuildContext context, MenuController controller, Widget? child) => FilledButton(
+                  onPressed: () {
+                    if(controller.isOpen) {
+                      controller.close();
+                    } else {
+                      controller.open();
+                    }
+                  },
+                  child: const Text('Scenes'),
                 ),
+                menuChildren: [
+                  MenuItemButton(
+                    child: const Text('Playground'),
+                    onPressed: () => setState(() =>_setScene(0)),
+                  ),
+                  MenuItemButton(
+                    child: const Text('Radar'),
+                    onPressed: () => setState(() =>_setScene(1)),
+                  ),
+                  MenuItemButton(
+                    child: const Text('Settings'),
+                    onPressed: () => setState(() =>_setScene(2)),
+                  ),
+                ],
               ),
-            ),
-
-            // Bottom-left: build whichever UI belongs to the current scene
-            Positioned(
-              bottom: 50,
-              left: 20,
-              // Right is not strictly needed, but you can set right: 20 if desired
-              child: _buildUIForScene(_currentScene),
             ),
           ],
         ),
@@ -185,219 +202,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  Widget _buildUIForScene(int sceneIndex) {
-    switch (sceneIndex) {
-      case 0:
-        filamentViewApi.changeCameraOrbitHomePosition(8, 3, 0);
-        filamentViewApi.changeCameraTargetPosition(0, 0, 0);
-        filamentViewApi.changeCameraFlightStartPosition(8, 3, 8);
-
-        return _buildSceneZeroUI();
-      case 1:
-        filamentViewApi.changeCameraOrbitHomePosition(-40, 5, 0);
-        filamentViewApi.changeCameraTargetPosition(-45, 0, 0);
-        filamentViewApi.changeCameraFlightStartPosition(-25, 15, 0);
-
-        return _buildSceneOneUI();
-      default:
-        return const SizedBox.shrink();
-    }
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  Widget _buildSceneZeroUI() {
-    return Column(
-      // Force left justification in the column
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // -- DIRECT LIGHT CONTROLS --
-        Text('Direct Light', style: getTextStyle()),
-        const SizedBox(height: 8),
-        SizedBox(
-          width: 100,
-          child: ColorPicker(
-            colorPickerWidth: 100,
-            pickerColor: _directLightColor,
-            onColorChanged: (Color color) {
-              setState(() {
-                _directLightColor = color;
-                final String colorString =
-                    '#${_directLightColor.value.toRadixString(16).padLeft(8, '0')}';
-
-                filamentViewApi.changeLightColorByGUID(
-                  centerPointLightGUID,
-                  colorString,
-                  _directIntensity.toInt(),
-                );
-              });
-            },
-            pickerAreaHeightPercent: 1.0,
-            enableAlpha: false,
-            displayThumbColor: false,
-            portraitOnly: true,
-            paletteType: PaletteType.hueWheel,
-          ),
-        ),
-        const SizedBox(height: 10),
-        SizedBox(
-          width: 150,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Intensity', style: getTextStyle()),
-              Slider(
-                value: _directIntensity,
-                min: _minIntensity,
-                max: _maxIntensity,
-                onChanged: (double value) {
-                  setState(() {
-                    _directIntensity = value;
-                    final String colorString =
-                        '#${_directLightColor.value.toRadixString(16).padLeft(8, '0')}';
-
-                    filamentViewApi.changeLightColorByGUID(
-                      centerPointLightGUID,
-                      colorString,
-                      _directIntensity.toInt(),
-                    );
-                  });
-                },
-              ),
-            ],
-          ),
-        ),
-
-        const SizedBox(height: 20),
-
-        // -- CAMERA ROTATION SLIDER --
-        Text('Camera Rotation', style: getTextStyle()),
-        Slider(
-          value: _cameraRotation,
-          min: 0,
-          max: 600,
-          onChanged: (double value) {
-            setState(() {
-              _cameraRotation = value;
-              filamentViewApi.setCameraRotation(_cameraRotation / 100);
-            });
-          },
-        ),
-
-        const SizedBox(height: 20),
-
-        // -- ORIGINAL BUTTONS ROW --
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: _buildSceneZeroUIButtons(),
-        ),
-      ],
-    );
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  Widget _buildSceneOneUI() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: _buildSceneOneUIButtons(),
-    );
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  List<Widget> _buildSceneZeroUIButtons() {
-    return [
-      ElevatedButton(
-        onPressed: () {
-          setState(() {
-            _autoRotate = !_autoRotate;
-            if (_autoRotate) {
-              filamentViewApi.changeCameraMode("AUTO_ORBIT");
-            } else {
-              filamentViewApi.changeCameraMode("INERTIA_AND_GESTURES");
-            }
-          });
-        },
-        child: Text(
-          _autoRotate ? 'Auto Orbit On' : 'Inertia & Gestures On',
-        ),
-      ),
-      const SizedBox(width: 5),
-      ElevatedButton(
-        onPressed: () {
-          setState(() {
-            filamentViewApi.resetInertiaCameraToDefaultValues();
-          });
-        },
-        child: const Text('Reset'),
-      ),
-      const SizedBox(width: 20),
-      ElevatedButton(
-        onPressed: () {
-          setState(() {
-            _toggleShapes = !_toggleShapes;
-            filamentViewApi.toggleShapesInScene(_toggleShapes);
-          });
-        },
-        child: Text(
-          _toggleShapes ? 'Toggle Shapes: On' : 'Toggle Shapes: Off',
-        ),
-      ),
-      const SizedBox(width: 20),
-      ElevatedButton(
-        onPressed: () {
-          setState(() {
-            filamentViewApi.toggleDebugCollidableViewsInScene(
-              _toggleCollidableVisuals,
-            );
-            _toggleCollidableVisuals = !_toggleCollidableVisuals;
-          });
-        },
-        child: Text(
-          _toggleCollidableVisuals
-              ? 'Toggle Collidables: On'
-              : 'Toggle Collidables: Off',
-        ),
-      ),
-      const SizedBox(width: 5),
-      ElevatedButton(
-        onPressed: () {
-          setState(() {
-            filamentViewApi.changeViewQualitySettings();
-          });
-        },
-        child: const Text('Qual'),
-      ),
-    ];
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  List<Widget> _buildSceneOneUIButtons() {
-    return [
-      ElevatedButton(
-        onPressed: () {
-          setState(() {
-            vDoOneWaveSegment(filamentViewApi);
-          });
-        },
-        child: const Text('Send Single Line out'),
-      ),
-      const SizedBox(width: 5),
-      ElevatedButton(
-        onPressed: () {
-          setState(() {
-            vDo3RadarWaveSegments(filamentViewApi);
-          });
-        },
-        child: const Text('Send Wave Out'),
-      ),
-      // Add more alternate buttons if needed
-    ];
-  }
-
-  ////////////////////////////////////////////////////////////////////////
   Scene poGetScene() {
     return Scene(
-      skybox: ColoredSkybox(color: Colors.black),
+      skybox: ColoredSkybox(color: Colors.white),
       //skybox: HdrSkybox.asset("assets/envs/courtyard.hdr"),
       indirectLight: HdrIndirectLight.asset("assets/envs/courtyard.hdr"),
       //indirectLight: poGetDefaultIndirectLight(),
@@ -444,14 +251,14 @@ class _MyAppState extends State<MyApp> {
       scene: poGetScene(),
       shapes: poGetScenesShapes(),
       onCreated: (SceneController controller) async {
-        logToStdOut('poGetPlayx3dScene onCreated');
+        print('poGetPlayx3dScene onCreated');
 
         poController = controller;
 
         _frameEventChannel.setController(filamentViewApi);
         _collisionEventChannel.setController(filamentViewApi);
 
-        logToStdOut('poGetPlayx3dScene onCreated completed');
+        print('poGetPlayx3dScene onCreated completed');
       },
     );
   }
